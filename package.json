@@ -29,7 +29,8 @@
       "preload.js",
       "client/.next/**/*",
       "client/public/**/*",
-      "client/package.json"
+      "client/package.json",
+      "client/node_modules/**/*"
     ],
     "win": {
       "target": "dir"
