@@ -1,103 +1,91 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import MyLifeFlow from '@/app/MyLifeFlow/page';
+import SDLifeCycle from '@/app/SDLifeCycle/page';
+import Applications from '@/app/Application\'s/page';
+import TasksNext24Hours from '@/app/TasksNext24Hours/page';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [activePage, setActivePage] = useState('MyLifeFlow');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  // Set active page based on query parameter on component mount and when searchParams change
+  useEffect(() => {
+    const pageParam = searchParams.get('page');
+    if (pageParam && ['MyLifeFlow', 'SDLifeCycle', 'Applications', 'TasksNext24Hours'].includes(pageParam)) {
+      setActivePage(pageParam);
+    } else if (!pageParam) {
+      // If no page parameter, redirect to MyLifeFlow with query parameter
+      router.push('/?page=MyLifeFlow');
+    } else {
+      // Default to MyLifeFlow if invalid page parameter
+      setActivePage('MyLifeFlow');
+    }
+  }, [searchParams, router]);
+
+  const pages = [
+    { id: 'MyLifeFlow', name: 'My Life Flow' },
+    { id: 'SDLifeCycle', name: 'SD Life Cycle' },
+    { id: 'Applications', name: 'Applications' },
+    { id: 'TasksNext24Hours', name: 'Tasks Next 24 Hours' }
+  ];
+
+  const renderContent = () => {
+    switch(activePage) {
+      case 'MyLifeFlow':
+        return <MyLifeFlow />;
+      case 'SDLifeCycle':
+        return <SDLifeCycle />;
+      case 'Applications':
+        return <Applications />;
+      case 'TasksNext24Hours':
+        return <TasksNext24Hours />;
+      default:
+        return <div className="text-white"><p>Select a page from the sidebar</p></div>;
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-900">
+      {/* Header */}
+      <header className="h-16 border-b border-gray-600 flex items-center px-6">
+        <h1 className="text-white text-2xl font-normal">
+          DIRECT
+        </h1>
+      </header>
+
+      <main className="grid grid-cols-[260px_1fr] flex-1">
+        {/* Sidebar */}
+        <aside className="bg-gray-800 border-r border-gray-600 p-6">
+          <div className="space-y-6">
+            {/* Logo placeholder */}
+            <div className="w-8 h-8 border border-gray-400 rounded bg-transparent"></div>
+            
+            {/* Navigation Buttons */}
+            <nav className="space-y-4">
+              {pages.map((page) => (
+                <button
+                  key={page.id}
+                  onClick={() => router.push(`/?page=${page.id}`)}
+                  className={`block w-full text-left text-white text-base font-normal px-3 py-2 rounded hover:bg-gray-700 ${
+                    activePage === page.id ? 'border border-gray-400 bg-gray-700' : ''
+                  }`}
+                >
+                  {page.name}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </aside>
+
+        {/* Main Content Area - Renders active component */}
+        <section className="bg-gray-800">
+          {renderContent()}
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
