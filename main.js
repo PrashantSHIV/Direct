@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const MyLifeFlow = require('./models/MyLifeFlow');
 
 let mainWindow;
 
@@ -19,8 +20,48 @@ function createWindow() {
   mainWindow.loadURL('http://localhost:3000');
 
   // Open DevTools (optional)
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
+
+// IPC Handlers for database operations
+ipcMain.handle('get-timetable', async () => {
+  try {
+    return MyLifeFlow.getTimetable();
+  } catch (error) {
+    console.error('Error getting timetable:', error);
+    return [];
+  }
+});
+
+ipcMain.handle('add-timetable', async (event, type, time, discipline) => {
+  try {
+    MyLifeFlow.addTimetable(type, time, discipline);
+    return { success: true };
+  } catch (error) {
+    console.error('Error adding timetable:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('update-timetable', async (event, id, type, time, discipline) => {
+  try {
+    MyLifeFlow.updateTimetable(id, type, time, discipline);
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating timetable:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('delete-timetable', async (event, id) => {
+  try {
+    MyLifeFlow.deleteTimetable(id);
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting timetable:', error);
+    return { success: false, error: error.message };
+  }
+});
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(createWindow);

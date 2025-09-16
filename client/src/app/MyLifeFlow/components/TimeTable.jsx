@@ -1,44 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function TimeTable() {
-  // Working Day Data
-  const workingData = [
-    { time: "04:00", discipline: "Get Up" },
-    { time: "04:30", discipline: "Brush Teeth" },
-    { time: "05:00", discipline: "Exercise" },
-    { time: "06:00", discipline: "Shower" },
-    { time: "07:00", discipline: "Breakfast" },
-    { time: "08:00", discipline: "Work Start" },
-    { time: "12:00", discipline: "Lunch Break" },
-    { time: "13:00", discipline: "Work Resume" },
-    { time: "17:00", discipline: "Work End" },
-    { time: "18:00", discipline: "Dinner" },
-    { time: "19:00", discipline: "Study" },
-    { time: "21:00", discipline: "Relax" },
-    { time: "22:00", discipline: "Sleep" }
-  ];
-  
-  // Holiday Data
-  const holiData = [
-    { time: "06:00", discipline: "Wake Up" },
-    { time: "06:30", discipline: "Morning Walk" },
-    { time: "08:00", discipline: "Breakfast" },
-    { time: "09:00", discipline: "Hobby Time" },
-    { time: "12:00", discipline: "Lunch" },
-    { time: "14:00", discipline: "Nap" },
-    { time: "16:00", discipline: "Family Time" },
-    { time: "18:00", discipline: "Dinner" },
-    { time: "20:00", discipline: "Entertainment" },
-    { time: "22:00", discipline: "Sleep" }
-  ];
-
-  const [workingDayData, setWorkingDayData] = useState(workingData);
-  const [holidayData, setHolidayData] = useState(holiData);
+  const [workingDayData, setWorkingDayData] = useState([]);
+  const [holidayData, setHolidayData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [editingData, setEditingData] = useState({ time: '', discipline: '' });
   const [newWorkingItem, setNewWorkingItem] = useState({ time: '', discipline: '' });
   const [newHolidayItem, setNewHolidayItem] = useState({ time: '', discipline: '' });
+
+  // Load data from database on component mount
+  useEffect(() => {
+    loadTimetableData();
+  }, []);
+
+  const loadTimetableData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getTimetable();
+      
+      console.log('Database response:', data);
+      console.log('Data type:', typeof data);
+      console.log('Is array:', Array.isArray(data));
+      
+      // Ensure data is an array
+      const dataArray = Array.isArray(data) ? data : [];
+      
+      // Separate working day and holiday data
+      const workingData = dataArray.filter(item => item.type === 'working day');
+      const holidayData = dataArray.filter(item => item.type === 'holiday');
+      
+      setWorkingDayData(workingData);
+      setHolidayData(holidayData);
+    } catch (error) {
+      console.error('Error loading timetable data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEdit = (item, index, section) => {
     setEditingItem({ item, index, section });
@@ -46,38 +46,45 @@ export default function TimeTable() {
     setShowEditModal(true);
   };
 
-  const handleDelete = (index, section) => {
-    if (section === 'working') {
-      setWorkingDayData(workingDayData.filter((_, i) => i !== index));
-    } else {
-      setHolidayData(holidayData.filter((_, i) => i !== index));
+  const handleDelete = async (index, section) => {
+    try {
+      const item = section === 'working' ? workingDayData[index] : holidayData[index];
+      await window.api.deleteTimetable(item.id);
+      await loadTimetableData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting timetable item:', error);
     }
   };
 
-  const handleSaveEdit = () => {
-    if (editingItem.section === 'working') {
-      const newData = [...workingDayData];
-      newData[editingItem.index] = { ...editingData };
-      setWorkingDayData(newData.sort((a,b) => a.time.localeCompare(b.time)));
-    } else {
-      const newData = [...holidayData];
-      newData[editingItem.index] = { ...editingData };
-      setHolidayData(newData.sort((a,b) => a.time.localeCompare(b.time)));
+  const handleSaveEdit = async () => {
+    try {
+      const item = editingItem.section === 'working' ? workingDayData[editingItem.index] : holidayData[editingItem.index];
+      const type = editingItem.section === 'working' ? 'working day' : 'holiday';
+      
+      await window.api.updateTimetable(item.id, type, editingData.time, editingData.discipline);
+      await loadTimetableData(); // Reload data from database
+      
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ time: '', discipline: '' });
+    } catch (error) {
+      console.error('Error updating timetable item:', error);
     }
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ time: '', discipline: '' });
   };
 
-  const handleAddNew = (section) => {
-    if (section === 'working' && newWorkingItem.time && newWorkingItem.discipline) {
-      const newData = [...workingDayData, { ...newWorkingItem }];
-      setWorkingDayData(newData.sort((a,b) => a.time.localeCompare(b.time)));
-      setNewWorkingItem({ time: '', discipline: '' });
-    } else if (section === 'holiday' && newHolidayItem.time && newHolidayItem.discipline) {
-      const newData = [...holidayData, { ...newHolidayItem }];
-      setHolidayData(newData.sort((a,b) => a.time.localeCompare(b.time)));
-      setNewHolidayItem({ time: '', discipline: '' });
+  const handleAddNew = async (section) => {
+    try {
+      if (section === 'working' && newWorkingItem.time && newWorkingItem.discipline) {
+        await window.api.addTimetable('working day', newWorkingItem.time, newWorkingItem.discipline);
+        setNewWorkingItem({ time: '', discipline: '' });
+        await loadTimetableData(); // Reload data from database
+      } else if (section === 'holiday' && newHolidayItem.time && newHolidayItem.discipline) {
+        await window.api.addTimetable('holiday', newHolidayItem.time, newHolidayItem.discipline);
+        setNewHolidayItem({ time: '', discipline: '' });
+        await loadTimetableData(); // Reload data from database
+      }
+    } catch (error) {
+      console.error('Error adding timetable item:', error);
     }
   };
 
@@ -150,6 +157,17 @@ export default function TimeTable() {
       </div>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="text-white">
+        <h3 className="bg-gray-500 p-3 py-2">Time Table</h3>
+        <div className="p-6 text-center">
+          <p>Loading timetable data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-white">
