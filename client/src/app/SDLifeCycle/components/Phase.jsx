@@ -1,100 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Phase({ activePhase }) {
   const [phaseData, setPhaseData] = useState({
-    Planning: {
-      name: 'Planning',
-      definitions: [
-        { title: 'What is Planning?', explanation: 'Planning phase is the initial stage where project scope, requirements, and timeline are defined.' }
-      ],
-      tools: [
-        { name: 'Project Management Tool', src: 'https://example.com/pm' },
-        { name: 'Requirements Tracker', src: 'https://example.com/req' }
-      ],
-      steps: [
-        { step: 'Define project scope', reason: 'To understand what needs to be built' },
-        { step: 'Gather requirements', reason: 'To know what features are needed' },
-        { step: 'Create timeline', reason: 'To plan development schedule' }
-      ]
-    },
-    Design: {
-      name: 'Design',
-      definitions: [
-        { title: 'What is Design?', explanation: 'Design phase involves creating system architecture and design specifications.' }
-      ],
-      tools: [
-        { name: 'Figma', src: 'https://figma.com' },
-        { name: 'Sketch', src: 'https://sketch.com' }
-      ],
-      steps: [
-        { step: 'Create system architecture', reason: 'To define overall system structure' },
-        { step: 'Design user interface', reason: 'To plan user experience' },
-        { step: 'Create technical specifications', reason: 'To guide development' }
-      ]
-    },
-    Development: {
-      name: 'Development',
-      definitions: [
-        { title: 'What is Development?', explanation: 'Development phase is where the actual coding and system building takes place.' }
-      ],
-      tools: [
-        { name: 'VS Code', src: 'https://code.visualstudio.com' },
-        { name: 'Git', src: 'https://git-scm.com' }
-      ],
-      steps: [
-        { step: 'Write code', reason: 'To implement the system' },
-        { step: 'Follow coding standards', reason: 'To maintain code quality' },
-        { step: 'Regular testing', reason: 'To catch bugs early' }
-      ]
-    },
-    Testing: {
-      name: 'Testing',
-      definitions: [
-        { title: 'What is Testing?', explanation: 'Testing phase ensures the system works correctly and meets requirements.' }
-      ],
-      tools: [
-        { name: 'Jest', src: 'https://jestjs.io' },
-        { name: 'Selenium', src: 'https://selenium.dev' }
-      ],
-      steps: [
-        { step: 'Unit testing', reason: 'To test individual components' },
-        { step: 'Integration testing', reason: 'To test component interactions' },
-        { step: 'User acceptance testing', reason: 'To validate with end users' }
-      ]
-    },
-    Deployment: {
-      name: 'Deployment',
-      definitions: [
-        { title: 'What is Deployment?', explanation: 'Deployment phase involves releasing the system to production environment.' }
-      ],
-      tools: [
-        { name: 'Docker', src: 'https://docker.com' },
-        { name: 'AWS', src: 'https://aws.amazon.com' }
-      ],
-      steps: [
-        { step: 'Prepare production environment', reason: 'To ensure system stability' },
-        { step: 'Deploy application', reason: 'To make system available to users' },
-        { step: 'Monitor system', reason: 'To ensure smooth operation' }
-      ]
-    },
-    Maintenance: {
-      name: 'Maintenance',
-      definitions: [
-        { title: 'What is Maintenance?', explanation: 'Maintenance phase involves ongoing support, updates, and improvements.' }
-      ],
-      tools: [
-        { name: 'Monitoring Tool', src: 'https://example.com/monitor' },
-        { name: 'Bug Tracker', src: 'https://example.com/bugs' }
-      ],
-      steps: [
-        { step: 'Bug fixes', reason: 'To resolve issues found in production' },
-        { step: 'Feature updates', reason: 'To add new functionality' },
-        { step: 'Performance optimization', reason: 'To improve system efficiency' }
-      ]
-    }
+    definitions: [],
+    tools: [],
+    steps: []
   });
+  const [loading, setLoading] = useState(true);
+  const [phaseId, setPhaseId] = useState(null);
 
   const [newStep, setNewStep] = useState({ step: '', reason: '' });
   const [newDefinition, setNewDefinition] = useState({ title: '', explanation: '' });
@@ -102,46 +17,110 @@ export default function Phase({ activePhase }) {
   const [draggedItem, setDraggedItem] = useState(null);
   const [draggedType, setDraggedType] = useState(null);
 
-  const addStep = () => {
-    if (newStep.step.trim() && newStep.reason.trim()) {
-      const updatedData = { ...phaseData };
-      updatedData[activePhase].steps.push({
-        step: newStep.step.trim(),
-        reason: newStep.reason.trim()
+  // Load phase data from database
+  const loadPhaseData = async () => {
+    try {
+      setLoading(true);
+      
+      // First, get or create the phase
+      const phases = await window.api.getPhases();
+      let currentPhase = phases.find(p => p.name === activePhase);
+      
+      if (!currentPhase) {
+        // Create the phase if it doesn't exist
+        await window.api.addPhase(activePhase);
+        const updatedPhases = await window.api.getPhases();
+        currentPhase = updatedPhases.find(p => p.name === activePhase);
+      }
+      
+      setPhaseId(currentPhase.id);
+      
+      // Load all phase-specific data
+      const [definitions, tools, steps] = await Promise.all([
+        window.api.getPhaseDefinitions(currentPhase.id),
+        window.api.getPhaseTools(currentPhase.id),
+        window.api.getPhaseSteps(currentPhase.id)
+      ]);
+      
+      setPhaseData({
+        definitions: definitions.map(item => ({
+          id: item.id,
+          title: item.title,
+          explanation: item.explanation
+        })),
+        tools: tools.map(item => ({
+          id: item.id,
+          name: item.name,
+          src: item.source
+        })),
+        steps: steps.map(item => ({
+          id: item.id,
+          step: item.step,
+          reason: item.reason
+        }))
       });
-      setPhaseData(updatedData);
-      setNewStep({ step: '', reason: '' });
+    } catch (error) {
+      console.error('Error loading phase data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const addDefinition = () => {
-    if (newDefinition.title.trim() && newDefinition.explanation.trim()) {
-      const updatedData = { ...phaseData };
-      updatedData[activePhase].definitions.push({
-        title: newDefinition.title.trim(),
-        explanation: newDefinition.explanation.trim()
-      });
-      setPhaseData(updatedData);
-      setNewDefinition({ title: '', explanation: '' });
+  useEffect(() => {
+    if (activePhase) {
+      loadPhaseData();
+    }
+  }, [activePhase]);
+
+  const addStep = async () => {
+    if (newStep.step.trim() && newStep.reason.trim() && phaseId) {
+      try {
+        await window.api.addPhaseStep(phaseId, newStep.step.trim(), newStep.reason.trim());
+        setNewStep({ step: '', reason: '' });
+        loadPhaseData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding phase step:', error);
+      }
     }
   };
 
-  const addTool = () => {
-    if (newTool.name.trim() && newTool.src.trim()) {
-      const updatedData = { ...phaseData };
-      updatedData[activePhase].tools.push({
-        name: newTool.name.trim(),
-        src: newTool.src.trim()
-      });
-      setPhaseData(updatedData);
-      setNewTool({ name: '', src: '' });
+  const addDefinition = async () => {
+    if (newDefinition.title.trim() && newDefinition.explanation.trim() && phaseId) {
+      try {
+        await window.api.addPhaseDefinition(phaseId, newDefinition.title.trim(), newDefinition.explanation.trim());
+        setNewDefinition({ title: '', explanation: '' });
+        loadPhaseData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding phase definition:', error);
+      }
     }
   };
 
-  const deleteItem = (type, index) => {
-    const updatedData = { ...phaseData };
-    updatedData[activePhase][type].splice(index, 1);
-    setPhaseData(updatedData);
+  const addTool = async () => {
+    if (newTool.name.trim() && newTool.src.trim() && phaseId) {
+      try {
+        await window.api.addPhaseTool(phaseId, newTool.name.trim(), newTool.src.trim());
+        setNewTool({ name: '', src: '' });
+        loadPhaseData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding phase tool:', error);
+      }
+    }
+  };
+
+  const deleteItem = async (type, itemId) => {
+    try {
+      if (type === 'definitions') {
+        await window.api.deletePhaseDefinition(itemId);
+      } else if (type === 'tools') {
+        await window.api.deletePhaseTool(itemId);
+      } else if (type === 'steps') {
+        await window.api.deletePhaseStep(itemId);
+      }
+      loadPhaseData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting phase item:', error);
+    }
   };
 
   // Drag and drop functions
@@ -163,23 +142,46 @@ export default function Phase({ activePhase }) {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, dropIndex, type) => {
+  const handleDrop = async (e, dropIndex, type) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === dropIndex || draggedType !== type) return;
 
-    const updatedData = { ...phaseData };
-    const items = updatedData[activePhase][type];
+    const items = [...phaseData[type]];
     const draggedItemData = items[draggedItem];
     
     items.splice(draggedItem, 1);
     items.splice(dropIndex, 0, draggedItemData);
     
-    setPhaseData(updatedData);
+    setPhaseData(prev => ({
+      ...prev,
+      [type]: items
+    }));
     setDraggedItem(null);
     setDraggedType(null);
+
+    // Save new order to database
+    try {
+      if (type === 'definitions') {
+        await window.api.reorderPhaseDefinitions(phaseId, items);
+      } else if (type === 'tools') {
+        await window.api.reorderPhaseTools(phaseId, items);
+      } else if (type === 'steps') {
+        await window.api.reorderPhaseSteps(phaseId, items);
+      }
+    } catch (error) {
+      console.error('Error reordering phase items:', error);
+      // Reload data from database to revert changes
+      loadPhaseData();
+    }
   };
 
-  const currentPhase = phaseData[activePhase] || phaseData.Planning;
+  if (loading) {
+    return (
+      <div className="text-text h-full flex items-center justify-center">
+        <p className="text-text-muted">Loading phase data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-[1fr_300px] gap-6">
@@ -190,7 +192,7 @@ export default function Phase({ activePhase }) {
         {/* Definitions Section */}
         <div className="mb-6">
           <div className="space-y-4 mb-4">
-            {currentPhase.definitions.map((def, index) => (
+            {(phaseData.definitions || []).map((def, index) => (
               <div 
                 key={index}
                 className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
@@ -209,7 +211,7 @@ export default function Phase({ activePhase }) {
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteItem('definitions', index);
+                        deleteItem('definitions', def.id);
                       }}
                       className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
                       title="Delete"
@@ -259,7 +261,7 @@ export default function Phase({ activePhase }) {
             <div className="p-2 text-sm font-semibold text-text-muted">Reason</div>
           </div>
           
-          {currentPhase.steps.map((item, index) => (
+          {(phaseData.steps || []).map((item, index) => (
             <div 
               key={index} 
               className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
@@ -275,7 +277,7 @@ export default function Phase({ activePhase }) {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteItem('steps', index);
+                    deleteItem('steps', item.id);
                   }}
                   className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
                   title="Delete"
@@ -331,7 +333,7 @@ export default function Phase({ activePhase }) {
         </div>
         
         <div className="space-y-2">
-          {currentPhase.tools.map((tool, index) => (
+          {(phaseData.tools || []).map((tool, index) => (
             <div 
               key={index}
               className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
@@ -344,10 +346,13 @@ export default function Phase({ activePhase }) {
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <a 
-                    href={tool.src} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                    href="#"
                     className="text-sm font-medium text-text hover:text-accent-blue transition-colors duration-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      window.api.openExternal(tool.src);
+                    }}
                   >
                     {tool.name}
                   </a>
@@ -356,7 +361,7 @@ export default function Phase({ activePhase }) {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      deleteItem('tools', index);
+                      deleteItem('tools', tool.id);
                     }}
                     className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
                     title="Delete"

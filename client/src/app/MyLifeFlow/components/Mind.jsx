@@ -1,19 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Mind() {
-  const [activeSection, setActiveSection] = useState('Breathing');
-  const [sections, setSections] = useState([
-    { id: 'Breathing', name: 'Breathing' },
-    { id: 'Yogasana', name: 'Yogasana' },
-  ]);
-  const [mindItems, setMindItems] = useState({
-    'Breathing': [
-      { name: 'Anulom-Vilom', technique: ['Sit in any position', 'Use your right arm', 'Close right nostril with thumb', 'Breathe through left nostril'] }
-    ],
-    'Yogasana': [],
-  });
+  const [activeSection, setActiveSection] = useState('');
+  const [sections, setSections] = useState([]);
+  const [mindItems, setMindItems] = useState({});
+  const [loading, setLoading] = useState(true);
   const [newSectionName, setNewSectionName] = useState('');
   const [newItem, setNewItem] = useState({ name: '', technique: [''] });
   const [showEditModal, setShowEditModal] = useState(false);
@@ -22,26 +15,77 @@ export default function Mind() {
   const [draggedItem, setDraggedItem] = useState(null);
   const [draggedSection, setDraggedSection] = useState(null);
 
-  const addSection = () => {
-    if (newSectionName.trim()) {
-      const newId = newSectionName.trim();
-      setSections([...sections, { id: newId, name: newSectionName.trim() }]);
-      setMindItems({...mindItems, [newId]: []});
-      setNewSectionName('');
+  // Load data from database
+  const loadMindData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getMind();
+      
+      // Group data by section and extract unique section names
+      const groupedData = {};
+      const uniqueSections = new Set();
+      
+      data.forEach(item => {
+        if (!groupedData[item.section_name]) {
+          groupedData[item.section_name] = [];
+        }
+        groupedData[item.section_name].push({
+          id: item.id,
+          name: item.technique_name,
+          technique: item.technique_steps
+        });
+        uniqueSections.add(item.section_name);
+      });
+      
+      // Convert Set to array and create section objects
+      const sectionsArray = Array.from(uniqueSections).map(sectionName => ({
+        id: sectionName,
+        name: sectionName
+      }));
+      
+      setSections(sectionsArray);
+      setMindItems(groupedData);
+      
+      // Set active section to first section if none is selected
+      if (!activeSection && sectionsArray.length > 0) {
+        setActiveSection(sectionsArray[0].id);
+      }
+    } catch (error) {
+      console.error('Error loading mind data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const addItem = () => {
+  useEffect(() => {
+    loadMindData();
+  }, []);
+
+  const addSection = async () => {
+    if (newSectionName.trim()) {
+      try {
+        const newSectionId = newSectionName.trim();
+        // Add a sample item to create the section
+        await window.api.addMind(newSectionId, 'Sample Technique', ['Add your technique steps here']);
+        setNewSectionName('');
+        loadMindData(); // Reload data to update sections
+        setActiveSection(newSectionId); // Set the new section as active
+      } catch (error) {
+        console.error('Error adding section:', error);
+      }
+    }
+  };
+
+  const addItem = async () => {
     if (newItem.name.trim() && newItem.technique[0].trim()) {
-      const filteredTechnique = newItem.technique.filter(step => step.trim());
-      setMindItems({
-        ...mindItems,
-        [activeSection]: [...mindItems[activeSection], { 
-          name: newItem.name.trim(), 
-          technique: filteredTechnique 
-        }]
-      });
-      setNewItem({ name: '', technique: [''] });
+      try {
+        const filteredTechnique = newItem.technique.filter(step => step.trim());
+        await window.api.addMind(activeSection, newItem.name.trim(), filteredTechnique);
+        setNewItem({ name: '', technique: [''] });
+        loadMindData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding mind item:', error);
+      }
     }
   };
 
@@ -51,18 +95,25 @@ export default function Mind() {
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    const newItems = mindItems[activeSection].filter((_, i) => i !== index);
-    setMindItems({...mindItems, [activeSection]: newItems});
+  const handleDelete = async (itemId) => {
+    try {
+      await window.api.deleteMind(itemId);
+      loadMindData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting mind item:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newItems = [...mindItems[editingItem.section]];
-    newItems[editingItem.index] = { ...editingData };
-    setMindItems({...mindItems, [editingItem.section]: newItems});
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ name: '', technique: [''] });
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateMind(editingItem.item.id, activeSection, editingData.name, editingData.technique);
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ name: '', technique: [''] });
+      loadMindData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating mind item:', error);
+    }
   };
 
   const addTechniqueStep = () => {
@@ -97,7 +148,7 @@ export default function Mind() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleItemDrop = (e, dropIndex) => {
+  const handleItemDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === dropIndex) return;
 
@@ -107,8 +158,19 @@ export default function Mind() {
     newItems.splice(draggedItem, 1);
     newItems.splice(dropIndex, 0, draggedItemData);
     
+    // Update local state immediately for smooth UI
     setMindItems({...mindItems, [activeSection]: newItems});
     setDraggedItem(null);
+
+    // Save new order to database
+    try {
+      const newOrder = newItems.map(item => item.id);
+      await window.api.reorderMindItems(activeSection, newOrder);
+    } catch (error) {
+      console.error('Error reordering items:', error);
+      // Reload data to revert to original order if there was an error
+      loadMindData();
+    }
   };
 
   // Section drag and drop functions
@@ -141,6 +203,46 @@ export default function Mind() {
     setSections(newSections);
     setDraggedSection(null);
   };
+
+  if (loading) {
+    return (
+      <div className="text-text flex flex-col h-full">
+        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Mind</h3>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-text-muted">Loading mind data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show message if no sections exist
+  if (sections.length === 0) {
+    return (
+      <div className="text-text flex flex-col h-full">
+        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Mind</h3>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-text-muted mb-4">No mind sections found. Create your first section!</p>
+            <div className="flex gap-2 justify-center">
+              <input 
+                type="text" 
+                placeholder="Section name (e.g., Breathing, Meditation)" 
+                value={newSectionName}
+                onChange={(e) => setNewSectionName(e.target.value)}
+                className="border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+              />
+              <button 
+                onClick={addSection}
+                className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
+              >
+                Create Section
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-text flex flex-col h-full">
@@ -197,7 +299,7 @@ export default function Mind() {
             </div>
             
             {/* Mind Items Rows */}
-            {mindItems[activeSection].map((item, index) => (
+            {(mindItems[activeSection] || []).map((item, index) => (
               <div 
                 key={index} 
                 className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
@@ -323,7 +425,7 @@ export default function Mind() {
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index);
+                    handleDelete(editingItem.item.id);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ name: '', technique: [''] });

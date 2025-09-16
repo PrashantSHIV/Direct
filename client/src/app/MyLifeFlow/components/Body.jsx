@@ -1,34 +1,74 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Body() {
   const [activeTab, setActiveTab] = useState('Exercise');
   
   // Shared exercises data
-  const [categories, setCategories] = useState([
-    { id: 'Stretching', name: 'Stretching' },
-    { id: 'Biceps', name: 'Biceps' },
-    { id: 'Triceps', name: 'Triceps' }
-  ]);
-  const [exercises, setExercises] = useState({
-    'Stretching': [
-      { name: 'Head Move', technique: ['Stand straight', 'Shoulder Up', 'Rotate your head loosely'] }
-    ],
-    'Biceps': [],
-    'Triceps': []
-  });
+  const [categories, setCategories] = useState([]);
+  const [exercises, setExercises] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  // Load exercise data and extract categories
+  const loadExerciseData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getExercise();
+      
+      // Group data by section and extract unique section names
+      const groupedData = {};
+      const uniqueCategories = new Set();
+      
+      data.forEach(item => {
+        if (!groupedData[item.section_name]) {
+          groupedData[item.section_name] = [];
+        }
+        groupedData[item.section_name].push({
+          id: item.id,
+          name: item.technique_name,
+          technique: item.technique_steps
+        });
+        uniqueCategories.add(item.section_name);
+      });
+      
+      // Convert Set to array and create category objects
+      const categoriesArray = Array.from(uniqueCategories).map(categoryName => ({
+        id: categoryName,
+        name: categoryName
+      }));
+      
+      setCategories(categoriesArray);
+      setExercises(groupedData);
+    } catch (error) {
+      console.error('Error loading exercise data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadExerciseData();
+  }, []);
 
   const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="text-text h-full flex items-center justify-center">
+          <p className="text-text-muted">Loading exercise data...</p>
+        </div>
+      );
+    }
+
     switch(activeTab) {
       case 'Exercise':
-        return <Exercise categories={categories} setCategories={setCategories} exercises={exercises} setExercises={setExercises} />;
+        return <Exercise categories={categories} setCategories={setCategories} exercises={exercises} setExercises={setExercises} loadExerciseData={loadExerciseData} />;
       case 'Day Table':
         return <DayTable exercises={exercises} categories={categories} />;
       case 'Diet Table':
         return <DietTable />;
       default:
-        return <Exercise categories={categories} setCategories={setCategories} exercises={exercises} setExercises={setExercises} />;
+        return <Exercise categories={categories} setCategories={setCategories} exercises={exercises} setExercises={setExercises} loadExerciseData={loadExerciseData} />;
     }
   };
 
@@ -71,8 +111,8 @@ export default function Body() {
 }
 
 // Exercise
-function Exercise({ categories, setCategories, exercises, setExercises }){
-  const [activeCategory, setActiveCategory] = useState('Stretching');
+function Exercise({ categories, setCategories, exercises, setExercises, loadExerciseData }){
+  const [activeCategory, setActiveCategory] = useState('');
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newExercise, setNewExercise] = useState({ name: '', technique: [''] });
   const [showEditModal, setShowEditModal] = useState(false);
@@ -81,26 +121,38 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
   const [draggedExercise, setDraggedExercise] = useState(null);
   const [draggedCategory, setDraggedCategory] = useState(null);
 
-  const addCategory = () => {
+  useEffect(() => {
+    // Set active category to first category if none is selected
+    if (!activeCategory && categories.length > 0) {
+      setActiveCategory(categories[0].id);
+    }
+  }, [categories, activeCategory]);
+
+  const addCategory = async () => {
     if (newCategoryName.trim()) {
-      const newId = newCategoryName.trim();
-      setCategories([...categories, { id: newId, name: newCategoryName.trim() }]);
-      setExercises({...exercises, [newId]: []});
-      setNewCategoryName('');
+      try {
+        const newCategoryId = newCategoryName.trim();
+        // Add a sample exercise to create the category
+        await window.api.addExercise(newCategoryId, 'Sample Exercise', ['Add your exercise steps here']);
+        setNewCategoryName('');
+        loadExerciseData(); // Reload data to update categories
+        setActiveCategory(newCategoryId); // Set the new category as active
+      } catch (error) {
+        console.error('Error adding category:', error);
+      }
     }
   };
 
-  const addExercise = () => {
+  const addExercise = async () => {
     if (newExercise.name.trim() && newExercise.technique[0].trim()) {
-      const filteredTechnique = newExercise.technique.filter(step => step.trim());
-      setExercises({
-        ...exercises,
-        [activeCategory]: [...exercises[activeCategory], { 
-          name: newExercise.name.trim(), 
-          technique: filteredTechnique 
-        }]
-      });
-      setNewExercise({ name: '', technique: [''] });
+      try {
+        const filteredTechnique = newExercise.technique.filter(step => step.trim());
+        await window.api.addExercise(activeCategory, newExercise.name.trim(), filteredTechnique);
+        setNewExercise({ name: '', technique: [''] });
+        loadExerciseData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding exercise:', error);
+      }
     }
   };
 
@@ -110,18 +162,25 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    const newExercises = exercises[activeCategory].filter((_, i) => i !== index);
-    setExercises({...exercises, [activeCategory]: newExercises});
+  const handleDelete = async (itemId) => {
+    try {
+      await window.api.deleteExercise(itemId);
+      loadExerciseData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting exercise:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newExercises = [...exercises[editingItem.category]];
-    newExercises[editingItem.index] = { ...editingData };
-    setExercises({...exercises, [editingItem.category]: newExercises});
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ name: '', technique: [''] });
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateExercise(editingItem.exercise.id, activeCategory, editingData.name, editingData.technique);
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ name: '', technique: [''] });
+      loadExerciseData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating exercise:', error);
+    }
   };
 
   const addTechniqueStep = () => {
@@ -156,18 +215,29 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleExerciseDrop = (e, dropIndex) => {
+  const handleExerciseDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedExercise === null || draggedExercise === dropIndex) return;
 
-    const newExercises = [...exercises[activeCategory]];
+    const newExercises = [...(exercises[activeCategory] || [])];
     const draggedExerciseData = newExercises[draggedExercise];
     
     newExercises.splice(draggedExercise, 1);
     newExercises.splice(dropIndex, 0, draggedExerciseData);
     
+    // Update local state immediately for smooth UI
     setExercises({...exercises, [activeCategory]: newExercises});
     setDraggedExercise(null);
+
+    // Save new order to database
+    try {
+      const newOrder = newExercises.map(exercise => exercise.id);
+      await window.api.reorderExercise(activeCategory, newOrder);
+    } catch (error) {
+      console.error('Error reordering exercises:', error);
+      // Reload data to revert to original order if there was an error
+      loadExerciseData();
+    }
   };
 
   // Category drag and drop functions
@@ -200,6 +270,33 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
     setCategories(newCategories);
     setDraggedCategory(null);
   };
+
+
+  // Show message if no categories exist
+  if (categories.length === 0) {
+    return (
+      <div className="text-text h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-text-muted mb-4">No exercise categories found. Create your first category!</p>
+          <div className="flex gap-2 justify-center">
+            <input 
+              type="text" 
+              placeholder="Category name (e.g., Stretching, Cardio)" 
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              className="border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+            />
+            <button 
+              onClick={addCategory}
+              className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
+            >
+              Create Category
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-text h-full grid grid-cols-[240px_1fr]">
@@ -256,7 +353,7 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
           </div>
           
           {/* Exercise Rows */}
-          {exercises[activeCategory].map((exercise, index) => (
+          {(exercises[activeCategory] || []).map((exercise, index) => (
             <div 
               key={index} 
               className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
@@ -381,7 +478,7 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index);
+                    handleDelete(editingItem.exercise.id);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ name: '', technique: [''] });
@@ -409,17 +506,8 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
 // DayTable
 function DayTable({ exercises, categories }){
   const [activeDay, setActiveDay] = useState('Monday');
-  const [dayExercises, setDayExercises] = useState({
-    'Monday': [
-      { name: 'Biceps Curl', reps: '18, 15, 12', setsDuration: '3 Sets' }
-    ],
-    'Tuesday': [],
-    'Wednesday': [],
-    'Thursday': [],
-    'Friday': [],
-    'Saturday': [],
-    'Sunday': []
-  });
+  const [dayExercises, setDayExercises] = useState({});
+  const [loading, setLoading] = useState(true);
   const [newExercise, setNewExercise] = useState({ name: '', reps: '', setsDuration: '' });
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -427,6 +515,41 @@ function DayTable({ exercises, categories }){
   const [draggedExercise, setDraggedExercise] = useState(null);
   
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  // Load data from database
+  const loadDayTableData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getDayTable();
+      
+      // Group data by day
+      const groupedData = {};
+      days.forEach(day => {
+        groupedData[day] = [];
+      });
+      
+      data.forEach(item => {
+        if (groupedData[item.day]) {
+          groupedData[item.day].push({
+            id: item.id,
+            name: item.exercise_name,
+            reps: item.reps,
+            setsDuration: item.sets
+          });
+        }
+      });
+      
+      setDayExercises(groupedData);
+    } catch (error) {
+      console.error('Error loading day table data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDayTableData();
+  }, []);
 
   // Get all available exercises from all categories
   const getAllExercises = () => {
@@ -439,13 +562,15 @@ function DayTable({ exercises, categories }){
     return allExercises;
   };
 
-  const addExercise = () => {
+  const addExercise = async () => {
     if (newExercise.name && newExercise.reps && newExercise.setsDuration) {
-      setDayExercises({
-        ...dayExercises,
-        [activeDay]: [...dayExercises[activeDay], { ...newExercise }]
-      });
-      setNewExercise({ name: '', reps: '', setsDuration: '' });
+      try {
+        await window.api.addDayTable(activeDay, newExercise.reps, newExercise.setsDuration, newExercise.name);
+        setNewExercise({ name: '', reps: '', setsDuration: '' });
+        loadDayTableData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding day table exercise:', error);
+      }
     }
   };
 
@@ -455,18 +580,25 @@ function DayTable({ exercises, categories }){
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    const newExercises = dayExercises[activeDay].filter((_, i) => i !== index);
-    setDayExercises({...dayExercises, [activeDay]: newExercises});
+  const handleDelete = async (itemId) => {
+    try {
+      await window.api.deleteDayTable(itemId);
+      loadDayTableData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting day table exercise:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newExercises = [...dayExercises[editingItem.day]];
-    newExercises[editingItem.index] = { ...editingData };
-    setDayExercises({...dayExercises, [editingItem.day]: newExercises});
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ name: '', reps: '', setsDuration: '' });
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateDayTable(editingItem.exercise.id, activeDay, editingData.reps, editingData.setsDuration, editingData.name);
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ name: '', reps: '', setsDuration: '' });
+      loadDayTableData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating day table exercise:', error);
+    }
   };
 
   // Drag and drop functions
@@ -486,19 +618,38 @@ function DayTable({ exercises, categories }){
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleExerciseDrop = (e, dropIndex) => {
+  const handleExerciseDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedExercise === null || draggedExercise === dropIndex) return;
 
-    const newExercises = [...dayExercises[activeDay]];
+    const newExercises = [...(dayExercises[activeDay] || [])];
     const draggedExerciseData = newExercises[draggedExercise];
     
     newExercises.splice(draggedExercise, 1);
     newExercises.splice(dropIndex, 0, draggedExerciseData);
     
+    // Update local state immediately for smooth UI
     setDayExercises({...dayExercises, [activeDay]: newExercises});
     setDraggedExercise(null);
+
+    // Save new order to database
+    try {
+      const newOrder = newExercises.map(exercise => exercise.id);
+      await window.api.reorderDayTable(activeDay, newOrder);
+    } catch (error) {
+      console.error('Error reordering day table exercises:', error);
+      // Reload data to revert to original order if there was an error
+      loadDayTableData();
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="text-white h-full flex items-center justify-center">
+        <p className="text-gray-400">Loading day table data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-white h-full grid grid-cols-[240px_1fr]">
@@ -529,7 +680,7 @@ function DayTable({ exercises, categories }){
           </div>
           
           {/* Exercise Rows */}
-          {dayExercises[activeDay].map((exercise, index) => (
+          {(dayExercises[activeDay] || []).map((exercise, index) => (
             <div 
               key={index} 
               className="grid grid-cols-3 border-b border-white group hover:bg-gray-400 cursor-pointer"
@@ -645,7 +796,7 @@ function DayTable({ exercises, categories }){
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index);
+                    handleDelete(editingItem.exercise.id);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ name: '', reps: '', setsDuration: '' });
@@ -672,18 +823,9 @@ function DayTable({ exercises, categories }){
 function DietTable(){
   const [activeSelection, setActiveSelection] = useState('Diets');
   const [activeDay, setActiveDay] = useState('Monday');
-  const [dietItems, setDietItems] = useState([
-    { item: 'Banana', benefits: 'High potassium' }
-  ]);
-  const [dayItems, setDayItems] = useState({
-    'Monday': [],
-    'Tuesday': [],
-    'Wednesday': [],
-    'Thursday': [],
-    'Friday': [],
-    'Saturday': [],
-    'Sunday': []
-  });
+  const [dietItems, setDietItems] = useState([]);
+  const [dayItems, setDayItems] = useState({});
+  const [loading, setLoading] = useState(true);
   const [newDietItem, setNewDietItem] = useState({ item: '', benefits: '' });
   const [newDayItem, setNewDayItem] = useState({ item: '', quantity: '' });
   const [showEditModal, setShowEditModal] = useState(false);
@@ -692,6 +834,52 @@ function DietTable(){
   const [draggedItem, setDraggedItem] = useState(null);
   
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  // Load data from database
+  const loadDietData = async () => {
+    try {
+      setLoading(true);
+      const [dietData, dailyDietData] = await Promise.all([
+        window.api.getDietTable(),
+        window.api.getDailyDietTable()
+      ]);
+      
+      
+      // Process diet items
+      const processedDietItems = dietData.map(item => ({
+        id: item.id,
+        item: item.name,
+        benefits: item.benefits
+      }));
+      setDietItems(processedDietItems);
+      
+      // Process daily diet items by day
+      const groupedDayItems = {};
+      days.forEach(day => {
+        groupedDayItems[day] = [];
+      });
+      
+      dailyDietData.forEach(item => {
+        if (groupedDayItems[item.day]) {
+          groupedDayItems[item.day].push({
+            id: item.id,
+            item: item.diet_name,
+            quantity: item.quantity
+          });
+        }
+      });
+      
+      setDayItems(groupedDayItems);
+    } catch (error) {
+      console.error('Error loading diet data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDietData();
+  }, []);
 
   const handleDietsClick = () => {
     setActiveSelection('Diets');
@@ -702,20 +890,27 @@ function DietTable(){
     setActiveDay(day);
   };
 
-  const addDietItem = () => {
+  const addDietItem = async () => {
     if (newDietItem.item && newDietItem.benefits) {
-      setDietItems([...dietItems, { ...newDietItem }]);
-      setNewDietItem({ item: '', benefits: '' });
+      try {
+        await window.api.addDietTable(newDietItem.item, newDietItem.benefits);
+        setNewDietItem({ item: '', benefits: '' });
+        loadDietData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding diet item:', error);
+      }
     }
   };
 
-  const addDayItem = () => {
+  const addDayItem = async () => {
     if (newDayItem.item && newDayItem.quantity) {
-      setDayItems({
-        ...dayItems,
-        [activeDay]: [...dayItems[activeDay], { ...newDayItem }]
-      });
-      setNewDayItem({ item: '', quantity: '' });
+      try {
+        await window.api.addDailyDietTable(activeDay, newDayItem.item, newDayItem.quantity);
+        setNewDayItem({ item: '', quantity: '' });
+        loadDietData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding daily diet item:', error);
+      }
     }
   };
 
@@ -725,28 +920,33 @@ function DietTable(){
     setShowEditModal(true);
   };
 
-  const handleDelete = (index, type) => {
-    if (type === 'diet') {
-      setDietItems(dietItems.filter((_, i) => i !== index));
-    } else {
-      const newItems = dayItems[activeDay].filter((_, i) => i !== index);
-      setDayItems({...dayItems, [activeDay]: newItems});
+  const handleDelete = async (itemId, type) => {
+    try {
+      if (type === 'diet') {
+        await window.api.deleteDietTable(itemId);
+      } else {
+        await window.api.deleteDailyDietTable(itemId);
+      }
+      loadDietData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting item:', error);
     }
   };
 
-  const handleSaveEdit = () => {
-    if (editingItem.type === 'diet') {
-      const newItems = [...dietItems];
-      newItems[editingItem.index] = { ...editingData };
-      setDietItems(newItems);
-    } else {
-      const newItems = [...dayItems[editingItem.day]];
-      newItems[editingItem.index] = { ...editingData };
-      setDayItems({...dayItems, [editingItem.day]: newItems});
+  const handleSaveEdit = async () => {
+    try {
+      if (editingItem.type === 'diet') {
+        await window.api.updateDietTable(editingItem.item.id, editingData.item, editingData.benefits);
+      } else {
+        await window.api.updateDailyDietTable(editingItem.item.id, activeDay, editingData.item, editingData.quantity);
+      }
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ item: '', benefits: '', quantity: '' });
+      loadDietData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating item:', error);
     }
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ item: '', benefits: '', quantity: '' });
   };
 
   // Drag and drop functions
@@ -766,24 +966,49 @@ function DietTable(){
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === dropIndex) return;
 
     if (activeSelection === 'Diets') {
-      const newItems = [...dietItems];
+      const newItems = [...(dietItems || [])];
       const draggedItemData = newItems[draggedItem];
       newItems.splice(draggedItem, 1);
       newItems.splice(dropIndex, 0, draggedItemData);
+      
+      // Update local state immediately for smooth UI
       setDietItems(newItems);
+      setDraggedItem(null);
+
+      // Save new order to database
+      try {
+        const newOrder = newItems.map(item => item.id);
+        await window.api.reorderDietTable(newOrder);
+      } catch (error) {
+        console.error('Error reordering diet items:', error);
+        // Reload data to revert to original order if there was an error
+        loadDietData();
+      }
     } else {
-      const newItems = [...dayItems[activeDay]];
+      const newItems = [...(dayItems[activeDay] || [])];
       const draggedItemData = newItems[draggedItem];
       newItems.splice(draggedItem, 1);
       newItems.splice(dropIndex, 0, draggedItemData);
+      
+      // Update local state immediately for smooth UI
       setDayItems({...dayItems, [activeDay]: newItems});
+      setDraggedItem(null);
+
+      // Save new order to database
+      try {
+        const newOrder = newItems.map(item => item.id);
+        await window.api.reorderDailyDietTable(activeDay, newOrder);
+      } catch (error) {
+        console.error('Error reordering daily diet items:', error);
+        // Reload data to revert to original order if there was an error
+        loadDietData();
+      }
     }
-    setDraggedItem(null);
   };
 
   const renderContent = () => {
@@ -796,7 +1021,7 @@ function DietTable(){
           </div>
           
           {/* Diet Items Rows */}
-          {dietItems.map((item, index) => (
+          {(dietItems || []).map((item, index) => (
             <div 
               key={index} 
               className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
@@ -852,7 +1077,7 @@ function DietTable(){
           </div>
           
           {/* Day Items Rows */}
-          {dayItems[activeDay].map((item, index) => (
+          {(dayItems[activeDay] || []).map((item, index) => (
             <div 
               key={index} 
               className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
@@ -877,7 +1102,7 @@ function DietTable(){
                 className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
               >
                 <option value="">Select Diet Item</option>
-                {dietItems.map((dietItem, index) => (
+                {(dietItems || []).map((dietItem, index) => (
                   <option key={index} value={dietItem.item} className="bg-gray-800">
                     {dietItem.item}
                   </option>
@@ -905,6 +1130,14 @@ function DietTable(){
       );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="text-white h-full flex items-center justify-center">
+        <p className="text-gray-400">Loading diet data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-white h-full grid grid-cols-[240px_1fr]">
@@ -949,21 +1182,33 @@ function DietTable(){
             </h3>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm mb-1">Item:</label>
-                <select
-                  value={editingData.item}
-                  onChange={(e) => setEditingData({...editingData, item: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
-                >
-                  <option value="">Select Diet Item</option>
-                  {dietItems.map((dietItem, index) => (
-                    <option key={index} value={dietItem.item} className="bg-gray-800">
-                      {dietItem.item} - {dietItem.benefits}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {editingItem?.type === 'diet' ? (
+                <div>
+                  <label className="block text-sm mb-1">Item:</label>
+                  <input
+                    type="text"
+                    value={editingData.item}
+                    onChange={(e) => setEditingData({...editingData, item: e.target.value})}
+                    className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm mb-1">Item:</label>
+                  <select
+                    value={editingData.item}
+                    onChange={(e) => setEditingData({...editingData, item: e.target.value})}
+                    className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  >
+                    <option value="">Select Diet Item</option>
+                    {(dietItems || []).map((dietItem, index) => (
+                      <option key={index} value={dietItem.item} className="bg-gray-800">
+                        {dietItem.item} - {dietItem.benefits}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               
               {editingItem?.type === 'diet' ? (
                 <div>
@@ -998,7 +1243,7 @@ function DietTable(){
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index, editingItem.type);
+                    handleDelete(editingItem.item.id, editingItem.type);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ item: '', benefits: '', quantity: '' });

@@ -19,11 +19,7 @@ export default function TimeTable() {
     try {
       setLoading(true);
       const data = await window.api.getTimetable();
-      
-      console.log('Database response:', data);
-      console.log('Data type:', typeof data);
-      console.log('Is array:', Array.isArray(data));
-      
+
       // Ensure data is an array
       const dataArray = Array.isArray(data) ? data : [];
       

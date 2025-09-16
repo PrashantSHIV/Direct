@@ -1,18 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function TasksNext24Hours() {
-  const [activeTasks, setActiveTasks] = useState([
-    { task: 'Complete project proposal', createdAt: new Date() },
-    { task: 'Review team feedback', createdAt: new Date() },
-    { task: 'Prepare presentation', createdAt: new Date() }
-  ]);
-  const [completedTasks, setCompletedTasks] = useState([
-    { task: 'Send email to client', createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), status: 'completed' },
-    { task: 'Update documentation', createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), status: 'completed' },
-    { task: 'Fix bug in login', createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000), status: 'failed' }
-  ]);
+  const [activeTasks, setActiveTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [newTask, setNewTask] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -20,13 +13,54 @@ export default function TasksNext24Hours() {
   const [draggedTask, setDraggedTask] = useState(null);
   const [statusFilter, setStatusFilter] = useState('completed');
 
-  const addTask = () => {
+  // Load data from database
+  const loadTasksData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getTask();
+      console.log('Tasks data loaded:', data);
+      
+      // Separate active and completed tasks
+      const active = [];
+      const completed = [];
+      
+      data.forEach(item => {
+        const taskData = {
+          id: item.id,
+          task: item.task,
+          createdAt: new Date(item.created_at || Date.now()),
+          status: item.status || 'active'
+        };
+        
+        if (item.status === 'completed' || item.status === 'failed') {
+          completed.push(taskData);
+        } else {
+          active.push(taskData);
+        }
+      });
+      
+      setActiveTasks(active);
+      setCompletedTasks(completed);
+    } catch (error) {
+      console.error('Error loading tasks data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTasksData();
+  }, []);
+
+  const addTask = async () => {
     if (newTask.trim()) {
-      setActiveTasks([...activeTasks, { 
-        task: newTask.trim(), 
-        createdAt: new Date() 
-      }]);
-      setNewTask('');
+      try {
+        await window.api.addTask(newTask.trim());
+        setNewTask('');
+        loadTasksData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding task:', error);
+      }
     }
   };
 
@@ -36,32 +70,49 @@ export default function TasksNext24Hours() {
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    const newTasks = activeTasks.filter((_, i) => i !== index);
-    setActiveTasks(newTasks);
+  const handleDelete = async (taskId) => {
+    try {
+      await window.api.deleteTask(taskId);
+      loadTasksData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newTasks = [...activeTasks];
-    newTasks[editingTask.index] = { ...newTasks[editingTask.index], task: editingData };
-    setActiveTasks(newTasks);
-    setShowEditModal(false);
-    setEditingTask(null);
-    setEditingData('');
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateTask(editingTask.task.id, editingData);
+      setShowEditModal(false);
+      setEditingTask(null);
+      setEditingData('');
+      loadTasksData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
   };
 
-  const markAsCompleted = (index) => {
-    const task = activeTasks[index];
-    const newCompletedTask = { ...task, status: 'completed' };
-    setCompletedTasks([newCompletedTask, ...completedTasks]);
-    handleDelete(index);
+  const markAsCompleted = async (taskId) => {
+    try {
+      const task = activeTasks.find(t => t.id === taskId);
+      if (task) {
+        await window.api.updateTask(taskId, task.task, 'completed');
+        loadTasksData(); // Reload data from database
+      }
+    } catch (error) {
+      console.error('Error marking task as completed:', error);
+    }
   };
 
-  const markAsFailed = (index) => {
-    const task = activeTasks[index];
-    const newFailedTask = { ...task, status: 'failed' };
-    setCompletedTasks([newFailedTask, ...completedTasks]);
-    handleDelete(index);
+  const markAsFailed = async (taskId) => {
+    try {
+      const task = activeTasks.find(t => t.id === taskId);
+      if (task) {
+        await window.api.updateTask(taskId, task.task, 'failed');
+        loadTasksData(); // Reload data from database
+      }
+    } catch (error) {
+      console.error('Error marking task as failed:', error);
+    }
   };
 
   // Drag and drop functions
@@ -81,18 +132,30 @@ export default function TasksNext24Hours() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedTask === null || draggedTask === dropIndex) return;
 
-    const newTasks = [...activeTasks];
+    const newTasks = [...(activeTasks || [])];
     const draggedTaskData = newTasks[draggedTask];
     
     newTasks.splice(draggedTask, 1);
     newTasks.splice(dropIndex, 0, draggedTaskData);
     
+    // Update local state immediately for smooth UI
     setActiveTasks(newTasks);
     setDraggedTask(null);
+
+    // Save new order to database
+    try {
+      const newOrder = newTasks.map(task => task.id);
+      await window.api.reorderTasks(newOrder);
+      console.log('Tasks reordered successfully');
+    } catch (error) {
+      console.error('Error reordering tasks:', error);
+      // Reload data to revert to original order if there was an error
+      loadTasksData();
+    }
   };
 
   const getFilteredTasks = () => {
@@ -104,6 +167,14 @@ export default function TasksNext24Hours() {
       return taskDate >= twentyFourHoursAgo && task.status === statusFilter;
     });
   };
+
+  if (loading) {
+    return (
+      <div className="text-text h-full flex items-center justify-center">
+        <p className="text-text-muted">Loading tasks data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-text">
@@ -151,7 +222,7 @@ export default function TasksNext24Hours() {
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          markAsCompleted(index);
+                          markAsCompleted(task.id);
                         }}
                         className="text-success hover:text-success/80 text-xs px-3 py-1 border border-success rounded-lg hover:bg-success/10 transition-all duration-200"
                         title="Mark as Completed"
@@ -161,7 +232,7 @@ export default function TasksNext24Hours() {
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          markAsFailed(index);
+                          markAsFailed(task.id);
                         }}
                         className="text-danger hover:text-danger/80 text-xs px-3 py-1 border border-danger rounded-lg hover:bg-danger/10 transition-all duration-200"
                         title="Mark as Failed"
@@ -255,7 +326,7 @@ export default function TasksNext24Hours() {
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingTask.index);
+                    handleDelete(editingTask.task.id);
                     setShowEditModal(false);
                     setEditingTask(null);
                     setEditingData('');

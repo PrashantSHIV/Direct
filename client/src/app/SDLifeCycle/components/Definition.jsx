@@ -1,25 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Definition() {
-  const [qaItems, setQaItems] = useState([
-    { title: 'What is Software?', explanation: 'Software is a set of instructions, data or programs used to operate computers and execute specific tasks. It is the opposite of hardware, which describes the physical aspects of a computer.' },
-    { title: 'What is Software Development?', explanation: 'Software development is the process of designing, creating, testing, and maintaining software applications or systems to meet specific needs or solve problems.' }
-  ]);
+  const [qaItems, setQaItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [newItem, setNewItem] = useState({ title: '', explanation: '' });
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [editingData, setEditingData] = useState({ title: '', explanation: '' });
   const [draggedItem, setDraggedItem] = useState(null);
 
-  const addItem = () => {
+  // Load data from database
+  const loadDefinitionsData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getDefinitions();
+      console.log('Definitions data loaded:', data);
+      
+      // Map data to component structure
+      const mappedData = data.map(item => ({
+        id: item.id,
+        title: item.title,
+        explanation: item.explanation
+      }));
+      
+      setQaItems(mappedData);
+    } catch (error) {
+      console.error('Error loading definitions data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDefinitionsData();
+  }, []);
+
+  const addItem = async () => {
     if (newItem.title.trim() && newItem.explanation.trim()) {
-      setQaItems([...qaItems, { 
-        title: newItem.title.trim(), 
-        explanation: newItem.explanation.trim() 
-      }]);
-      setNewItem({ title: '', explanation: '' });
+      try {
+        await window.api.addDefinition(newItem.title.trim(), newItem.explanation.trim());
+        setNewItem({ title: '', explanation: '' });
+        loadDefinitionsData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding definition:', error);
+      }
     }
   };
 
@@ -29,18 +55,25 @@ export default function Definition() {
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    const newItems = qaItems.filter((_, i) => i !== index);
-    setQaItems(newItems);
+  const handleDelete = async (itemId) => {
+    try {
+      await window.api.deleteDefinition(itemId);
+      loadDefinitionsData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting definition:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newItems = [...qaItems];
-    newItems[editingItem.index] = { ...editingData };
-    setQaItems(newItems);
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ title: '', explanation: '' });
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateDefinition(editingItem.item.id, editingData.title, editingData.explanation);
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ title: '', explanation: '' });
+      loadDefinitionsData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating definition:', error);
+    }
   };
 
   // Drag and drop functions
@@ -60,7 +93,7 @@ export default function Definition() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === dropIndex) return;
 
@@ -72,7 +105,24 @@ export default function Definition() {
     
     setQaItems(newItems);
     setDraggedItem(null);
+
+    // Save new order to database
+    try {
+      await window.api.reorderDefinitions(newItems);
+    } catch (error) {
+      console.error('Error reordering definitions:', error);
+      // Reload data from database to revert changes
+      loadDefinitionsData();
+    }
   };
+  if (loading) {
+    return (
+      <div className="text-text h-full flex items-center justify-center">
+        <p className="text-text-muted">Loading definitions data...</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="space-y-4 mb-6">
@@ -96,7 +146,7 @@ export default function Definition() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(index);
+                    handleDelete(item.id);
                   }}
                   className="text-danger hover:text-danger/80 text-xs px-3 py-1 border border-danger rounded-lg hover:bg-danger/10 transition-all duration-200"
                   title="Delete"
@@ -176,7 +226,7 @@ export default function Definition() {
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index);
+                    handleDelete(editingItem.item.id);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ title: '', explanation: '' });

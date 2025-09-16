@@ -1,24 +1,50 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Remember() {
-  const [rememberItems, setRememberItems] = useState([
-    { what: 'Never Give Up', why: 'Bcoz giving up never be option' }
-  ]);
+  const [rememberItems, setRememberItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [newItem, setNewItem] = useState({ what: '', why: '' });
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [editingData, setEditingData] = useState({ what: '', why: '' });
   const [draggedItem, setDraggedItem] = useState(null);
 
-  const addItem = () => {
+  // Load data from database
+  const loadRememberData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getRemember();
+      
+      // Map database data to component structure
+      const mappedItems = data.map(item => ({
+        id: item.id,
+        what: item.what,
+        why: item.why
+      }));
+      
+      setRememberItems(mappedItems);
+    } catch (error) {
+      console.error('Error loading remember data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRememberData();
+  }, []);
+
+  const addItem = async () => {
     if (newItem.what.trim() && newItem.why.trim()) {
-      setRememberItems([...rememberItems, { 
-        what: newItem.what.trim(), 
-        why: newItem.why.trim() 
-      }]);
-      setNewItem({ what: '', why: '' });
+      try {
+        await window.api.addRemember(newItem.what.trim(), newItem.why.trim());
+        setNewItem({ what: '', why: '' });
+        loadRememberData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding remember item:', error);
+      }
     }
   };
 
@@ -28,18 +54,25 @@ export default function Remember() {
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    const newItems = rememberItems.filter((_, i) => i !== index);
-    setRememberItems(newItems);
+  const handleDelete = async (itemId) => {
+    try {
+      await window.api.deleteRemember(itemId);
+      loadRememberData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting remember item:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newItems = [...rememberItems];
-    newItems[editingItem.index] = { ...editingData };
-    setRememberItems(newItems);
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ what: '', why: '' });
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateRemember(editingItem.item.id, editingData.what, editingData.why);
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ what: '', why: '' });
+      loadRememberData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating remember item:', error);
+    }
   };
 
   // Drag and drop functions
@@ -59,19 +92,41 @@ export default function Remember() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === dropIndex) return;
 
-    const newItems = [...rememberItems];
+    const newItems = [...(rememberItems || [])];
     const draggedItemData = newItems[draggedItem];
     
     newItems.splice(draggedItem, 1);
     newItems.splice(dropIndex, 0, draggedItemData);
     
+    // Update local state immediately for smooth UI
     setRememberItems(newItems);
     setDraggedItem(null);
+
+    // Save new order to database
+    try {
+      const newOrder = newItems.map(item => item.id);
+      await window.api.reorderRemember(newOrder);
+    } catch (error) {
+      console.error('Error reordering remember items:', error);
+      // Reload data to revert to original order if there was an error
+      loadRememberData();
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="text-text">
+        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Remember</h3>
+        <div className="flex-1 flex items-center justify-center p-6">
+          <p className="text-text-muted">Loading remember data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-text">
@@ -85,7 +140,7 @@ export default function Remember() {
           </div>
           
           {/* Remember Items Rows */}
-          {rememberItems.map((item, index) => (
+          {(rememberItems || []).map((item, index) => (
             <div 
               key={index} 
               className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
@@ -170,7 +225,7 @@ export default function Remember() {
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index);
+                    handleDelete(editingItem.item.id);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ what: '', why: '' });

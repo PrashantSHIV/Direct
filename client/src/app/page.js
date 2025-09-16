@@ -6,6 +6,7 @@ import MyLifeFlow from '@/app/MyLifeFlow/page';
 import SDLifeCycle from '@/app/SDLifeCycle/page';
 import Applications from '@/app/Application\'s/page';
 import TasksNext24Hours from '@/app/TasksNext24Hours/page';
+import Subjects from '@/app/Subjects/page';
 
 export default function Home() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function Home() {
   // Set active page based on query parameter on component mount and when searchParams change
   useEffect(() => {
     const pageParam = searchParams.get('page');
-    if (pageParam && ['MyLifeFlow', 'SDLifeCycle', 'Applications', 'TasksNext24Hours'].includes(pageParam)) {
+    if (pageParam && ['MyLifeFlow', 'SDLifeCycle', 'Applications', 'TasksNext24Hours', 'Subjects'].includes(pageParam)) {
       setActivePage(pageParam);
     } else if (!pageParam) {
       // If no page parameter, redirect to MyLifeFlow with query parameter
@@ -30,6 +31,7 @@ export default function Home() {
     { id: 'MyLifeFlow', name: 'My Life Flow' },
     { id: 'SDLifeCycle', name: 'SD Life Cycle' },
     { id: 'Applications', name: 'Applications' },
+    { id: 'Subjects', name: 'Subjects' },
     { id: 'TasksNext24Hours', name: 'Tasks Next 24 Hours' }
   ];
 
@@ -41,6 +43,8 @@ export default function Home() {
         return <SDLifeCycle />;
       case 'Applications':
         return <Applications />;
+      case 'Subjects':
+        return <Subjects />;
       case 'TasksNext24Hours':
         return <TasksNext24Hours />;
       default:

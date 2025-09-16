@@ -1,16 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Goals() {
-  const initialGoals = [
-    { goal: "Never Give Up", reason: "Bcoz giving up never be option", duration: "As long As I am on Earth" }
-  ];
-
-  const [goals, setGoals] = useState(initialGoals);
+  const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [editingData, setEditingData] = useState({ goal: '', reason: '', duration: '' });
   const [newGoal, setNewGoal] = useState({ goal: '', reason: '', duration: '' });
   const [draggedItem, setDraggedItem] = useState(null);
+
+  // Load data from database
+  const loadGoalsData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getGoals();
+      
+      // Map database data to component structure
+      const mappedGoals = data.map(item => ({
+        id: item.id,
+        goal: item.goal,
+        reason: item.reason,
+        duration: item.duration
+      }));
+      
+      setGoals(mappedGoals);
+    } catch (error) {
+      console.error('Error loading goals data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadGoalsData();
+  }, []);
 
   const handleEdit = (item, index) => {
     setEditingItem({ item, index });
@@ -18,23 +41,36 @@ export default function Goals() {
     setShowEditModal(true);
   };
 
-  const handleDelete = (index) => {
-    setGoals(goals.filter((_, i) => i !== index));
+  const handleDelete = async (itemId) => {
+    try {
+      await window.api.deleteGoals(itemId);
+      loadGoalsData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting goal:', error);
+    }
   };
 
-  const handleSaveEdit = () => {
-    const newData = [...goals];
-    newData[editingItem.index] = { ...editingData };
-    setGoals(newData);
-    setShowEditModal(false);
-    setEditingItem(null);
-    setEditingData({ goal: '', reason: '', duration: '' });
+  const handleSaveEdit = async () => {
+    try {
+      await window.api.updateGoals(editingItem.item.id, editingData.goal, editingData.reason, editingData.duration);
+      setShowEditModal(false);
+      setEditingItem(null);
+      setEditingData({ goal: '', reason: '', duration: '' });
+      loadGoalsData(); // Reload data from database
+    } catch (error) {
+      console.error('Error updating goal:', error);
+    }
   };
 
-  const handleAddNew = () => {
+  const handleAddNew = async () => {
     if (newGoal.goal && newGoal.reason && newGoal.duration) {
-      setGoals([...goals, { ...newGoal }]);
-      setNewGoal({ goal: '', reason: '', duration: '' });
+      try {
+        await window.api.addGoals(newGoal.goal, newGoal.reason, newGoal.duration);
+        setNewGoal({ goal: '', reason: '', duration: '' });
+        loadGoalsData(); // Reload data from database
+      } catch (error) {
+        console.error('Error adding goal:', error);
+      }
     }
   };
 
@@ -55,11 +91,11 @@ export default function Goals() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = async (e, dropIndex) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === dropIndex) return;
 
-    const newGoals = [...goals];
+    const newGoals = [...(goals || [])];
     const draggedGoal = newGoals[draggedItem];
     
     // Remove dragged item
@@ -68,9 +104,31 @@ export default function Goals() {
     // Insert at new position
     newGoals.splice(dropIndex, 0, draggedGoal);
     
+    // Update local state immediately for smooth UI
     setGoals(newGoals);
     setDraggedItem(null);
+
+    // Save new order to database
+    try {
+      const newOrder = newGoals.map(goal => goal.id);
+      await window.api.reorderGoals(newOrder);
+    } catch (error) {
+      console.error('Error reordering goals:', error);
+      // Reload data to revert to original order if there was an error
+      loadGoalsData();
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="text-text">
+        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Goals</h3>
+        <div className="flex-1 flex items-center justify-center p-6">
+          <p className="text-text-muted">Loading goals data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-text">
@@ -86,7 +144,7 @@ export default function Goals() {
           </div>
           
           {/* Data Rows */}
-          {goals.map((goal, index) => (
+          {(goals || []).map((goal, index) => (
             <div 
               key={index} 
               className="grid grid-cols-3 border-b border-border-soft group hover:bg-elev-3 relative cursor-move transition-all duration-200"
@@ -193,7 +251,7 @@ export default function Goals() {
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(editingItem.index);
+                    handleDelete(editingItem.item.id);
                     setShowEditModal(false);
                     setEditingItem(null);
                     setEditingData({ goal: '', reason: '', duration: '' });

@@ -1,85 +1,16 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Projects() {
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      name: 'E-commerce Platform',
-      date: new Date('2025-01-15'),
-      insight: 'Full-stack web application for online shopping',
-      owner: 'John Doe',
-      ownerWork: 'Senior Developer',
-      creator: ['John Doe', 'Jane Smith'],
-      githubLink: 'https://github.com/johndoe/ecommerce',
-      projectLink: 'https://ecommerce-demo.com',
-      documentsLink: [
-        { name: 'Requirements', src: 'https://docs.com/req' },
-        { name: 'Design', src: 'https://docs.com/design' }
-      ],
-      startDate: new Date('2025-01-01'),
-      endDate: new Date('2025-06-30'),
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'Mobile Banking App',
-      date: new Date('2025-02-20'),
-      insight: 'Cross-platform mobile application for banking services',
-      owner: 'Alice Johnson',
-      ownerWork: 'Mobile Developer',
-      creator: ['Alice Johnson'],
-      githubLink: 'https://github.com/alice/banking-app',
-      projectLink: '',
-      documentsLink: [
-        { name: 'API Docs', src: 'https://docs.com/api' }
-      ],
-      startDate: new Date('2025-02-01'),
-      endDate: new Date('2025-08-31'),
-      status: 'completed'
-    },
-    {
-      id: 3,
-      name: 'Task Management System',
-      date: new Date('2025-03-10'),
-      insight: 'Web application for managing team tasks and projects',
-      owner: 'Bob Wilson',
-      ownerWork: 'Full Stack Developer',
-      creator: ['Bob Wilson', 'Carol Davis'],
-      githubLink: 'https://github.com/bob/task-manager',
-      projectLink: 'https://taskmanager-demo.com',
-      documentsLink: [
-        { name: 'User Guide', src: 'https://docs.com/user-guide' }
-      ],
-      startDate: new Date('2025-03-01'),
-      endDate: new Date('2025-12-31'),
-      status: 'active'
-    },
-    {
-      id: 4,
-      name: 'AI Chatbot Project',
-      date: new Date('2025-01-20'),
-      insight: 'Intelligent chatbot for customer support',
-      owner: 'Sarah Chen',
-      ownerWork: 'AI Engineer',
-      creator: ['Sarah Chen', 'Mike Johnson'],
-      githubLink: 'https://github.com/sarah/ai-chatbot',
-      projectLink: 'https://chatbot-demo.com',
-      documentsLink: [
-        { name: 'Technical Specs', src: 'https://docs.com/tech-specs' },
-        { name: 'Training Data', src: 'https://docs.com/training' }
-      ],
-      startDate: new Date('2025-01-15'),
-      endDate: new Date('2025-03-15'),
-      status: 'active'
-    }
-  ]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedProject, setExpandedProject] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [projectToUpdate, setProjectToUpdate] = useState(null);
+  const [draggedProject, setDraggedProject] = useState(null);
   const [newProject, setNewProject] = useState({
     name: '',
     date: new Date(),
@@ -94,6 +25,42 @@ export default function Projects() {
     endDate: new Date(),
     status: 'active'
   });
+
+  // Load projects from database
+  const loadProjectsData = async () => {
+    try {
+      setLoading(true);
+      const data = await window.api.getProjects();
+      console.log('Projects data loaded:', data);
+      
+      // Map data to component structure
+      const mappedData = data.map(project => ({
+        id: project.id,
+        name: project.name,
+        date: new Date(project.date),
+        insight: project.insight,
+        owner: project.owner,
+        ownerWork: project.ownerWork,
+        creator: project.creator || [],
+        githubLink: project.githubLink,
+        projectLink: project.projectLink,
+        documentsLink: project.documentsLink || [],
+        startDate: new Date(project.startDate),
+        endDate: new Date(project.endDate),
+        status: project.status
+      }));
+      
+      setProjects(mappedData);
+    } catch (error) {
+      console.error('Error loading projects data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProjectsData();
+  }, []);
 
   // Calculate progress percentage based on time elapsed
   const calculateProgress = (project) => {
@@ -179,10 +146,15 @@ export default function Projects() {
     }
   };
 
-  const handleDeleteProject = (projectId) => {
-    setProjects(projects.filter(p => p.id !== projectId));
-    if (expandedProject === projectId) {
-      setExpandedProject(null);
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await window.api.deleteProject(projectId);
+      if (expandedProject === projectId) {
+        setExpandedProject(null);
+      }
+      loadProjectsData(); // Reload data from database
+    } catch (error) {
+      console.error('Error deleting project:', error);
     }
   };
 
@@ -191,43 +163,105 @@ export default function Projects() {
     setShowUpdateModal(true);
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (newProject.name.trim()) {
-      const project = {
-        id: Date.now(), // Simple ID generation
-        ...newProject,
-        name: newProject.name.trim(),
-        creator: newProject.creator.filter(c => c.trim()),
-        documentsLink: newProject.documentsLink.filter(d => d.name.trim() && d.src.trim())
-      };
-      setProjects([...projects, project]);
-      setShowCreateModal(false);
-      setNewProject({
-        name: '',
-        date: new Date(),
-        insight: '',
-        owner: '',
-        ownerWork: '',
-        creator: [],
-        githubLink: '',
-        projectLink: '',
-        documentsLink: [],
-        startDate: new Date(),
-        endDate: new Date(),
-        status: 'active'
-      });
+      try {
+        const projectData = {
+          name: newProject.name.trim(),
+          date: newProject.date.toISOString(),
+          insight: newProject.insight,
+          owner: newProject.owner,
+          ownerWork: newProject.ownerWork,
+          createdBy: newProject.owner, // Using owner as createdBy for now
+          githubLink: newProject.githubLink,
+          projectLink: newProject.projectLink,
+          creators: newProject.creator.filter(c => c.trim()),
+          documents: newProject.documentsLink.filter(d => d.name.trim() && d.src.trim()),
+          startDate: newProject.startDate.toISOString().split('T')[0],
+          endDate: newProject.endDate.toISOString().split('T')[0],
+          status: newProject.status
+        };
+        
+        await window.api.addProject(
+          projectData.name,
+          projectData.date,
+          projectData.insight,
+          projectData.owner,
+          projectData.ownerWork,
+          projectData.createdBy,
+          projectData.githubLink,
+          projectData.projectLink,
+          projectData.creators,
+          projectData.documents,
+          projectData.startDate,
+          projectData.endDate,
+          projectData.status
+        );
+        
+        setShowCreateModal(false);
+        setNewProject({
+          name: '',
+          date: new Date(),
+          insight: '',
+          owner: '',
+          ownerWork: '',
+          creator: [],
+          githubLink: '',
+          projectLink: '',
+          documentsLink: [],
+          startDate: new Date(),
+          endDate: new Date(),
+          status: 'active'
+        });
+        loadProjectsData(); // Reload data from database
+      } catch (error) {
+        console.error('Error creating project:', error);
+      }
     }
   };
 
-  const handleUpdateProjectSubmit = () => {
+  const handleUpdateProjectSubmit = async () => {
     if (projectToUpdate && projectToUpdate.name.trim()) {
-      setProjects(projects.map(p => 
-        p.id === projectToUpdate.id 
-          ? { ...projectToUpdate, name: projectToUpdate.name.trim() }
-          : p
-      ));
-      setShowUpdateModal(false);
-      setProjectToUpdate(null);
+      try {
+        const projectData = {
+          name: projectToUpdate.name.trim(),
+          date: projectToUpdate.date.toISOString(),
+          insight: projectToUpdate.insight,
+          owner: projectToUpdate.owner,
+          ownerWork: projectToUpdate.ownerWork,
+          createdBy: projectToUpdate.owner, // Using owner as createdBy for now
+          githubLink: projectToUpdate.githubLink,
+          projectLink: projectToUpdate.projectLink,
+          creators: projectToUpdate.creator || [],
+          documents: projectToUpdate.documentsLink || [],
+          startDate: projectToUpdate.startDate.toISOString().split('T')[0],
+          endDate: projectToUpdate.endDate.toISOString().split('T')[0],
+          status: projectToUpdate.status
+        };
+        
+        await window.api.updateProject(
+          projectToUpdate.id,
+          projectData.name,
+          projectData.date,
+          projectData.insight,
+          projectData.owner,
+          projectData.ownerWork,
+          projectData.createdBy,
+          projectData.githubLink,
+          projectData.projectLink,
+          projectData.creators,
+          projectData.documents,
+          projectData.startDate,
+          projectData.endDate,
+          projectData.status
+        );
+        
+        setShowUpdateModal(false);
+        setProjectToUpdate(null);
+        loadProjectsData(); // Reload data from database
+      } catch (error) {
+        console.error('Error updating project:', error);
+      }
     }
   };
 
@@ -312,6 +346,56 @@ export default function Projects() {
     return arr && arr.length > 0 ? arr.join(', ') : '-';
   };
 
+  // Drag and drop functions
+  const handleDragStart = (e, project) => {
+    setDraggedProject(project);
+    e.dataTransfer.effectAllowed = 'move';
+    e.target.style.opacity = '0.5';
+  };
+
+  const handleDragEnd = (e) => {
+    e.target.style.opacity = '1';
+    setDraggedProject(null);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e, dropProject) => {
+    e.preventDefault();
+    if (draggedProject === null || draggedProject.id === dropProject.id) return;
+
+    const newProjects = [...projects];
+    const draggedIndex = newProjects.findIndex(p => p.id === draggedProject.id);
+    const dropIndex = newProjects.findIndex(p => p.id === dropProject.id);
+    
+    const draggedItemData = newProjects[draggedIndex];
+    newProjects.splice(draggedIndex, 1);
+    newProjects.splice(dropIndex, 0, draggedItemData);
+    
+    setProjects(newProjects);
+    setDraggedProject(null);
+
+    // Save new order to database
+    try {
+      await window.api.reorderProjects(newProjects);
+    } catch (error) {
+      console.error('Error reordering projects:', error);
+      // Reload data from database to revert changes
+      loadProjectsData();
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="text-text h-full flex items-center justify-center">
+        <p className="text-text-muted">Loading projects data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full overflow-y-auto">
       {/* Header with Search and New Button */}
@@ -347,6 +431,11 @@ export default function Projects() {
               className={`card hover:bg-elev-3 cursor-pointer transition-all duration-300 break-inside-avoid mb-4 hover:shadow-card ${
                 isCompleted ? 'opacity-60' : ''
               }`}
+              draggable
+              onDragStart={(e) => handleDragStart(e, project)}
+              onDragEnd={handleDragEnd}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, project)}
               onDoubleClick={() => handleProjectDoubleClick(project)}
               style={{
                 backgroundColor: !isCompleted && project.endDate 
@@ -362,11 +451,13 @@ export default function Projects() {
                   <h3 className={`text-sm font-semibold mb-1 ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                     {project.projectLink ? (
                       <a 
-                        href={project.projectLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                        href="#" 
                         className="hover:underline hover:text-blue-400 transition-colors"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          window.api.openExternal(project.projectLink);
+                        }}
                       >
                         {project.name}
                       </a>
@@ -458,13 +549,15 @@ export default function Projects() {
                         {project.githubLink && (
                             <div>
                             <a 
-                                href={project.githubLink} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
+                                href="#"
                                 className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
                                 isCompleted ? 'text-text-muted' : 'text-text'
                                 }`}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  window.api.openExternal(project.githubLink);
+                                }}
                             >
                                 GitHub Repository
                             </a>
@@ -473,13 +566,15 @@ export default function Projects() {
                         {project.projectLink && (
             <div>
                             <a 
-                                href={project.projectLink} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
+                                href="#"
                                 className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
                                 isCompleted ? 'text-text-muted' : 'text-text'
                                 }`}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  window.api.openExternal(project.projectLink);
+                                }}
                             >
                                 Live Project
                             </a>
@@ -497,13 +592,15 @@ export default function Projects() {
                         <div key={index}>
                           {doc.src ? (
                             <a 
-                              href={doc.src} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
+                              href="#"
                               className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
                                 isCompleted ? 'text-text-muted' : 'text-text'
                               }`}
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                window.api.openExternal(doc.src);
+                              }}
                             >
                               {doc.name}
                             </a>
