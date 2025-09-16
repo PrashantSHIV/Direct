@@ -49,17 +49,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="h-16 border-b border-border flex items-center px-6 bg-surface">
-        <h1 className="text-text text-2xl font-semibold">
+      <header className="h-10 border-b border-border flex items-center px-6 bg-surface flex-shrink-0">
+        <h1 className="text-text font-semibold">
           DIRECT
         </h1>
       </header>
 
-      <main className="grid grid-cols-[260px_1fr] flex-1">
+      <main className="grid grid-cols-[260px_1fr] flex-1 min-h-0">
         {/* Sidebar */}
-        <aside className="bg-elev-2 border-r border-border p-6">
+        <aside className="bg-elev-2 border-r border-border p-6 overflow-y-auto">
           <div className="space-y-6">
             {/* Logo placeholder */}
             <div className="w-8 h-8 border border-border rounded-lg bg-accent-blue/20 flex items-center justify-center">
@@ -84,7 +84,7 @@ export default function Home() {
         </aside>
 
         {/* Main Content Area - Renders active component */}
-        <section className="bg-background">
+        <section className="bg-background overflow-y-auto">
           {renderContent()}
         </section>
       </main>

@@ -37,13 +37,13 @@ export default function MyLifeFlow() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <header className="h-12 bg-surface border-b border-border flex items-center px-6">
+      <header className="h-12 bg-surface border-b border-border flex items-center px-6 flex-shrink-0">
         <h2 className="text-lg font-semibold">My Life Flow</h2>
       </header>
       
-      <main className="grid grid-cols-[240px_1fr] flex-1">
+      <main className="grid grid-cols-[240px_1fr] flex-1 min-h-0">
         {/* Sidebar */}
-        <aside className="bg-elev-2 border-r border-border p-4">
+        <aside className="bg-elev-2 border-r border-border p-4 overflow-y-auto">
           <nav className="space-y-2">
             {components.map((component) => (
               <button
@@ -60,7 +60,7 @@ export default function MyLifeFlow() {
         </aside>
 
         {/* Main Content Area */}
-        <section className="bg-background">
+        <section className="bg-background overflow-y-auto">
           {renderContent()}
         </section>
       </main>
