@@ -185,7 +185,7 @@ export default function Phase({ activePhase }) {
     <div className="grid grid-cols-[1fr_300px] gap-6">
       {/* Left Section - Main Content */}
       <div>
-        <h4 className="text-base font-normal mb-4">{activePhase} Phase</h4>
+        <h4 className="text-base font-semibold mb-4 text-text">{activePhase} Phase</h4>
         
         {/* Definitions Section */}
         <div className="mb-6">
@@ -193,7 +193,7 @@ export default function Phase({ activePhase }) {
             {currentPhase.definitions.map((def, index) => (
               <div 
                 key={index}
-                className="border border-white rounded p-4 group hover:bg-gray-400 cursor-pointer"
+                className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
                 draggable
                 onDragStart={(e) => handleDragStart(e, index, 'definitions')}
                 onDragEnd={handleDragEnd}
@@ -202,8 +202,8 @@ export default function Phase({ activePhase }) {
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h5 className="text-sm font-medium mb-2">{def.title}</h5>
-                    <p className="text-xs text-gray-300">{def.explanation}</p>
+                    <h5 className="text-sm font-semibold mb-2 text-text">{def.title}</h5>
+                    <p className="text-xs text-text-muted">{def.explanation}</p>
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 flex gap-1 ml-2">
                     <button 
@@ -223,7 +223,7 @@ export default function Phase({ activePhase }) {
           </div>
           
           {/* Add New Definition */}
-          <div className="border border-white rounded p-4">
+          <div className="card">
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1">
                 <input 
@@ -231,14 +231,14 @@ export default function Phase({ activePhase }) {
                   value={newDefinition.title}
                   onChange={(e) => setNewDefinition({...newDefinition, title: e.target.value})}
                   placeholder="Question/Title"
-                  className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1 mb-2"
+                  className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
                 <input 
                   type="text" 
                   value={newDefinition.explanation}
                   onChange={(e) => setNewDefinition({...newDefinition, explanation: e.target.value})}
                   placeholder="Answer/Explanation"
-                  className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                  className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               <button 
@@ -254,23 +254,23 @@ export default function Phase({ activePhase }) {
 
         {/* Steps Table */}
         <div>
-          <div className="grid grid-cols-2 border-b border-white mb-2">
-            <div className="border-r border-white p-2 text-sm font-normal">Step</div>
-            <div className="p-2 text-sm font-normal">Reason</div>
+          <div className="grid grid-cols-2 border-b border-border mb-2">
+            <div className="border-r border-border p-2 text-sm font-semibold text-text-muted">Step</div>
+            <div className="p-2 text-sm font-semibold text-text-muted">Reason</div>
           </div>
           
           {currentPhase.steps.map((item, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
+              className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleDragStart(e, index, 'steps')}
               onDragEnd={handleDragEnd}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index, 'steps')}
             >
-              <div className="border-r border-white p-2 text-sm">{item.step}</div>
-              <div className="p-2 text-sm flex justify-between items-center">
+              <div className="border-r border-border-soft p-2 text-sm text-text">{item.step}</div>
+              <div className="p-2 text-sm flex justify-between items-center text-text">
                 <span>{item.reason}</span>
                 <button 
                   onClick={(e) => {
@@ -288,13 +288,13 @@ export default function Phase({ activePhase }) {
           
           {/* Add New Step Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-white p-2">
+            <div className="border-r border-border p-2">
               <input 
                 type="text" 
                 value={newStep.step}
                 onChange={(e) => setNewStep({...newStep, step: e.target.value})}
                 placeholder="Step"
-                className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
             <div className="p-2 flex items-center justify-between">
@@ -303,7 +303,7 @@ export default function Phase({ activePhase }) {
                 value={newStep.reason}
                 onChange={(e) => setNewStep({...newStep, reason: e.target.value})}
                 placeholder="Reason"
-                className="flex-1 bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="flex-1 bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
               />
               <button 
                 onClick={addStep}
@@ -334,7 +334,7 @@ export default function Phase({ activePhase }) {
           {currentPhase.tools.map((tool, index) => (
             <div 
               key={index}
-              className="border border-white rounded p-3 group hover:bg-gray-400 cursor-pointer"
+              className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
               draggable
               onDragStart={(e) => handleDragStart(e, index, 'tools')}
               onDragEnd={handleDragEnd}
@@ -347,7 +347,7 @@ export default function Phase({ activePhase }) {
                     href={tool.src} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-sm font-medium text-white hover:text-gray-300"
+                    className="text-sm font-medium text-text hover:text-accent-blue transition-colors duration-200"
                   >
                     {tool.name}
                   </a>
@@ -370,7 +370,7 @@ export default function Phase({ activePhase }) {
         </div>
         
         {/* Add New Tool */}
-        <div className="mt-4 border border-white rounded p-3">
+        <div className="mt-4 card">
           <div className="space-y-2">
             <input 
               type="text" 

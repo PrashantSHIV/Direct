@@ -106,8 +106,8 @@ export default function TasksNext24Hours() {
   };
 
   return (
-    <div className="text-white">
-      <h3 className="bg-gray-500 p-3 py-2">Tasks Next 24 Hours</h3>
+    <div className="text-text">
+      <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Tasks Next 24 Hours</h3>
       
       <div className="p-6">
         {/* Two Panel Layout */}
@@ -115,29 +115,29 @@ export default function TasksNext24Hours() {
           {/* Left Panel - Tasks Next 24 Hours */}
           <div>
             {/* Task Input Area */}
-            <div className="mb-4">
-              <div className="flex gap-2">
+            <div className="mb-6">
+              <div className="flex gap-3">
                 <input 
                   type="text" 
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
                   placeholder="Enter new task"
-                  className="flex-1 border border-white bg-transparent text-white px-3 py-2 rounded"
+                  className="flex-1 border border-border bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   onKeyPress={(e) => e.key === 'Enter' && addTask()}
                 />
                 <button 
                   onClick={addTask}
-                  className="border border-white px-3 py-2 rounded hover:bg-gray-600"
+                  className="btn px-4 py-3 rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   +
                 </button>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {activeTasks.map((task, index) => (
                 <div 
                   key={index} 
-                  className="border border-white rounded p-3 group hover:bg-gray-400 cursor-pointer"
+                  className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
                   draggable
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragEnd={handleDragEnd}
@@ -146,14 +146,14 @@ export default function TasksNext24Hours() {
                   onDoubleClick={() => handleEdit(task, index)}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">{task.task}</span>
-                    <div className="opacity-0 group-hover:opacity-100 flex gap-1">
+                    <span className="text-sm font-medium">{task.task}</span>
+                    <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity duration-200">
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           markAsCompleted(index);
                         }}
-                        className="text-green-400 hover:text-green-300 text-xs px-2 py-1 border border-green-400 rounded"
+                        className="text-success hover:text-success/80 text-xs px-3 py-1 border border-success rounded-lg hover:bg-success/10 transition-all duration-200"
                         title="Mark as Completed"
                       >
                         ✓
@@ -163,7 +163,7 @@ export default function TasksNext24Hours() {
                           e.stopPropagation();
                           markAsFailed(index);
                         }}
-                        className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
+                        className="text-danger hover:text-danger/80 text-xs px-3 py-1 border border-danger rounded-lg hover:bg-danger/10 transition-all duration-200"
                         title="Mark as Failed"
                       >
                         ✗
@@ -177,47 +177,47 @@ export default function TasksNext24Hours() {
 
           {/* Right Panel - Tasks (Completed/Failed) */}
           <div>
-            <h4 className="text-base font-normal mb-4">Tasks</h4>
+            <h4 className="text-base font-semibold mb-4 text-text">Tasks</h4>
             <div className="flex gap-2 mb-4">
               <button 
                 onClick={() => setStatusFilter('completed')}
-                className={`px-3 py-1 rounded text-sm border ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   statusFilter === 'completed' 
-                    ? 'border-white bg-gray-600' 
-                    : 'border-white/50 hover:bg-gray-600'
+                    ? 'bg-success text-text-inverse shadow-card' 
+                    : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-green'
                 }`}
               >
                 Completed
               </button>
               <button 
                 onClick={() => setStatusFilter('failed')}
-                className={`px-3 py-1 rounded text-sm border ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   statusFilter === 'failed' 
-                    ? 'border-white bg-gray-600' 
-                    : 'border-white/50 hover:bg-gray-600'
+                    ? 'bg-danger text-text-inverse shadow-card' 
+                    : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-pink'
                 }`}
               >
                 Failed
               </button>
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               {getFilteredTasks().map((task, index) => (
                 <div 
                   key={index} 
-                  className="border border-white rounded p-3"
+                  className="card"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">{task.task}</span>
-                    <span className={`text-xs px-2 py-1 rounded ${
+                    <span className="text-sm font-medium">{task.task}</span>
+                    <span className={`text-xs px-3 py-1 rounded-lg font-medium ${
                       task.status === 'completed' 
-                        ? 'bg-green-600 text-white' 
-                        : 'bg-red-600 text-white'
+                        ? 'bg-success text-text-inverse' 
+                        : 'bg-danger text-text-inverse'
                     }`}>
                       {task.status === 'completed' ? '✓' : '✗'}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">
+                  <div className="text-xs text-text-muted mt-2">
                     {new Date(task.createdAt).toLocaleString()}
                   </div>
                 </div>
@@ -229,18 +229,18 @@ export default function TasksNext24Hours() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold mb-4">Edit Task</h3>
+        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
+          <div className="card w-96 max-w-[90vw] shadow-card">
+            <h3 className="text-lg font-semibold mb-4 text-text">Edit Task</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Task:</label>
+                <label className="block text-sm mb-2 text-text-muted">Task:</label>
                 <input
                   type="text"
                   value={editingData}
                   onChange={(e) => setEditingData(e.target.value)}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function TasksNext24Hours() {
             <div className="flex justify-between mt-6">
               <button
                 onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -260,13 +260,13 @@ export default function TasksNext24Hours() {
                     setEditingTask(null);
                     setEditingData('');
                   }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Delete
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>

@@ -143,12 +143,12 @@ export default function Mind() {
   };
 
   return (
-    <div className="text-white flex flex-col h-full">
-      <h3 className="bg-gray-500 p-3 py-2">Mind</h3>
+    <div className="text-text flex flex-col h-full">
+      <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Mind</h3>
       
       <div className="grid grid-cols-[240px_1fr] gap-6 flex-1">
         {/* Left Panel - Sections */}
-        <aside className="bg-gray-500 p-4">
+        <aside className="bg-elev-2 border-r border-border p-4">
           <nav className="space-y-2 mb-4">
             {sections.map((section, index) => (
               <button
@@ -159,8 +159,8 @@ export default function Mind() {
                 onDragOver={handleSectionDragOver}
                 onDrop={(e) => handleSectionDrop(e, index)}
                 onClick={() => setActiveSection(section.id)}
-                className={`block w-full text-left text-white text-sm font-normal px-3 py-2 rounded hover:bg-gray-600 cursor-move ${
-                  activeSection === section.id ? 'border border-white bg-gray-600' : ''
+                className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg hover:bg-elev-3 cursor-move transition-all duration-200 ${
+                  activeSection === section.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
                 }`}
               >
                 {section.name}
@@ -173,11 +173,11 @@ export default function Mind() {
               placeholder="Add new section" 
               value={newSectionName}
               onChange={(e) => setNewSectionName(e.target.value)}
-              className="flex-1 border border-white bg-transparent text-white px-2 py-1 text-sm rounded"
+              className="flex-1 border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
             />
             <button 
               onClick={addSection}
-              className="border border-white px-2 py-1 rounded text-sm hover:bg-gray-600"
+              className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
             >
               +
             </button>
@@ -190,17 +190,17 @@ export default function Mind() {
             <h4 className="text-base font-normal">{activeSection}</h4>
           </div>
           
-          <div className="border border-white rounded">
-            <div className="grid grid-cols-2 border-b border-white">
-              <div className="border-r border-white p-2 text-sm font-normal">Name</div>
-              <div className="p-2 text-sm font-normal">Technique</div>
+          <div className="border border-border rounded-lg">
+            <div className="grid grid-cols-2 border-b border-border">
+              <div className="border-r border-border p-3 text-sm font-semibold text-text-muted">Name</div>
+              <div className="p-3 text-sm font-semibold text-text-muted">Technique</div>
             </div>
             
             {/* Mind Items Rows */}
             {mindItems[activeSection].map((item, index) => (
               <div 
                 key={index} 
-                className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
+                className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
                 draggable
                 onDragStart={(e) => handleItemDragStart(e, index)}
                 onDragEnd={handleItemDragEnd}
@@ -208,8 +208,8 @@ export default function Mind() {
                 onDrop={(e) => handleItemDrop(e, index)}
                 onDoubleClick={() => handleEdit(item, index)}
               >
-                <div className="border-r border-white p-2 text-sm">{item.name}</div>
-                <div className="p-2 text-sm">
+                <div className="border-r border-border-soft p-3 text-sm text-text">{item.name}</div>
+                <div className="p-3 text-sm text-text">
                   <ol className="list-decimal list-inside space-y-1">
                     {item.technique.map((step, stepIndex) => (
                       <li key={stepIndex}>{step}</li>
@@ -221,13 +221,13 @@ export default function Mind() {
             
             {/* Add New Item Row */}
             <div className="grid grid-cols-2">
-              <div className="border-r border-white p-2">
+              <div className="border-r border-border p-3">
                 <input 
                   type="text" 
                   value={newItem.name}
                   onChange={(e) => setNewItem({...newItem, name: e.target.value})}
                   placeholder="Item name"
-                  className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                  className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               <div className="p-2 flex items-center justify-between">
@@ -243,7 +243,7 @@ export default function Mind() {
                         setNewItem({...newItem, technique: newTechnique});
                       }}
                       placeholder={`Step ${index + 1}`}
-                      className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                      className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     />
                   ))}
                   <button 
@@ -268,8 +268,8 @@ export default function Mind() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded-lg p-6 w-96 max-h-96 overflow-y-auto">
+        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
+          <div className="card w-96 max-h-96 overflow-y-auto shadow-card">
             <h3 className="text-lg font-semibold mb-4">Edit Mind Item</h3>
             
             <div className="space-y-4">
@@ -279,7 +279,7 @@ export default function Mind() {
                   type="text"
                   value={editingData.name}
                   onChange={(e) => setEditingData({...editingData, name: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
@@ -316,7 +316,7 @@ export default function Mind() {
             <div className="flex justify-between mt-6">
               <button
                 onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -328,13 +328,13 @@ export default function Mind() {
                     setEditingItem(null);
                     setEditingData({ name: '', technique: [''] });
                   }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Delete
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>

@@ -84,32 +84,32 @@ export default function TimeTable() {
   const renderTable = (data, section, newItem, setNewItem) => {
     return (
       <div>
-        <div className="border-b border-white pb-2 mb-2 text-sm">
+        <div className="border-b border-border pb-2 mb-4 text-sm font-semibold text-text">
           {section === 'working' ? 'Working Day' : 'Holiday'}
         </div>
         <table className="w-full">
           <thead>
-            <tr className="border">
-              <td className="py-1 px-2">Time</td>
-              <td className="px-2">Discipline</td>
+            <tr className="border-b border-border">
+              <td className="py-2 px-3 text-text-muted font-medium">Time</td>
+              <td className="px-3 text-text-muted font-medium">Discipline</td>
             </tr>
           </thead>
           <tbody>
             {data.sort((a,b) => a.time.localeCompare(b.time)).map((row, index) => (
-              <tr key={index} className="border rounded hover:bg-gray-400 group relative">
-                <td className="py-1 px-2">{row.time}</td>
-                <td className="px-2">{row.discipline}</td>
-                <td className="px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <tr key={index} className="border-b border-border-soft hover:bg-elev-3 group relative transition-all duration-200">
+                <td className="py-2 px-3 text-text font-medium">{row.time}</td>
+                <td className="px-3 text-text">{row.discipline}</td>
+                <td className="px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <button 
                     onClick={() => handleEdit(row, index, section)}
-                    className="text-blue-400 hover:text-blue-300 mr-2"
+                    className="text-accent-blue hover:text-accent-blue/80 mr-2 transition-colors duration-200"
                     title="Edit"
                   >
                     ✏️
                   </button>
                   <button 
                     onClick={() => handleDelete(index, section)}
-                    className="text-red-400 hover:text-red-300"
+                    className="text-danger hover:text-danger/80 transition-colors duration-200"
                     title="Delete"
                   >
                     🗑️
@@ -117,28 +117,28 @@ export default function TimeTable() {
                 </td>
               </tr>
             ))}
-            <tr className="border rounded hover:bg-gray-400">
-              <td className="py-1 px-2">
+            <tr className="border border-border rounded-lg hover:bg-elev-3 transition-all duration-200">
+              <td className="py-2 px-3">
                 <input 
                   type="time" 
                   value={newItem.time}
                   onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-                  className="bg-transparent text-white text-xs border border-white/50 rounded px-1 w-full"
+                  className="bg-surface text-text text-sm border border-border rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </td>
-              <td className="px-2">
+              <td className="px-3">
                 <input 
                   type="text" 
                   value={newItem.discipline}
                   onChange={(e) => setNewItem({...newItem, discipline: e.target.value})}
                   placeholder="Discipline"
-                  className="bg-transparent text-white text-xs border border-white/50 rounded px-1 w-full"
+                  className="bg-surface text-text text-sm border border-border rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </td>
-              <td className="px-2">
+              <td className="px-3">
                 <button 
                   onClick={() => handleAddNew(section)}
-                  className="text-green-400 hover:text-green-300"
+                  className="text-success hover:text-success/80 transition-colors duration-200"
                   title="Add"
                 >
                   ➕

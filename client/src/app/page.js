@@ -49,29 +49,31 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="h-16 border-b border-gray-600 flex items-center px-6">
-        <h1 className="text-white text-2xl font-normal">
+      <header className="h-16 border-b border-border flex items-center px-6 bg-surface">
+        <h1 className="text-text text-2xl font-semibold">
           DIRECT
         </h1>
       </header>
 
       <main className="grid grid-cols-[260px_1fr] flex-1">
         {/* Sidebar */}
-        <aside className="bg-gray-800 border-r border-gray-600 p-6">
+        <aside className="bg-elev-2 border-r border-border p-6">
           <div className="space-y-6">
             {/* Logo placeholder */}
-            <div className="w-8 h-8 border border-gray-400 rounded bg-transparent"></div>
+            <div className="w-8 h-8 border border-border rounded-lg bg-accent-blue/20 flex items-center justify-center">
+              <div className="w-4 h-4 bg-accent-blue rounded"></div>
+            </div>
             
             {/* Navigation Buttons */}
-            <nav className="space-y-4">
+            <nav className="space-y-3">
               {pages.map((page) => (
                 <button
                   key={page.id}
                   onClick={() => router.push(`/?page=${page.id}`)}
-                  className={`block w-full text-left text-white text-base font-normal px-3 py-2 rounded hover:bg-gray-700 ${
-                    activePage === page.id ? 'border border-gray-400 bg-gray-700' : ''
+                  className={`block w-full text-left text-text text-base font-medium px-4 py-3 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
+                    activePage === page.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
                   }`}
                 >
                   {page.name}
@@ -82,7 +84,7 @@ export default function Home() {
         </aside>
 
         {/* Main Content Area - Renders active component */}
-        <section className="bg-gray-800">
+        <section className="bg-background">
           {renderContent()}
         </section>
       </main>

@@ -33,30 +33,30 @@ export default function Body() {
   };
 
   return (
-    <div className="text-white flex flex-col h-full">
-      <header className="bg-gray-600 flex justify-between items-center p-3 pr-20">
-        <h1 className="text-lg font-normal">Body</h1>
+    <div className="text-text flex flex-col h-full">
+      <header className="bg-surface border-b border-border flex justify-between items-center p-4 pr-20">
+        <h1 className="text-lg font-semibold">Body</h1>
         <nav className="flex gap-2">
           <button 
             onClick={() => setActiveTab('Exercise')}
-            className={`px-3 py-1 rounded text-sm border ${
-              activeTab === 'Exercise' ? 'border-white bg-gray-700' : 'border-white/50'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === 'Exercise' ? 'bg-accent-blue text-text-inverse shadow-card' : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-blue'
             }`}
           >
             Exercise
           </button>
           <button 
             onClick={() => setActiveTab('Day Table')}
-            className={`px-3 py-1 rounded text-sm border ${
-              activeTab === 'Day Table' ? 'border-white bg-gray-700' : 'border-white/50'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === 'Day Table' ? 'bg-accent-blue text-text-inverse shadow-card' : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-blue'
             }`}
           >
             Day Table
           </button>
           <button 
             onClick={() => setActiveTab('Diet Table')}
-            className={`px-3 py-1 rounded text-sm border ${
-              activeTab === 'Diet Table' ? 'border-white bg-gray-700' : 'border-white/50'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === 'Diet Table' ? 'bg-accent-blue text-text-inverse shadow-card' : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-blue'
             }`}
           >
             Diet Table
@@ -202,10 +202,10 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
   };
 
   return (
-    <div className="text-white h-full grid grid-cols-[240px_1fr]">
+    <div className="text-text h-full grid grid-cols-[240px_1fr]">
       {/* Left Sidebar - Categories */}
-      <aside className="bg-gray-500 p-4">
-        <h4 className="text-base font-normal mb-4">Body</h4>
+      <aside className="bg-elev-2 border-r border-border p-4">
+        <h4 className="text-base font-semibold mb-4 text-text">Body</h4>
         <nav className="space-y-2 mb-4">
           {categories.map((category, index) => (
             <button
@@ -216,8 +216,8 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
               onDragOver={handleCategoryDragOver}
               onDrop={(e) => handleCategoryDrop(e, index)}
               onClick={() => setActiveCategory(category.id)}
-              className={`block w-full text-left text-white text-sm font-normal px-3 py-2 rounded hover:bg-gray-600 cursor-move ${
-                activeCategory === category.id ? 'border border-white bg-gray-600' : ''
+              className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg hover:bg-elev-3 cursor-move transition-all duration-200 ${
+                activeCategory === category.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
               }`}
             >
               {category.name}
@@ -231,11 +231,11 @@ function Exercise({ categories, setCategories, exercises, setExercises }){
             placeholder="Add new category" 
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
-            className="flex-1 border border-white bg-transparent text-white px-2 py-1 text-sm rounded"
+            className="flex-1 border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
           />
           <button 
             onClick={addCategory}
-            className="border border-white px-2 py-1 rounded text-sm hover:bg-gray-600"
+            className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
           >
             +
           </button>

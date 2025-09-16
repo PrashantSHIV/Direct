@@ -322,12 +322,12 @@ export default function Projects() {
             placeholder="Search projects..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-3 py-2 border border-white rounded bg-transparent text-white placeholder-gray-400"
+            className="w-full px-4 py-3 border border-border rounded-lg bg-surface text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
           />
         </div>
           <button 
             onClick={() => setShowCreateModal(true)}
-            className="px-3 py-1 border border-white rounded text-sm hover:bg-gray-400"
+            className="btn px-4 py-3 rounded-lg text-sm font-medium hover:opacity-90 transition-all duration-200"
           >
             New
           </button>
@@ -344,13 +344,13 @@ export default function Projects() {
           return (
             <div 
               key={project.id}
-              className={`border border-white rounded p-4 hover:bg-gray-700 cursor-pointer transition-all duration-300 break-inside-avoid mb-4 ${
-                isCompleted ? 'opacity-60 bg-gray-800' : ''
+              className={`card hover:bg-elev-3 cursor-pointer transition-all duration-300 break-inside-avoid mb-4 hover:shadow-card ${
+                isCompleted ? 'opacity-60' : ''
               }`}
               onDoubleClick={() => handleProjectDoubleClick(project)}
               style={{
                 backgroundColor: !isCompleted && project.endDate 
-                  ? `rgba(34, 197, 94, ${opacity * 0.1})` // Green background with calculated opacity
+                  ? `rgba(52, 211, 153, ${opacity * 0.1})` // Green background with calculated opacity using success color
                   : undefined,
                 minHeight: 'fit-content',
                 height: 'auto'
@@ -359,7 +359,7 @@ export default function Projects() {
               {/* Card Header */}
               <div className="flex justify-between items-start mb-3">
               <div className="flex-1">
-                  <h3 className={`text-sm font-medium mb-1 ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                  <h3 className={`text-sm font-semibold mb-1 ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                     {project.projectLink ? (
                       <a 
                         href={project.projectLink} 
@@ -374,7 +374,7 @@ export default function Projects() {
                       project.name
                     )}
                   </h3>
-                  <p className={`text-xs ${isCompleted ? 'text-gray-500' : 'text-gray-300'}`}>
+                  <p className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text-muted'}`}>
                     Created: {formatDate(project.date)}
                   </p>
                 </div>
@@ -382,12 +382,12 @@ export default function Projects() {
 
               {/* Status Badge */}
               <div className="mb-3">
-                <span className={`text-xs px-2 py-1 rounded text-white ${
+                <span className={`text-xs px-3 py-1 rounded-lg font-medium ${
                   isCompleted 
-                    ? 'bg-gray-600' 
+                    ? 'bg-elev-3 text-text-muted' 
                     : project.endDate 
-                      ? `bg-green-600` 
-                      : 'bg-blue-600'
+                      ? `bg-success text-text-inverse` 
+                      : 'bg-accent-blue text-text-inverse'
                 }`}>
                   {isCompleted ? 'Completed' : 'Active'}
                   {!isCompleted && project.endDate && ` (${progress}%)`}
@@ -404,7 +404,7 @@ export default function Projects() {
                       e.stopPropagation();
                       handleUpdateProject(project);
                     }}
-                    className="px-3 py-1 text-xs border border-white rounded hover:bg-gray-600"
+                    className="px-3 py-1 text-xs border border-border rounded-lg hover:bg-elev-3 transition-all duration-200"
                   >
                     Edit
                   </button>
@@ -413,7 +413,7 @@ export default function Projects() {
                       e.stopPropagation();
                       handleDeleteProject(project.id);
                     }}
-                    className="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white"
+                    className="px-3 py-1 text-xs border border-danger text-danger rounded-lg hover:bg-danger hover:text-text-inverse transition-all duration-200"
                   >
                     Delete
                   </button>
@@ -421,8 +421,8 @@ export default function Projects() {
 
             {/* Insight */}
             <div>
-                  <label className="block text-xs mb-1 text-gray-300">Insight</label>
-                  <div className={`text-xs ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                  <label className="block text-xs mb-1 text-text-muted">Insight</label>
+                  <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                     {project.insight || '-'}
               </div>
             </div>
@@ -430,14 +430,14 @@ export default function Projects() {
             {/* Owner and Owner Work */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs mb-1 text-gray-300">Owner</label>
-                    <div className={`text-xs ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                    <label className="block text-xs mb-1 text-text-muted">Owner</label>
+                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                       {project.owner || '-'}
                 </div>
               </div>
                   <div>
-                    <label className="block text-xs mb-1 text-gray-300">Owner Work</label>
-                    <div className={`text-xs ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                    <label className="block text-xs mb-1 text-text-muted">Owner Work</label>
+                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                       {project.ownerWork || '-'}
                 </div>
               </div>
@@ -445,15 +445,15 @@ export default function Projects() {
 
             {/* Creator */}
             <div>
-                  <label className="block text-xs mb-1 text-gray-300">Creator</label>
-                  <div className={`text-xs ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                  <label className="block text-xs mb-1 text-text-muted">Creator</label>
+                  <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                     {formatArray(project.creator)}
               </div>
             </div>
 
             {/* Links */}
                 <div>
-                    <label className="block text-xs mb-1 text-gray-300">Project Links</label>
+                    <label className="block text-xs mb-1 text-text-muted">Project Links</label>
                     <div className="space-y-1">
                         {project.githubLink && (
                             <div>
@@ -461,8 +461,8 @@ export default function Projects() {
                                 href={project.githubLink} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className={`text-xs font-medium hover:underline hover:text-blue-400 transition-colors ${
-                                isCompleted ? 'text-gray-400' : 'text-white'
+                                className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
+                                isCompleted ? 'text-text-muted' : 'text-text'
                                 }`}
                                 onClick={(e) => e.stopPropagation()}
                             >
@@ -476,8 +476,8 @@ export default function Projects() {
                                 href={project.projectLink} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className={`text-xs font-medium hover:underline hover:text-blue-400 transition-colors ${
-                                isCompleted ? 'text-gray-400' : 'text-white'
+                                className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
+                                isCompleted ? 'text-text-muted' : 'text-text'
                                 }`}
                                 onClick={(e) => e.stopPropagation()}
                             >
@@ -491,7 +491,7 @@ export default function Projects() {
                 {/* Project Documents */}
                 {project.documentsLink && project.documentsLink.length > 0 && (
                   <div>
-                    <label className="block text-xs mb-1 text-gray-300">Documents</label>
+                    <label className="block text-xs mb-1 text-text-muted">Documents</label>
                     <div className="space-y-1">
                       {project.documentsLink.map((doc, index) => (
                         <div key={index}>
@@ -500,15 +500,15 @@ export default function Projects() {
                               href={doc.src} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className={`text-xs font-medium hover:underline hover:text-blue-400 transition-colors ${
-                                isCompleted ? 'text-gray-400' : 'text-white'
+                              className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
+                                isCompleted ? 'text-text-muted' : 'text-text'
                               }`}
                               onClick={(e) => e.stopPropagation()}
                             >
                               {doc.name}
                             </a>
                           ) : (
-                            <div className={`text-xs font-medium ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                            <div className={`text-xs font-medium ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                               {doc.name}
                             </div>
                           )}
@@ -521,14 +521,14 @@ export default function Projects() {
                 {/* Date Range */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs mb-1 text-gray-300">Start Date</label>
-                    <div className={`text-xs ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                    <label className="block text-xs mb-1 text-text-muted">Start Date</label>
+                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                       {formatDate(project.startDate)}
                 </div>
               </div>
             <div>
-                    <label className="block text-xs mb-1 text-gray-300">End Date</label>
-                    <div className={`text-xs ${isCompleted ? 'text-gray-400' : 'text-white'}`}>
+                    <label className="block text-xs mb-1 text-text-muted">End Date</label>
+                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
                       {formatDate(project.endDate)}
               </div>
             </div>
@@ -542,16 +542,16 @@ export default function Projects() {
 
       {/* No Projects Message */}
       {filteredProjects.length === 0 && (
-        <div className="flex items-center justify-center h-64 text-gray-400">
+        <div className="flex items-center justify-center h-64 text-text-muted">
           {searchTerm ? 'No projects found matching your search.' : 'No projects available. Create a new project to get started.'}
         </div>
       )}
 
       {/* Create Project Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-medium mb-4">Create New Project</h3>
+        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
+          <div className="card w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card">
+            <h3 className="text-lg font-semibold mb-4 text-text">Create New Project</h3>
             
             <div className="space-y-4">
               {/* Name and Date */}
@@ -562,7 +562,7 @@ export default function Projects() {
                     type="text"
                     value={newProject.name}
                     onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project name"
                   />
                 </div>
@@ -572,7 +572,7 @@ export default function Projects() {
                     type="date"
                     value={newProject.date.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, date: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
@@ -597,7 +597,7 @@ export default function Projects() {
                     type="text"
                     value={newProject.owner}
                     onChange={(e) => setNewProject({ ...newProject, owner: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project owner"
                   />
                 </div>
@@ -607,7 +607,7 @@ export default function Projects() {
                     type="text"
                     value={newProject.ownerWork}
                     onChange={(e) => setNewProject({ ...newProject, ownerWork: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Owner's work"
                   />
                 </div>
@@ -623,12 +623,12 @@ export default function Projects() {
                         type="text"
                         value={creator}
                         onChange={(e) => updateCreator(index, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-white rounded bg-transparent text-white"
+                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Creator name"
                       />
                       <button
                         onClick={() => removeCreator(index)}
-                        className="px-2 py-1 border border-white rounded text-sm hover:bg-gray-400"
+                        className="px-2 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -636,7 +636,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addCreator}
-                    className="px-3 py-1 border border-white rounded text-sm hover:bg-gray-400"
+                    className="px-3 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Creator
                   </button>
@@ -651,7 +651,7 @@ export default function Projects() {
                     type="url"
                     value={newProject.githubLink}
                     onChange={(e) => setNewProject({ ...newProject, githubLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="GitHub repository URL"
                   />
                 </div>
@@ -661,7 +661,7 @@ export default function Projects() {
                     type="url"
                     value={newProject.projectLink}
                     onChange={(e) => setNewProject({ ...newProject, projectLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Live project URL"
                   />
                 </div>
@@ -677,19 +677,19 @@ export default function Projects() {
                         type="text"
                         value={doc.name}
                         onChange={(e) => updateDocument(index, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-white rounded bg-transparent text-white"
+                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document name"
                       />
                       <input
                         type="url"
                         value={doc.src}
                         onChange={(e) => updateDocument(index, 'src', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-white rounded bg-transparent text-white"
+                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document URL"
                       />
                       <button
                         onClick={() => removeDocument(index)}
-                        className="px-2 py-1 border border-white rounded text-sm hover:bg-gray-400"
+                        className="px-2 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -697,7 +697,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addDocument}
-                    className="px-3 py-1 border border-white rounded text-sm hover:bg-gray-400"
+                    className="px-3 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Document
                   </button>
@@ -712,7 +712,7 @@ export default function Projects() {
                     type="date"
                     value={newProject.startDate.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, startDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
                 <div className="flex-1">
@@ -721,7 +721,7 @@ export default function Projects() {
                     type="date"
                     value={newProject.endDate.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, endDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
@@ -773,7 +773,7 @@ export default function Projects() {
                     type="text"
                     value={projectToUpdate.name}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project name"
                   />
                 </div>
@@ -783,7 +783,7 @@ export default function Projects() {
                     type="date"
                     value={projectToUpdate.date.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, date: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
@@ -808,7 +808,7 @@ export default function Projects() {
                     type="text"
                     value={projectToUpdate.owner}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, owner: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project owner"
                   />
                 </div>
@@ -818,7 +818,7 @@ export default function Projects() {
                     type="text"
                     value={projectToUpdate.ownerWork}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, ownerWork: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Owner's work"
                   />
                 </div>
@@ -832,7 +832,7 @@ export default function Projects() {
                     type="url"
                     value={projectToUpdate.githubLink}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, githubLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="GitHub repository URL"
                   />
                 </div>
@@ -842,7 +842,7 @@ export default function Projects() {
                     type="url"
                     value={projectToUpdate.projectLink}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, projectLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Live project URL"
                   />
                 </div>
@@ -858,19 +858,19 @@ export default function Projects() {
                         type="text"
                         value={doc.name}
                         onChange={(e) => updateUpdateDocument(index, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-white rounded bg-transparent text-white"
+                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document name"
                       />
                       <input
                         type="url"
                         value={doc.src}
                         onChange={(e) => updateUpdateDocument(index, 'src', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-white rounded bg-transparent text-white"
+                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document URL"
                       />
                       <button
                         onClick={() => removeUpdateDocument(index)}
-                        className="px-2 py-1 border border-white rounded text-sm hover:bg-gray-400"
+                        className="px-2 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -878,7 +878,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addUpdateDocument}
-                    className="px-3 py-1 border border-white rounded text-sm hover:bg-gray-400"
+                    className="px-3 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Document
                   </button>
@@ -893,7 +893,7 @@ export default function Projects() {
                     type="date"
                     value={projectToUpdate.startDate.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, startDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
                 <div className="flex-1">
@@ -902,7 +902,7 @@ export default function Projects() {
                     type="date"
                     value={projectToUpdate.endDate.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, endDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>

@@ -79,7 +79,7 @@ export default function Definition() {
         {qaItems.map((item, index) => (
           <div 
             key={index}
-            className="border border-white rounded p-4 group hover:bg-gray-400 cursor-pointer"
+            className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
             draggable
             onDragStart={(e) => handleDragStart(e, index)}
             onDragEnd={handleDragEnd}
@@ -89,16 +89,16 @@ export default function Definition() {
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h4 className="text-base font-normal mb-2">{item.title}</h4>
-                <p className="text-sm text-gray-300">{item.explanation}</p>
+                <h4 className="text-base font-semibold mb-2 text-text">{item.title}</h4>
+                <p className="text-sm text-text-muted">{item.explanation}</p>
               </div>
-              <div className="opacity-0 group-hover:opacity-100 flex gap-1 ml-2">
+              <div className="opacity-0 group-hover:opacity-100 flex gap-2 ml-2 transition-opacity duration-200">
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDelete(index);
                   }}
-                  className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
+                  className="text-danger hover:text-danger/80 text-xs px-3 py-1 border border-danger rounded-lg hover:bg-danger/10 transition-all duration-200"
                   title="Delete"
                 >
                   🗑️

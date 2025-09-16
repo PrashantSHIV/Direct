@@ -44,18 +44,18 @@ export default function SDLifeCycle() {
   };
 
   return (
-    <div className="text-white h-full flex flex-col">
-      <h3 className="bg-gray-600 p-3 py-2 flex-shrink-0">SD Life Cycle</h3>
+    <div className="text-text h-full flex flex-col">
+      <h3 className="bg-surface border-b border-border p-4 py-3 flex-shrink-0 text-lg font-semibold">SD Life Cycle</h3>
       
       <div className="flex-1 overflow-hidden">
         <div className="grid grid-cols-[240px_1fr] gap-6 h-full">
           {/* Left Panel - Navigation */}
-          <aside className=" bg-gray-500 p-4 h-full overflow-y-auto">
+          <aside className="bg-elev-2 border-r border-border p-4 h-full overflow-y-auto">
             <nav className="space-y-2">
                <button
                  onClick={() => handleSectionClick('Definition')}
-                 className={`block w-full text-left text-white text-sm font-normal px-3 py-2 rounded hover:bg-gray-600 ${
-                   activeSection === 'Definition' ? 'border border-white bg-gray-600' : ''
+                 className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
+                   activeSection === 'Definition' ? 'bg-accent-blue text-text-inverse shadow-card' : ''
                  }`}
                >
                  Definition
@@ -65,20 +65,20 @@ export default function SDLifeCycle() {
               <div>
                 <button
                   onClick={handlePhasesClick}
-                  className={`block w-full text-left text-white text-sm font-normal px-3 py-2 rounded hover:bg-gray-600 ${
-                    activePhase ? 'border border-white bg-gray-600' : ''
+                  className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
+                    activePhase ? 'bg-accent-blue text-text-inverse shadow-card' : ''
                   }`}
                 >
                   Phases {showPhasesDropdown ? '▲' : '▼'}
                 </button>
                 {showPhasesDropdown && (
-                  <div className="ml-4 mt-1 space-y-1">
+                  <div className="ml-4 mt-2 space-y-1">
                     {phases.map((phase) => (
                       <button
                         key={phase}
                         onClick={() => handlePhaseSelect(phase)}
-                        className={`block w-full text-left text-white text-xs font-normal px-3 py-1 rounded hover:bg-gray-600 ${
-                          activePhase === phase ? 'border border-white bg-gray-600' : ''
+                        className={`block w-full text-left text-text-muted text-xs font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-pink ${
+                          activePhase === phase ? 'bg-accent-pink text-text-inverse shadow-card' : ''
                         }`}
                       >
                         {phase}
@@ -90,8 +90,8 @@ export default function SDLifeCycle() {
               
                <button
                  onClick={() => handleSectionClick('Projects')}
-                 className={`block w-full text-left text-white text-sm font-normal px-3 py-2 rounded hover:bg-gray-600 ${
-                   activeSection === 'Projects' ? 'border border-white bg-gray-600' : ''
+                 className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
+                   activeSection === 'Projects' ? 'bg-accent-blue text-text-inverse shadow-card' : ''
                  }`}
                >
                  Projects
@@ -100,7 +100,7 @@ export default function SDLifeCycle() {
           </aside>
 
           {/* Right Panel - Content */}
-          <section className="p-4 h-full overflow-y-auto">
+          <section className="p-6 h-full overflow-y-auto bg-background">
             {renderContent()}
           </section>
         </div>
