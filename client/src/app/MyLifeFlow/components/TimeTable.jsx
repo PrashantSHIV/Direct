@@ -90,13 +90,14 @@ export default function TimeTable() {
         <div className="border-b border-subtle pb-2 mb-4 font-semibold text-[#000000d9]">
           {section === 'working' ? 'Working Day' : 'Holiday'}
         </div>
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-subtle">
-              <td className="py-2 px-3 text-[#00000080] font-medium text-sm">Time</td>
-              <td className="px-3 text-[#00000080] font-medium text-sm">Discipline</td>
-            </tr>
-          </thead>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[300px]">
+            <thead>
+              <tr className="border-b border-subtle">
+                <td className="py-2 px-2 md:px-3 text-[#00000080] font-medium text-xs md:text-sm">Time</td>
+                <td className="px-2 md:px-3 text-[#00000080] font-medium text-xs md:text-sm">Discipline</td>
+              </tr>
+            </thead>
           <tbody>
             {data.sort((a,b) => a.time.localeCompare(b.time)).map((row, index) => (
               <tr 
@@ -104,20 +105,20 @@ export default function TimeTable() {
                 className="border-b border-subtle hover:bg-elev-3 cursor-pointer transition-all duration-200"
                 onDoubleClick={() => handleEdit(row, index, section)}
               >
-                <td className="py-2 px-3 text-[#000000d9] font-medium text-sm">{row.time}</td>
-                <td className="px-3 text-[#000000d9] text-sm">{row.discipline}</td>
+                <td className="py-2 px-2 md:px-3 text-[#000000d9] font-medium text-xs md:text-sm">{row.time}</td>
+                <td className="px-2 md:px-3 text-[#000000d9] text-xs md:text-sm">{row.discipline}</td>
               </tr>
             ))}
             <tr className="rounded-lg hover:bg-elev-3 transition-all duration-200 opacity-0 hover:opacity-100">
-              <td className="py-2 px-3">
+              <td className="py-2 px-2 md:px-3">
                 <input 
                   type="time" 
                   value={newItem.time}
                   onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-                  className="bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </td>
-              <td className="px-3" colSpan="2">
+              <td className="px-2 md:px-3">
                 <input
                   type="text"
                   value={newItem.discipline}
@@ -128,12 +129,13 @@ export default function TimeTable() {
                     }
                   }}
                   placeholder="Discipline (Press Enter)"
-                  className="bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </td>
             </tr>
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     );
   };
@@ -141,8 +143,8 @@ export default function TimeTable() {
   if (loading) {
     return (
       <div>
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Time Table</h3>
-        <div className="p-6 text-center">
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-[#000000d9] font-semibold text-sm md:text-base">Time Table</h3>
+        <div className="p-3 md:p-6 text-center">
           <p className="text-text-muted">Loading timetable data...</p>
         </div>
       </div>
@@ -151,17 +153,17 @@ export default function TimeTable() {
 
   return (
     <div>
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Time Table</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-[#000000d9] font-semibold text-sm md:text-base">Time Table</h3>
 
-      <div className="p-6">
-        <div className="grid grid-cols-2 gap-6">
+      <div className="p-3 md:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
           {/* Working Day Section */}
-          <div className="border-r border-subtle pr-6">
+          <div className="lg:border-r lg:border-subtle lg:pr-6">
             {renderTable(workingDayData, 'working', newWorkingItem, setNewWorkingItem)}
           </div>
           
           {/* Holiday Section */}
-          <div className="pl-6">
+          <div className="lg:pl-6">
             {renderTable(holidayData, 'holiday', newHolidayItem, setNewHolidayItem)}
           </div>
         </div>
@@ -174,7 +176,7 @@ export default function TimeTable() {
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Item</h3>

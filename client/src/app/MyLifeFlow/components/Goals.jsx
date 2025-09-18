@@ -123,8 +123,8 @@ export default function Goals() {
   if (loading) {
     return (
       <div className="text-text">
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Goals</h3>
-        <div className="flex-1 flex items-center justify-center p-6">
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-[#000000d9] font-semibold text-sm md:text-base">Goals</h3>
+        <div className="flex-1 flex items-center justify-center p-3 md:p-6">
           <p className="text-text-muted">Loading goals data...</p>
         </div>
       </div>
@@ -133,16 +133,17 @@ export default function Goals() {
 
   return (
     <div className="text-text">
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Goals</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-[#000000d9] font-semibold text-sm md:text-base">Goals</h3>
       
-      <div className="p-6">
-        <div className="border border-subtle rounded-lg">
-          {/* Header */}
-          <div className="grid grid-cols-3 border-b border-subtle">
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Goal</div>
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Reason</div>
-            <div className="p-3 text-sm font-semibold text-[#00000080]">Duration</div>
-          </div>
+      <div className="p-3 md:p-6">
+        <div className="border border-subtle rounded-lg overflow-x-auto">
+          <div className="min-w-[600px]">
+            {/* Header */}
+            <div className="grid grid-cols-3 border-b border-subtle">
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Goal</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Reason</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Duration</div>
+            </div>
           
           {/* Data Rows */}
           {(goals || []).map((goal, index) => (
@@ -156,47 +157,48 @@ export default function Goals() {
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(goal, index)}
             >
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{goal.goal}</div>
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{goal.reason}</div>
-              <div className="p-3 text-sm text-[#000000d9]">
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{goal.goal}</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{goal.reason}</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">
                 {goal.duration}
               </div>
             </div>
           ))}
           
-          {/* Add New Row */}
-          <div className="grid grid-cols-3">
-            <div className="border-r border-subtle p-3">
-              <input 
-                type="text" 
-                value={newGoal.goal}
-                onChange={(e) => setNewGoal({...newGoal, goal: e.target.value})}
-                placeholder="Enter goal"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-              />
-            </div>
-            <div className="border-r border-subtle p-3">
-              <input 
-                type="text" 
-                value={newGoal.reason}
-                onChange={(e) => setNewGoal({...newGoal, reason: e.target.value})}
-                placeholder="Enter reason"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-              />
-            </div>
-            <div className="p-3">
-              <input 
-                type="text" 
-                value={newGoal.duration}
-                onChange={(e) => setNewGoal({...newGoal, duration: e.target.value})}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddNew();
-                  }
-                }}
-                placeholder="Enter duration (Press Enter)"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-              />
+            {/* Add New Row */}
+            <div className="grid grid-cols-3">
+              <div className="border-r border-subtle p-2 md:p-3">
+                <input 
+                  type="text" 
+                  value={newGoal.goal}
+                  onChange={(e) => setNewGoal({...newGoal, goal: e.target.value})}
+                  placeholder="Enter goal"
+                  className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                />
+              </div>
+              <div className="border-r border-subtle p-2 md:p-3">
+                <input 
+                  type="text" 
+                  value={newGoal.reason}
+                  onChange={(e) => setNewGoal({...newGoal, reason: e.target.value})}
+                  placeholder="Enter reason"
+                  className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                />
+              </div>
+              <div className="p-2 md:p-3">
+                <input 
+                  type="text" 
+                  value={newGoal.duration}
+                  onChange={(e) => setNewGoal({...newGoal, duration: e.target.value})}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddNew();
+                    }
+                  }}
+                  placeholder="Enter duration (Press Enter)"
+                  className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -209,7 +211,7 @@ export default function Goals() {
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Goal</h3>

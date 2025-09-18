@@ -199,8 +199,8 @@ export default function Phase({ activePhase }) {
   if (loading) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">{activePhase} Phase</h3>
-        <div className="flex-1 flex items-center justify-center">
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-[#000000d9] font-semibold text-sm md:text-base">{activePhase} Phase</h3>
+        <div className="flex-1 flex items-center justify-center p-3 md:p-6">
           <p className="text-[#00000080]">Loading phase data...</p>
         </div>
       </div>
@@ -209,17 +209,17 @@ export default function Phase({ activePhase }) {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">{activePhase} Phase</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-[#000000d9] font-semibold text-sm md:text-base">{activePhase} Phase</h3>
       
-      <div className="p-6 flex-1 overflow-y-auto">
+      <div className="p-3 md:p-6 flex-1 overflow-y-auto">
         {/* Top Row - Definitions and Tools */}
-        <div className="grid grid-cols-[1fr_300px] gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-3 md:gap-6 mb-6">
           {/* Left Section - Definitions */}
           <div>
             <h4 className="text-base font-normal mb-4">Definitions</h4>
             {/* Definitions Section */}
             <div 
-              className="border border-subtle rounded-lg p-4"
+              className="border border-subtle rounded-lg p-3 md:p-4"
               onMouseEnter={() => setHoveredSection('definitions')}
               onMouseLeave={() => setHoveredSection(null)}
             >
@@ -278,60 +278,59 @@ export default function Phase({ activePhase }) {
           <div>
             <h4 className="text-base font-normal mb-4">Tools</h4>
             <div 
-              className="border border-subtle rounded-lg p-4"
+              className="border border-subtle rounded-lg p-3 md:p-4"
               onMouseEnter={() => setHoveredSection('tools')}
               onMouseLeave={() => setHoveredSection(null)}
             >
-            
-            <div className="space-y-2">
-              {(phaseData.tools || []).map((tool, index) => (
-                <div 
-                  key={index}
-                  className="border border-subtle rounded-lg p-3 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, index, 'tools')}
-                  onDragEnd={handleDragEnd}
-                  onDragOver={handleDragOver}
-                  onDrop={(e) => handleDrop(e, index, 'tools')}
-                  onDoubleClick={() => window.api.openExternal(tool.src)}
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex-1">
-                      <span className="text-sm font-medium text-[#000000d9] hover:text-accent-blue transition-colors duration-200">
-                        {tool.name}
-                      </span>
+              <div className="space-y-2">
+                {(phaseData.tools || []).map((tool, index) => (
+                  <div 
+                    key={index}
+                    className="border border-subtle rounded-lg p-3 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index, 'tools')}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, index, 'tools')}
+                    onDoubleClick={() => window.api.openExternal(tool.src)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex-1">
+                        <span className="text-sm font-medium text-[#000000d9] hover:text-accent-blue transition-colors duration-200">
+                          {tool.name}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Add New Tool - Show only when hovering tools section */}
-            {hoveredSection === 'tools' && (
-              <div className="mt-4 border border-subtle rounded-lg p-4">
-                <div className="space-y-2">
-                  <input 
-                    type="text" 
-                    value={newTool.name}
-                    onChange={(e) => setNewTool({...newTool, name: e.target.value})}
-                    placeholder="Name"
-                    className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-                  />
-                  <input 
-                    type="text" 
-                    value={newTool.src}
-                    onChange={(e) => setNewTool({...newTool, src: e.target.value})}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        addTool();
-                      }
-                    }}
-                    placeholder="Source/URL (Press Enter)"
-                    className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-                  />
-                </div>
+                ))}
               </div>
-            )}
+              
+              {/* Add New Tool - Show only when hovering tools section */}
+              {hoveredSection === 'tools' && (
+                <div className="mt-4 border border-subtle rounded-lg p-4">
+                  <div className="space-y-2">
+                    <input 
+                      type="text" 
+                      value={newTool.name}
+                      onChange={(e) => setNewTool({...newTool, name: e.target.value})}
+                      placeholder="Name"
+                      className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    />
+                    <input 
+                      type="text" 
+                      value={newTool.src}
+                      onChange={(e) => setNewTool({...newTool, src: e.target.value})}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          addTool();
+                        }
+                      }}
+                      placeholder="Source/URL (Press Enter)"
+                      className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -340,66 +339,70 @@ export default function Phase({ activePhase }) {
         <div>
           <h4 className="text-base font-normal mb-4">Steps</h4>
           <div 
-            className="border border-subtle rounded-lg p-4"
+            className="border border-subtle rounded-lg p-3 md:p-4"
             onMouseEnter={() => setHoveredSection('steps')}
             onMouseLeave={() => setHoveredSection(null)}
           >
-          <div className="grid grid-cols-[60px_1fr_1fr] border-b border-subtle mb-2">
-            <div className="border-r border-subtle p-2 text-sm font-semibold text-[#00000080]">#</div>
-            <div className="border-r border-subtle p-2 text-sm font-semibold text-[#00000080]">Step</div>
-            <div className="p-2 text-sm font-semibold text-[#00000080]">Reason</div>
-          </div>
-          
-          {(phaseData.steps || []).map((item, index) => (
-            <div 
-              key={index} 
-              className="grid grid-cols-[60px_1fr_1fr] border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
-              draggable
-              onDragStart={(e) => handleDragStart(e, index, 'steps')}
-              onDragEnd={handleDragEnd}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, index, 'steps')}
-              onDoubleClick={() => {/* Handle edit if needed */}}
-            >
-              <div className="border-r border-subtle p-2 text-sm text-[#000000d9] font-medium">{index + 1}</div>
-              <div className="border-r border-subtle p-2 text-sm text-[#000000d9]">{item.step}</div>
-              <div className="p-2 text-sm text-[#000000d9]">
-                <span>{item.reason}</span>
+            <div className="overflow-x-auto">
+              <div className="min-w-[500px]">
+                <div className="grid grid-cols-[50px_1fr_1fr] md:grid-cols-[60px_1fr_1fr] border-b border-subtle mb-2">
+                  <div className="border-r border-subtle p-2 text-xs md:text-sm font-semibold text-[#00000080]">#</div>
+                  <div className="border-r border-subtle p-2 text-xs md:text-sm font-semibold text-[#00000080]">Step</div>
+                  <div className="p-2 text-xs md:text-sm font-semibold text-[#00000080]">Reason</div>
+                </div>
+                
+                {(phaseData.steps || []).map((item, index) => (
+                  <div 
+                    key={index} 
+                    className="grid grid-cols-[50px_1fr_1fr] md:grid-cols-[60px_1fr_1fr] border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index, 'steps')}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, index, 'steps')}
+                    onDoubleClick={() => {/* Handle edit if needed */}}
+                  >
+                    <div className="border-r border-subtle p-2 text-xs md:text-sm text-[#000000d9] font-medium">{index + 1}</div>
+                    <div className="border-r border-subtle p-2 text-xs md:text-sm text-[#000000d9]">{item.step}</div>
+                    <div className="p-2 text-xs md:text-sm text-[#000000d9]">
+                      <span>{item.reason}</span>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Add New Step Row - Show only when hovering steps section */}
+                {hoveredSection === 'steps' && (
+                  <div className="grid grid-cols-[50px_1fr_1fr] md:grid-cols-[60px_1fr_1fr]">
+                    <div className="border-r border-subtle p-2">
+                      <div className="text-xs md:text-sm text-[#00000080] font-medium">{(phaseData.steps || []).length + 1}</div>
+                    </div>
+                    <div className="border-r border-subtle p-2">
+                      <input 
+                        type="text" 
+                        value={newStep.step}
+                        onChange={(e) => setNewStep({...newStep, step: e.target.value})}
+                        placeholder="Step"
+                        className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                      />
+                    </div>
+                    <div className="p-2">
+                      <input 
+                        type="text" 
+                        value={newStep.reason}
+                        onChange={(e) => setNewStep({...newStep, reason: e.target.value})}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            addStep();
+                          }
+                        }}
+                        placeholder="Reason (Press Enter)"
+                        className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          ))}
-          
-          {/* Add New Step Row - Show only when hovering steps section */}
-          {hoveredSection === 'steps' && (
-            <div className="grid grid-cols-[60px_1fr_1fr]">
-              <div className="border-r border-subtle p-2">
-                <div className="text-sm text-[#00000080] font-medium">{(phaseData.steps || []).length + 1}</div>
-              </div>
-              <div className="border-r border-subtle p-2">
-                <input 
-                  type="text" 
-                  value={newStep.step}
-                  onChange={(e) => setNewStep({...newStep, step: e.target.value})}
-                  placeholder="Step"
-                  className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-                />
-              </div>
-              <div className="p-2">
-                <input 
-                  type="text" 
-                  value={newStep.reason}
-                  onChange={(e) => setNewStep({...newStep, reason: e.target.value})}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      addStep();
-                    }
-                  }}
-                  placeholder="Reason (Press Enter)"
-                  className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-                />
-              </div>
-            </div>
-          )}
           </div>
         </div>
       </div>
