@@ -189,8 +189,14 @@ export default function Remember() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div 
+            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Remember Item</h3>
             
             <div className="space-y-4">

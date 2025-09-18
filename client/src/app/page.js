@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { SiPhpmyadmin, SiTask } from 'react-icons/si';
 import { GrCycle } from 'react-icons/gr';
 import { MdApps, MdOutlineSubject } from 'react-icons/md';
+import { RxHamburgerMenu } from 'react-icons/rx';
 import MyLifeFlow from '@/app/MyLifeFlow/page';
 import SDLifeCycle from '@/app/SDLifeCycle/page';
 import Applications from '@/app/Application\'s/page';
@@ -15,6 +16,8 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activePage, setActivePage] = useState('MyLifeFlow');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Set active page based on query parameter on component mount and when searchParams change
   useEffect(() => {
@@ -29,6 +32,24 @@ export default function Home() {
       setActivePage('MyLifeFlow');
     }
   }, [searchParams, router]);
+
+  // Handle responsive behavior and mobile detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setSidebarCollapsed(true);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
 
   const pages = [
     { id: 'MyLifeFlow', name: 'My Life Flow', icon: SiPhpmyadmin },
@@ -64,14 +85,17 @@ export default function Home() {
         </h1>
       </header>
 
-      <main className="grid grid-cols-[260px_1fr] flex-1 min-h-0">
+      <main className={`flex flex-1 min-h-0 transition-all duration-300 ${sidebarCollapsed ? 'grid-cols-[80px_1fr]' : 'grid-cols-[260px_1fr]'} grid`}>
         {/* Sidebar */}
-        <aside className="border-r border-subtle p-6 overflow-y-auto">
+        <aside className={`border-r border-subtle overflow-y-auto transition-all duration-300 p-3`}>
           <div className="space-y-6">
-            {/* Logo placeholder */}
-            <div className="w-8 h-8 border border-border rounded-lg -blue/20 flex items-center justify-center">
-              <div className="w-4 h-4 -blue rounded"></div>
-            </div>
+            {/* Hamburger Menu Button */}
+            <button 
+              onClick={toggleSidebar}
+              className="w-full flex items-center justify-start px-4 py-3 rounded-lg hover:bg-elev-3 transition-colors duration-200"
+            >
+              <RxHamburgerMenu className="w-5 h-5 text-[#00000080]" />
+            </button>
             
             {/* Navigation Buttons */}
             <nav className="space-y-3">
@@ -80,11 +104,17 @@ export default function Home() {
                 return (
                   <button
                     key={page.id}
-                    onClick={() => router.push(`/?page=${page.id}`)}
-                    className={`nav-button ${activePage === page.id ? 'active' : ''}`}
+                    onClick={() => {
+                      router.push(`/?page=${page.id}`);
+                      if (isMobile) {
+                        setSidebarCollapsed(true);
+                      }
+                    }}
+                    className={`nav-button ${activePage === page.id ? 'active' : ''} ${sidebarCollapsed ? 'justify-center px-2' : ''} whitespace-nowrap`}
+                    title={sidebarCollapsed ? page.name : ''}
                   >
-                    <IconComponent className="w-5 h-5 mr-3 flex-shrink-0" />
-                    {page.name}
+                    <IconComponent className={`w-5 h-5 flex-shrink-0 ${sidebarCollapsed ? '' : 'mr-3'}`} />
+                    {!sidebarCollapsed && page.name}
                   </button>
                 );
               })}

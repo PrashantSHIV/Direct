@@ -39,6 +39,10 @@ export default function TasksNext24Hours() {
         }
       });
       
+      // Sort tasks with newest first
+      active.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      completed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
       setActiveTasks(active);
       setCompletedTasks(completed);
     } catch (error) {
@@ -103,17 +107,6 @@ export default function TasksNext24Hours() {
     }
   };
 
-  const markAsFailed = async (taskId) => {
-    try {
-      const task = activeTasks.find(t => t.id === taskId);
-      if (task) {
-        await window.api.updateTask(taskId, task.task, 'failed');
-        loadTasksData(); // Reload data from database
-      }
-    } catch (error) {
-      console.error('Error marking task as failed:', error);
-    }
-  };
 
   // Drag and drop functions
   const handleDragStart = (e, index) => {
@@ -170,21 +163,25 @@ export default function TasksNext24Hours() {
 
   if (loading) {
     return (
-      <div className="text-text h-full flex items-center justify-center">
-        <p className="text-text-muted">Loading tasks data...</p>
+      <div className="text-text flex flex-col h-full">
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Tasks Next 24 Hours</h3>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-[#00000080]">Loading tasks data...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="text-text">
-      <h3 className="bg-surface border-b border-subtle p-4 py-3 text-lg font-semibold">Tasks Next 24 Hours</h3>
+    <div className="text-text flex flex-col h-full">
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Tasks Next 24 Hours</h3>
       
-      <div className="p-6">
+      <div className="p-6 flex-1 overflow-y-auto">
         {/* Two Panel Layout */}
         <div className="grid grid-cols-2 gap-6">
-          {/* Left Panel - Tasks Next 24 Hours */}
+          {/* Left Panel - Current Tasks */}
           <div>
+            <h4 className="text-base font-semibold mb-4 text-[#000000d9]">Current Tasks</h4>
             {/* Task Input Area */}
             <div className="mb-6">
               <div className="flex gap-3">
@@ -192,23 +189,17 @@ export default function TasksNext24Hours() {
                   type="text" 
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="Enter new task"
-                  className="flex-1 border border-subtle bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  placeholder="Enter new task (Presss Enter)"
+                  className="flex-1 border border-subtle bg-surface text-[#000000d9] px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   onKeyPress={(e) => e.key === 'Enter' && addTask()}
                 />
-                <button 
-                  onClick={addTask}
-                  className="btn px-4 py-3 rounded-lg hover:opacity-90 transition-all duration-200"
-                >
-                  +
-                </button>
               </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {activeTasks.map((task, index) => (
                 <div 
                   key={index} 
-                  className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
+                  className="bg-white border border-subtle rounded-lg p-3 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
                   draggable
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragEnd={handleDragEnd}
@@ -217,27 +208,17 @@ export default function TasksNext24Hours() {
                   onDoubleClick={() => handleEdit(task, index)}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{task.task}</span>
+                    <span className="text-sm font-medium text-[#000000d9]">{task.task}</span>
                     <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity duration-200">
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           markAsCompleted(task.id);
                         }}
-                        className="text-success hover:text-success/80 text-xs px-3 py-1 border border-success rounded-lg hover:bg-success/10 transition-all duration-200"
+                        className="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
                         title="Mark as Completed"
                       >
                         ✓
-                      </button>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          markAsFailed(task.id);
-                        }}
-                        className="text-danger hover:text-danger/80 text-xs px-3 py-1 border border-danger rounded-lg hover:bg-danger/10 transition-all duration-200"
-                        title="Mark as Failed"
-                      >
-                        ✗
                       </button>
                     </div>
                   </div>
@@ -246,50 +227,46 @@ export default function TasksNext24Hours() {
             </div>
           </div>
 
-          {/* Right Panel - Tasks (Completed/Failed) */}
+          {/* Right Panel - Task History */}
           <div>
-            <h4 className="text-base font-semibold mb-4 text-text">Tasks</h4>
+            <h4 className="text-base font-semibold mb-4 text-[#000000d9]">Task History</h4>
             <div className="flex gap-2 mb-4">
               <button 
                 onClick={() => setStatusFilter('completed')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  statusFilter === 'completed' 
-                    ? 'bg-success text-text-inverse shadow-card' 
-                    : 'border border-subtle text-text-muted hover:bg-elev-3 hover:text-accent-green'
-                }`}
+                className={`nav-button ${statusFilter === 'completed' ? 'active' : ''}`}
               >
                 Completed
               </button>
               <button 
                 onClick={() => setStatusFilter('failed')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  statusFilter === 'failed' 
-                    ? 'bg-danger text-text-inverse shadow-card' 
-                    : 'border border-subtle text-text-muted hover:bg-elev-3 hover:text-accent-pink'
-                }`}
+                className={`nav-button ${statusFilter === 'failed' ? 'active' : ''}`}
               >
                 Failed
               </button>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {getFilteredTasks().map((task, index) => (
                 <div 
                   key={index} 
-                  className="card"
+                  className="bg-white border border-subtle rounded-lg p-3"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{task.task}</span>
-                    <span className={`text-xs px-3 py-1 rounded-lg font-medium ${
-                      task.status === 'completed' 
-                        ? 'bg-success text-text-inverse' 
-                        : 'bg-danger text-text-inverse'
-                    }`}>
-                      {task.status === 'completed' ? '✓' : '✗'}
-                    </span>
+                    <span className="text-sm font-medium text-[#000000d9]">{task.task}</span>
                   </div>
-                  <div className="text-xs text-text-muted mt-2">
-                    {new Date(task.createdAt).toLocaleString()}
+                  <div className="text-xs text-[#00000080] mt-2">
+                    {(() => {
+                      const utcDate = new Date(task.createdAt);
+                      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+                      return istDate.toLocaleString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      });
+                    })()}
                   </div>
                 </div>
               ))}
@@ -300,40 +277,46 @@ export default function TasksNext24Hours() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
-          <div className="card w-96 max-w-[90vw] shadow-card">
-            <h3 className="text-lg font-semibold mb-4 text-text">Edit Task</h3>
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div 
+            className="w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Task</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-2 text-text-muted">Task:</label>
+                <label className="block text-sm mb-2 text-[#00000080]">Task:</label>
                 <input
                   type="text"
                   value={editingData}
                   onChange={(e) => setEditingData(e.target.value)}
-                  className="w-full bg-surface text-text border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
+                onClick={() => {
+                  handleDelete(editingTask.task.id);
+                  setShowEditModal(false);
+                  setEditingTask(null);
+                  setEditingData('');
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingTask.task.id);
-                    setShowEditModal(false);
-                    setEditingTask(null);
-                    setEditingData('');
-                  }}
-                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}

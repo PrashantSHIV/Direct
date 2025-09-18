@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { IoMdAdd } from 'react-icons/io';
+import { MdOutlineDelete } from 'react-icons/md';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -390,14 +392,20 @@ export default function Projects() {
 
   if (loading) {
     return (
-      <div className="text-text h-full flex items-center justify-center">
-        <p className="text-text-muted">Loading projects data...</p>
+      <div className="text-text flex flex-col h-full">
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Projects</h3>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-[#00000080]">Loading projects data...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="text-text flex flex-col h-full">
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Projects</h3>
+      
+      <div className="p-6 flex-1 overflow-y-auto">
       {/* Header with Search and New Button */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex-1 max-w-md">
@@ -406,12 +414,12 @@ export default function Projects() {
             placeholder="Search projects..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-border rounded-lg bg-surface text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+            className="w-full px-4 py-3 border border-subtle rounded-lg bg-surface text-[#000000d9] placeholder-[#00000080] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
           />
         </div>
           <button 
             onClick={() => setShowCreateModal(true)}
-            className="btn px-4 py-3 rounded-lg text-sm font-medium hover:opacity-90 transition-all duration-200"
+            className="px-4 py-3 bg-accent-blue text-text-inverse rounded-lg text-sm font-medium hover:opacity-90 transition-all duration-200"
           >
             New
           </button>
@@ -428,8 +436,8 @@ export default function Projects() {
           return (
             <div 
               key={project.id}
-              className={`card hover:bg-elev-3 cursor-pointer transition-all duration-300 break-inside-avoid mb-4 hover:shadow-card ${
-                isCompleted ? 'opacity-60' : ''
+              className={`bg-white border border-subtle rounded-xl p-5 cursor-pointer transition-all duration-300 break-inside-avoid mb-6 ${
+                isCompleted ? 'opacity-50 bg-gray-50' : ''
               }`}
               draggable
               onDragStart={(e) => handleDragStart(e, project)}
@@ -437,22 +445,22 @@ export default function Projects() {
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, project)}
               onDoubleClick={() => handleProjectDoubleClick(project)}
-              style={{
+                style={{
                 backgroundColor: !isCompleted && project.endDate 
-                  ? `rgba(52, 211, 153, ${opacity * 0.1})` // Green background with calculated opacity using success color
+                  ? `rgba(52, 211, 153, ${opacity * 0.08})` // Subtle green background with calculated opacity
                   : undefined,
                 minHeight: 'fit-content',
                 height: 'auto'
               }}
             >
               {/* Card Header */}
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex justify-between items-start">
               <div className="flex-1">
-                  <h3 className={`text-sm font-semibold mb-1 ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                  <h3 className={`text-base font-bold mb-2 ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                     {project.projectLink ? (
                       <a 
                         href="#" 
-                        className="hover:underline hover:text-blue-400 transition-colors"
+                        className="hover:underline hover:text-gray-600 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
@@ -465,21 +473,21 @@ export default function Projects() {
                       project.name
                     )}
                   </h3>
-                  <p className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text-muted'}`}>
-                    Created: {formatDate(project.date)}
-                  </p>
                 </div>
               </div>
 
               {/* Status Badge */}
-              <div className="mb-3">
-                <span className={`text-xs px-3 py-1 rounded-lg font-medium ${
-                  isCompleted 
-                    ? 'bg-elev-3 text-text-muted' 
-                    : project.endDate 
-                      ? `bg-success text-text-inverse` 
-                      : 'bg-accent-blue text-text-inverse'
-                }`}>
+              <div className="mb-3 flex justify-between items-baseline">
+                  <p className={`text-xs text-[#00000080] mb-2`}>
+                    Created: {formatDate(project.date)}
+                  </p>
+                 <span className={`text-xs px-3 py-1 rounded-lg font-medium ${
+                   isCompleted 
+                     ? 'bg-gray-200 text-gray-500' 
+                     : project.endDate 
+                       ? `bg-green-100 text-green-700` 
+                       : 'bg-gray-100 text-gray-600'
+                 }`}>
                   {isCompleted ? 'Completed' : 'Active'}
                   {!isCompleted && project.endDate && ` (${progress}%)`}
                 </span>
@@ -487,7 +495,7 @@ export default function Projects() {
 
             {/* Expanded Content */}
             {isExpanded && (
-              <div className="space-y-3 border-t border-gray-600 pt-3">
+              <div className="space-y-3 border-t border-subtle pt-3">
                 {/* Action Buttons - Only show when expanded */}
                 <div className="flex gap-2 mb-3">
                   <button
@@ -495,7 +503,7 @@ export default function Projects() {
                       e.stopPropagation();
                       handleUpdateProject(project);
                     }}
-                    className="px-3 py-1 text-xs border border-border rounded-lg hover:bg-elev-3 transition-all duration-200"
+                    className="px-3 py-1 text-xs border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
                   >
                     Edit
                   </button>
@@ -512,8 +520,8 @@ export default function Projects() {
 
             {/* Insight */}
             <div>
-                  <label className="block text-xs mb-1 text-text-muted">Insight</label>
-                  <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                  <label className="block text-xs mb-1 text-[#00000080]">Insight</label>
+                  <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                     {project.insight || '-'}
               </div>
             </div>
@@ -521,14 +529,14 @@ export default function Projects() {
             {/* Owner and Owner Work */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs mb-1 text-text-muted">Owner</label>
-                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                    <label className="block text-xs mb-1 text-[#00000080]">Owner</label>
+                    <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                       {project.owner || '-'}
                 </div>
               </div>
                   <div>
-                    <label className="block text-xs mb-1 text-text-muted">Owner Work</label>
-                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                    <label className="block text-xs mb-1 text-[#00000080]">Owner Work</label>
+                    <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                       {project.ownerWork || '-'}
                 </div>
               </div>
@@ -536,22 +544,22 @@ export default function Projects() {
 
             {/* Creator */}
             <div>
-                  <label className="block text-xs mb-1 text-text-muted">Creator</label>
-                  <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                  <label className="block text-xs mb-1 text-[#00000080]">Creator</label>
+                  <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                     {formatArray(project.creator)}
               </div>
             </div>
 
             {/* Links */}
                 <div>
-                    <label className="block text-xs mb-1 text-text-muted">Project Links</label>
+                    <label className="block text-xs mb-1 text-[#00000080]">Project Links</label>
                     <div className="space-y-1">
                         {project.githubLink && (
                             <div>
                             <a 
                                 href="#"
-                                className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
-                                isCompleted ? 'text-text-muted' : 'text-text'
+                                className={`text-xs font-medium hover:underline hover:text-gray-600 transition-colors ${
+                                isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'
                                 }`}
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -567,8 +575,8 @@ export default function Projects() {
             <div>
                             <a 
                                 href="#"
-                                className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
-                                isCompleted ? 'text-text-muted' : 'text-text'
+                                className={`text-xs font-medium hover:underline hover:text-gray-600 transition-colors ${
+                                isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'
                                 }`}
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -586,15 +594,15 @@ export default function Projects() {
                 {/* Project Documents */}
                 {project.documentsLink && project.documentsLink.length > 0 && (
                   <div>
-                    <label className="block text-xs mb-1 text-text-muted">Documents</label>
+                    <label className="block text-xs mb-1 text-[#00000080]">Documents</label>
                     <div className="space-y-1">
                       {project.documentsLink.map((doc, index) => (
                         <div key={index}>
                           {doc.src ? (
                             <a 
                               href="#"
-                              className={`text-xs font-medium hover:underline hover:text-accent-blue transition-colors ${
-                                isCompleted ? 'text-text-muted' : 'text-text'
+                              className={`text-xs font-medium hover:underline hover:text-gray-600 transition-colors ${
+                                isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'
                               }`}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -605,7 +613,7 @@ export default function Projects() {
                               {doc.name}
                             </a>
                           ) : (
-                            <div className={`text-xs font-medium ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                            <div className={`text-xs font-medium ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                               {doc.name}
                             </div>
                           )}
@@ -618,14 +626,14 @@ export default function Projects() {
                 {/* Date Range */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs mb-1 text-text-muted">Start Date</label>
-                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                    <label className="block text-xs mb-1 text-[#00000080]">Start Date</label>
+                    <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                       {formatDate(project.startDate)}
                 </div>
               </div>
             <div>
-                    <label className="block text-xs mb-1 text-text-muted">End Date</label>
-                    <div className={`text-xs ${isCompleted ? 'text-text-muted' : 'text-text'}`}>
+                    <label className="block text-xs mb-1 text-[#00000080]">End Date</label>
+                    <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                       {formatDate(project.endDate)}
               </div>
             </div>
@@ -639,49 +647,55 @@ export default function Projects() {
 
       {/* No Projects Message */}
       {filteredProjects.length === 0 && (
-        <div className="flex items-center justify-center h-64 text-text-muted">
+        <div className="flex items-center justify-center h-64 text-[#00000080]">
           {searchTerm ? 'No projects found matching your search.' : 'No projects available. Create a new project to get started.'}
         </div>
       )}
 
       {/* Create Project Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
-          <div className="card w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card">
-            <h3 className="text-lg font-semibold mb-4 text-text">Create New Project</h3>
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div 
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Create New Project</h3>
             
             <div className="space-y-4">
               {/* Name and Date */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Name</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Name</label>
                   <input
                     type="text"
                     value={newProject.name}
                     onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project name"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Date</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Date</label>
                   <input
                     type="date"
                     value={newProject.date.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, date: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Insight */}
               <div>
-                <label className="block text-sm mb-1">Insight</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Insight</label>
                 <input
                   type="text"
                   value={newProject.insight}
                   onChange={(e) => setNewProject({ ...newProject, insight: e.target.value })}
-                  className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   placeholder="Project insight"
                 />
               </div>
@@ -689,22 +703,22 @@ export default function Projects() {
               {/* Owner and Owner Work */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Owner</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Owner</label>
                   <input
                     type="text"
                     value={newProject.owner}
                     onChange={(e) => setNewProject({ ...newProject, owner: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project owner"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Owner Work</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Owner Work</label>
                   <input
                     type="text"
                     value={newProject.ownerWork}
                     onChange={(e) => setNewProject({ ...newProject, ownerWork: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Owner's work"
                   />
                 </div>
@@ -712,7 +726,7 @@ export default function Projects() {
 
               {/* Creator */}
               <div>
-                <label className="block text-sm mb-1">Creator</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Creator</label>
                 <div className="space-y-2">
                   {newProject.creator.map((creator, index) => (
                     <div key={index} className="flex gap-2">
@@ -720,12 +734,12 @@ export default function Projects() {
                         type="text"
                         value={creator}
                         onChange={(e) => updateCreator(index, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Creator name"
                       />
                       <button
                         onClick={() => removeCreator(index)}
-                        className="px-2 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                        className="px-2 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -733,7 +747,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addCreator}
-                    className="px-3 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                    className="px-3 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Creator
                   </button>
@@ -743,22 +757,22 @@ export default function Projects() {
               {/* Links */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Github Link</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Github Link</label>
                   <input
                     type="url"
                     value={newProject.githubLink}
                     onChange={(e) => setNewProject({ ...newProject, githubLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="GitHub repository URL"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Project Link (if live)</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Project Link (if live)</label>
                   <input
                     type="url"
                     value={newProject.projectLink}
                     onChange={(e) => setNewProject({ ...newProject, projectLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Live project URL"
                   />
                 </div>
@@ -766,7 +780,7 @@ export default function Projects() {
 
               {/* Project Documents Link */}
               <div>
-                <label className="block text-sm mb-1">Project Documents Link</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Project Documents Link</label>
                 <div className="space-y-2">
                   {newProject.documentsLink.map((doc, index) => (
                     <div key={index} className="flex gap-2">
@@ -774,19 +788,19 @@ export default function Projects() {
                         type="text"
                         value={doc.name}
                         onChange={(e) => updateDocument(index, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document name"
                       />
                       <input
                         type="url"
                         value={doc.src}
                         onChange={(e) => updateDocument(index, 'src', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document URL"
                       />
                       <button
                         onClick={() => removeDocument(index)}
-                        className="px-2 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                        className="px-2 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -794,7 +808,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addDocument}
-                    className="px-3 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                    className="px-3 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Document
                   </button>
@@ -804,32 +818,32 @@ export default function Projects() {
               {/* Date Range */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Start Date</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Start Date</label>
                   <input
                     type="date"
                     value={newProject.startDate.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, startDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">End Date</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">End Date</label>
                   <input
                     type="date"
                     value={newProject.endDate.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, endDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm mb-1">Status</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Status</label>
                 <select
                   value={newProject.status}
                   onChange={(e) => setNewProject({ ...newProject, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 >
                   <option value="active">Active</option>
                   <option value="completed">Completed</option>
@@ -840,13 +854,13 @@ export default function Projects() {
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 border border-white rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateProject}
-                className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200"
+                className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
                 Create
               </button>
@@ -857,42 +871,48 @@ export default function Projects() {
 
       {/* Update Project Modal */}
       {showUpdateModal && projectToUpdate && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-medium mb-4">Update Project</h3>
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowUpdateModal(false)}
+        >
+          <div 
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Update Project</h3>
             
             <div className="space-y-4">
               {/* Name and Date */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Name</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Name</label>
                   <input
                     type="text"
                     value={projectToUpdate.name}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project name"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Date</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Date</label>
                   <input
                     type="date"
                     value={projectToUpdate.date.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, date: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Insight */}
               <div>
-                <label className="block text-sm mb-1">Insight</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Insight</label>
                 <input
                   type="text"
                   value={projectToUpdate.insight}
                   onChange={(e) => setProjectToUpdate({ ...projectToUpdate, insight: e.target.value })}
-                  className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   placeholder="Project insight"
                 />
               </div>
@@ -900,22 +920,22 @@ export default function Projects() {
               {/* Owner and Owner Work */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Owner</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Owner</label>
                   <input
                     type="text"
                     value={projectToUpdate.owner}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, owner: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project owner"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Owner Work</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Owner Work</label>
                   <input
                     type="text"
                     value={projectToUpdate.ownerWork}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, ownerWork: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Owner's work"
                   />
                 </div>
@@ -924,22 +944,22 @@ export default function Projects() {
               {/* Links */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Github Link</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Github Link</label>
                   <input
                     type="url"
                     value={projectToUpdate.githubLink}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, githubLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="GitHub repository URL"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Project Link (if live)</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Project Link (if live)</label>
                   <input
                     type="url"
                     value={projectToUpdate.projectLink}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, projectLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Live project URL"
                   />
                 </div>
@@ -947,7 +967,7 @@ export default function Projects() {
 
               {/* Project Documents Link */}
               <div>
-                <label className="block text-sm mb-1">Project Documents Link</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Project Documents Link</label>
                 <div className="space-y-2">
                   {(projectToUpdate.documentsLink || []).map((doc, index) => (
                     <div key={index} className="flex gap-2">
@@ -955,19 +975,19 @@ export default function Projects() {
                         type="text"
                         value={doc.name}
                         onChange={(e) => updateUpdateDocument(index, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document name"
                       />
                       <input
                         type="url"
                         value={doc.src}
                         onChange={(e) => updateUpdateDocument(index, 'src', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document URL"
                       />
                       <button
                         onClick={() => removeUpdateDocument(index)}
-                        className="px-2 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                        className="px-2 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -975,7 +995,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addUpdateDocument}
-                    className="px-3 py-1 border border-border rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                    className="px-3 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Document
                   </button>
@@ -985,32 +1005,32 @@ export default function Projects() {
               {/* Date Range */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">Start Date</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Start Date</label>
                   <input
                     type="date"
                     value={projectToUpdate.startDate.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, startDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1">End Date</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">End Date</label>
                   <input
                     type="date"
                     value={projectToUpdate.endDate.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, endDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm mb-1">Status</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Status</label>
                 <select
                   value={projectToUpdate.status}
                   onChange={(e) => setProjectToUpdate({ ...projectToUpdate, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-white rounded bg-transparent text-white"
+                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 >
                   <option value="active">Active</option>
                   <option value="completed">Completed</option>
@@ -1021,13 +1041,13 @@ export default function Projects() {
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={() => setShowUpdateModal(false)}
-                className="px-4 py-2 border border-white rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateProjectSubmit}
-                className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200"
+                className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
                 Update
               </button>
@@ -1035,6 +1055,7 @@ export default function Projects() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

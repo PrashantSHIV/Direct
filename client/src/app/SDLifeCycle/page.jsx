@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { IoBookOutline } from 'react-icons/io5';
 import { TbProgress } from 'react-icons/tb';
 import { MdOutlineWork } from 'react-icons/md';
+import { IoChevronUp } from 'react-icons/io5';
+import { IoChevronDown } from 'react-icons/io5';
 import Definition from './components/Definition';
 import Phase from './components/Phase';
 import Projects from './components/Projects';
@@ -51,7 +53,7 @@ export default function SDLifeCycle() {
       <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 flex-shrink-0 text-[#000000d9] font-semibold">SD Life Cycle</h3>
       
       <div className="flex-1 overflow-hidden">
-        <div className="grid grid-cols-[240px_1fr] gap-6 h-full">
+        <div className="grid grid-cols-[240px_1fr] h-full">
           {/* Left Panel - Navigation */}
           <aside className="bg-elev-2 border-r border-subtle p-4 h-full overflow-y-auto">
             <nav className="space-y-2">
@@ -59,7 +61,7 @@ export default function SDLifeCycle() {
                  onClick={() => handleSectionClick('Definition')}
                  className={`nav-button ${activeSection === 'Definition' ? 'active' : ''}`}
                >
-                <IoBookOutline className="w-5 h-5 mr-3 flex-shrink-0" />
+                <IoBookOutline className="w-4 h-4 mr-3 flex-shrink-0" />
                  Definition
                </button>
               
@@ -67,10 +69,10 @@ export default function SDLifeCycle() {
               <div>
                 <button
                   onClick={handlePhasesClick}
-                  className={`nav-button ${activePhase ? 'active' : ''}`}
+                  className={` nav-button ${activePhase ? 'active' : ''}`}
                 >
-                  <TbProgress className="w-5 h-5 mr-3 flex-shrink-0" />
-                  Phases {showPhasesDropdown ? '▲' : '▼'}
+                  <TbProgress className="w-4 h-4 mr-3 flex-shrink-0" />
+                  Phases {showPhasesDropdown ? <IoChevronUp className="w-4 h-4 ml-2" /> : <IoChevronDown className="w-4 h-4 ml-2" />}
                 </button>
                 {showPhasesDropdown && (
                   <div className="ml-4 mt-2 space-y-1">
@@ -93,14 +95,14 @@ export default function SDLifeCycle() {
                  onClick={() => handleSectionClick('Projects')}
                  className={`nav-button ${activeSection === 'Projects' ? 'active' : ''}`}
                >
-                <MdOutlineWork className="w-5 h-5 mr-3 flex-shrink-0" />
+                <MdOutlineWork className="w-4 h-4 mr-3 flex-shrink-0" />
                  Projects
                </button>
             </nav>
           </aside>
 
           {/* Right Panel - Content */}
-          <section className="p-6 h-full overflow-y-auto bg-background">
+          <section className="h-full overflow-y-auto bg-background">
             {renderContent()}
           </section>
         </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { IoMdAdd } from 'react-icons/io';
+import { MdOutlineDelete } from 'react-icons/md';
 
 export default function Phase({ activePhase }) {
   const [phaseData, setPhaseData] = useState({
@@ -16,6 +18,7 @@ export default function Phase({ activePhase }) {
   const [newTool, setNewTool] = useState({ name: '', src: '' });
   const [draggedItem, setDraggedItem] = useState(null);
   const [draggedType, setDraggedType] = useState(null);
+  const [hoveredSection, setHoveredSection] = useState(null);
 
   // Load phase data from database
   const loadPhaseData = async () => {
@@ -78,6 +81,12 @@ export default function Phase({ activePhase }) {
         await window.api.addPhaseStep(phaseId, newStep.step.trim(), newStep.reason.trim());
         setNewStep({ step: '', reason: '' });
         loadPhaseData(); // Reload data from database
+        
+        // Focus on the step input after adding
+        setTimeout(() => {
+          const stepInput = document.querySelector('input[placeholder="Step"]');
+          if (stepInput) stepInput.focus();
+        }, 100);
       } catch (error) {
         console.error('Error adding phase step:', error);
       }
@@ -90,6 +99,12 @@ export default function Phase({ activePhase }) {
         await window.api.addPhaseDefinition(phaseId, newDefinition.title.trim(), newDefinition.explanation.trim());
         setNewDefinition({ title: '', explanation: '' });
         loadPhaseData(); // Reload data from database
+        
+        // Focus on the title input after adding
+        setTimeout(() => {
+          const titleInput = document.querySelector('input[placeholder="Question/Title"]');
+          if (titleInput) titleInput.focus();
+        }, 100);
       } catch (error) {
         console.error('Error adding phase definition:', error);
       }
@@ -102,6 +117,12 @@ export default function Phase({ activePhase }) {
         await window.api.addPhaseTool(phaseId, newTool.name.trim(), newTool.src.trim());
         setNewTool({ name: '', src: '' });
         loadPhaseData(); // Reload data from database
+        
+        // Focus on the name input after adding
+        setTimeout(() => {
+          const nameInput = document.querySelector('input[placeholder="Name"]');
+          if (nameInput) nameInput.focus();
+        }, 100);
       } catch (error) {
         console.error('Error adding phase tool:', error);
       }
@@ -177,220 +198,208 @@ export default function Phase({ activePhase }) {
 
   if (loading) {
     return (
-      <div className="text-text h-full flex items-center justify-center">
-        <p className="text-text-muted">Loading phase data...</p>
+      <div className="text-text flex flex-col h-full">
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">{activePhase} Phase</h3>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-[#00000080]">Loading phase data...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-[1fr_300px] gap-6">
-      {/* Left Section - Main Content */}
-      <div>
-        <h4 className="text-base font-semibold mb-4 text-text">{activePhase} Phase</h4>
-        
-        {/* Definitions Section */}
-        <div className="mb-6">
-          <div className="space-y-4 mb-4">
-            {(phaseData.definitions || []).map((def, index) => (
-              <div 
-                key={index}
-                className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
-                draggable
-                onDragStart={(e) => handleDragStart(e, index, 'definitions')}
-                onDragEnd={handleDragEnd}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, index, 'definitions')}
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h5 className="text-sm font-semibold mb-2 text-text">{def.title}</h5>
-                    <p className="text-xs text-text-muted">{def.explanation}</p>
+    <div className="text-text flex flex-col h-full">
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">{activePhase} Phase</h3>
+      
+      <div className="p-6 flex-1 overflow-y-auto">
+        {/* Top Row - Definitions and Tools */}
+        <div className="grid grid-cols-[1fr_300px] gap-6 mb-6">
+          {/* Left Section - Definitions */}
+          <div>
+            <h4 className="text-base font-normal mb-4">Definitions</h4>
+            {/* Definitions Section */}
+            <div 
+              className="border border-subtle rounded-lg p-4"
+              onMouseEnter={() => setHoveredSection('definitions')}
+              onMouseLeave={() => setHoveredSection(null)}
+            >
+              <div className="space-y-4 mb-4">
+                {(phaseData.definitions || []).map((def, index) => (
+                  <div 
+                    key={index}
+                    className="rounded-lg p-4 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index, 'definitions')}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, index, 'definitions')}
+                    onDoubleClick={() => {/* Handle edit if needed */}}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h5 className="text-sm font-semibold mb-2 text-[#000000d9]">{def.title}</h5>
+                        <p className="text-xs text-[#00000080]">{def.explanation}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="opacity-0 group-hover:opacity-100 flex gap-1 ml-2">
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteItem('definitions', def.id);
+                ))}
+              </div>
+              
+              {/* Add New Definition - Show only when hovering definitions section */}
+              {hoveredSection === 'definitions' && (
+                <div className="border border-subtle rounded-lg p-4">
+                  <div className="mb-2">
+                    <input 
+                      type="text" 
+                      value={newDefinition.title}
+                      onChange={(e) => setNewDefinition({...newDefinition, title: e.target.value})}
+                      placeholder="Question/Title"
+                      className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    />
+                    <input 
+                      type="text" 
+                      value={newDefinition.explanation}
+                      onChange={(e) => setNewDefinition({...newDefinition, explanation: e.target.value})}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          addDefinition();
+                        }
                       }}
-                      className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
-                      title="Delete"
-                    >
-                      🗑️
-                    </button>
+                      placeholder="Answer/Explanation (Press Enter)"
+                      className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    />
                   </div>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
           </div>
-          
-          {/* Add New Definition */}
-          <div className="card">
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex-1">
-                <input 
-                  type="text" 
-                  value={newDefinition.title}
-                  onChange={(e) => setNewDefinition({...newDefinition, title: e.target.value})}
-                  placeholder="Question/Title"
-                  className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
-                />
-                <input 
-                  type="text" 
-                  value={newDefinition.explanation}
-                  onChange={(e) => setNewDefinition({...newDefinition, explanation: e.target.value})}
-                  placeholder="Answer/Explanation"
-                  className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
-                />
+
+          {/* Right Section - Tools */}
+          <div>
+            <h4 className="text-base font-normal mb-4">Tools</h4>
+            <div 
+              className="border border-subtle rounded-lg p-4"
+              onMouseEnter={() => setHoveredSection('tools')}
+              onMouseLeave={() => setHoveredSection(null)}
+            >
+            
+            <div className="space-y-2">
+              {(phaseData.tools || []).map((tool, index) => (
+                <div 
+                  key={index}
+                  className="border border-subtle rounded-lg p-3 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index, 'tools')}
+                  onDragEnd={handleDragEnd}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index, 'tools')}
+                  onDoubleClick={() => window.api.openExternal(tool.src)}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex-1">
+                      <span className="text-sm font-medium text-[#000000d9] hover:text-accent-blue transition-colors duration-200">
+                        {tool.name}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Add New Tool - Show only when hovering tools section */}
+            {hoveredSection === 'tools' && (
+              <div className="mt-4 border border-subtle rounded-lg p-4">
+                <div className="space-y-2">
+                  <input 
+                    type="text" 
+                    value={newTool.name}
+                    onChange={(e) => setNewTool({...newTool, name: e.target.value})}
+                    placeholder="Name"
+                    className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  />
+                  <input 
+                    type="text" 
+                    value={newTool.src}
+                    onChange={(e) => setNewTool({...newTool, src: e.target.value})}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        addTool();
+                      }
+                    }}
+                    placeholder="Source/URL (Press Enter)"
+                    className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  />
+                </div>
               </div>
-              <button 
-                onClick={addDefinition}
-                className="text-green-400 hover:text-green-300 ml-2"
-                title="Add Definition"
-              >
-                ➕
-              </button>
+            )}
             </div>
           </div>
         </div>
 
-        {/* Steps Table */}
+        {/* Bottom Row - Steps (Full Width) */}
         <div>
-          <div className="grid grid-cols-2 border-b border-border mb-2">
-            <div className="border-r border-border p-2 text-sm font-semibold text-text-muted">Step</div>
-            <div className="p-2 text-sm font-semibold text-text-muted">Reason</div>
+          <h4 className="text-base font-normal mb-4">Steps</h4>
+          <div 
+            className="border border-subtle rounded-lg p-4"
+            onMouseEnter={() => setHoveredSection('steps')}
+            onMouseLeave={() => setHoveredSection(null)}
+          >
+          <div className="grid grid-cols-[60px_1fr_1fr] border-b border-subtle mb-2">
+            <div className="border-r border-subtle p-2 text-sm font-semibold text-[#00000080]">#</div>
+            <div className="border-r border-subtle p-2 text-sm font-semibold text-[#00000080]">Step</div>
+            <div className="p-2 text-sm font-semibold text-[#00000080]">Reason</div>
           </div>
           
           {(phaseData.steps || []).map((item, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+              className="grid grid-cols-[60px_1fr_1fr] border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleDragStart(e, index, 'steps')}
               onDragEnd={handleDragEnd}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index, 'steps')}
+              onDoubleClick={() => {/* Handle edit if needed */}}
             >
-              <div className="border-r border-border-soft p-2 text-sm text-text">{item.step}</div>
-              <div className="p-2 text-sm flex justify-between items-center text-text">
+              <div className="border-r border-subtle p-2 text-sm text-[#000000d9] font-medium">{index + 1}</div>
+              <div className="border-r border-subtle p-2 text-sm text-[#000000d9]">{item.step}</div>
+              <div className="p-2 text-sm text-[#000000d9]">
                 <span>{item.reason}</span>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteItem('steps', item.id);
-                  }}
-                  className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
-                  title="Delete"
-                >
-                  🗑️
-                </button>
               </div>
             </div>
           ))}
           
-          {/* Add New Step Row */}
-          <div className="grid grid-cols-2">
-            <div className="border-r border-border p-2">
-              <input 
-                type="text" 
-                value={newStep.step}
-                onChange={(e) => setNewStep({...newStep, step: e.target.value})}
-                placeholder="Step"
-                className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
-              />
-            </div>
-            <div className="p-2 flex items-center justify-between">
-              <input 
-                type="text" 
-                value={newStep.reason}
-                onChange={(e) => setNewStep({...newStep, reason: e.target.value})}
-                placeholder="Reason"
-                className="flex-1 bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
-              />
-              <button 
-                onClick={addStep}
-                className="text-green-400 hover:text-green-300 ml-2"
-                title="Add Step"
-              >
-                ➕
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Section - Tools */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-base font-normal">Tools</h4>
-          <button 
-            onClick={addTool}
-            className="text-green-400 hover:text-green-300"
-            title="Add Tool"
-          >
-            ➕
-          </button>
-        </div>
-        
-        <div className="space-y-2">
-          {(phaseData.tools || []).map((tool, index) => (
-            <div 
-              key={index}
-              className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
-              draggable
-              onDragStart={(e) => handleDragStart(e, index, 'tools')}
-              onDragEnd={handleDragEnd}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, index, 'tools')}
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex-1">
-                  <a 
-                    href="#"
-                    className="text-sm font-medium text-text hover:text-accent-blue transition-colors duration-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      window.api.openExternal(tool.src);
-                    }}
-                  >
-                    {tool.name}
-                  </a>
-                </div>
-                <div className="opacity-0 group-hover:opacity-100 flex gap-1 ml-2">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteItem('tools', tool.id);
-                    }}
-                    className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded"
-                    title="Delete"
-                  >
-                    🗑️
-                  </button>
-                </div>
+          {/* Add New Step Row - Show only when hovering steps section */}
+          {hoveredSection === 'steps' && (
+            <div className="grid grid-cols-[60px_1fr_1fr]">
+              <div className="border-r border-subtle p-2">
+                <div className="text-sm text-[#00000080] font-medium">{(phaseData.steps || []).length + 1}</div>
+              </div>
+              <div className="border-r border-subtle p-2">
+                <input 
+                  type="text" 
+                  value={newStep.step}
+                  onChange={(e) => setNewStep({...newStep, step: e.target.value})}
+                  placeholder="Step"
+                  className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                />
+              </div>
+              <div className="p-2">
+                <input 
+                  type="text" 
+                  value={newStep.reason}
+                  onChange={(e) => setNewStep({...newStep, reason: e.target.value})}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      addStep();
+                    }
+                  }}
+                  placeholder="Reason (Press Enter)"
+                  className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                />
               </div>
             </div>
-          ))}
-        </div>
-        
-        {/* Add New Tool */}
-        <div className="mt-4 card">
-          <div className="space-y-2">
-            <input 
-              type="text" 
-              value={newTool.name}
-              onChange={(e) => setNewTool({...newTool, name: e.target.value})}
-              placeholder="Name"
-              className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
-            />
-            <input 
-              type="text" 
-              value={newTool.src}
-              onChange={(e) => setNewTool({...newTool, src: e.target.value})}
-              placeholder="Source/URL"
-              className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
-            />
+          )}
           </div>
         </div>
       </div>

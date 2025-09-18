@@ -76,7 +76,7 @@ export default function Body() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <header className="bg-surface border-b border-subtle flex justify-between items-center p-4 pt-3 pb-2 pr-20">
+      <header className="bg-surface border-b border-subtle flex justify-between items-center p-4 py-1 pr-20">
         <h1 className="text-[#000000d9] font-semibold">Body</h1>
         <nav className="flex gap-2">
           <button 
@@ -425,8 +425,14 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6 max-h-96 overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div 
+            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6 max-h-96 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Exercise</h3>
             
             <div className="space-y-4">
@@ -744,8 +750,14 @@ function DayTable({ exercises, categories }){
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div 
+            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Exercise</h3>
             
             <div className="space-y-4">
@@ -1171,8 +1183,14 @@ function DietTable(){
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div 
+            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">
               Edit {editingItem?.type === 'diet' ? 'Diet Item' : 'Day Item'}
             </h3>

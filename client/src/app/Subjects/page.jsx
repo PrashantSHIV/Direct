@@ -121,19 +121,20 @@ export default function Subjects() {
 
   if (loading) {
     return (
-      <div className="text-text h-full flex items-center justify-center">
-        <p className="text-text-muted">Loading subjects data...</p>
+      <div className="text-text flex flex-col h-full">
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Subjects</h3>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-[#00000080]">Loading subjects data...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="text-text flex flex-col h-full">
-      <header className="bg-surface border-b border-subtle flex justify-between items-center p-4 pr-20">
-        <h1 className="text-lg font-semibold">Subjects</h1>
-      </header>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Subjects</h3>
       
-      <main className="flex-1 p-6">
+      <div className="p-6 flex-1 overflow-y-auto">
         {/* Add New Subject */}
         <div className="mb-6">
           <div className="flex gap-3">
@@ -142,18 +143,18 @@ export default function Subjects() {
               value={newSubject.name}
               onChange={(e) => setNewSubject({...newSubject, name: e.target.value})}
               placeholder="Subject name"
-              className="flex-1 border border-subtle bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+              className="flex-1 border border-subtle bg-surface text-[#000000d9] px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
             />
             <input 
               type="text" 
               value={newSubject.reason}
               onChange={(e) => setNewSubject({...newSubject, reason: e.target.value})}
               placeholder="Reason for studying"
-              className="flex-1 border border-subtle bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+              className="flex-1 border border-subtle bg-surface text-[#000000d9] px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
             />
             <button 
               onClick={addSubject}
-              className="btn px-4 py-3 rounded-lg hover:opacity-90 transition-all duration-200"
+              className="px-4 py-3 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
             >
               Add Subject
             </button>
@@ -165,7 +166,7 @@ export default function Subjects() {
           {(subjects || []).map((subject, index) => (
             <div 
               key={subject.id} 
-              className="card group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:shadow-card"
+              className="bg-white border border-subtle rounded-lg p-4 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragEnd={handleDragEnd}
@@ -175,8 +176,8 @@ export default function Subjects() {
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 className="text-base font-semibold text-text mb-2">{subject.name}</h3>
-                  <p className="text-sm text-text-muted">{subject.reason}</p>
+                  <h3 className="text-base font-semibold text-[#000000d9] mb-2">{subject.name}</h3>
+                  <p className="text-sm text-[#00000080]">{subject.reason}</p>
                 </div>
                 <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity duration-200">
                   <button 
@@ -184,7 +185,7 @@ export default function Subjects() {
                       e.stopPropagation();
                       handleEdit(subject, index);
                     }}
-                    className="text-accent-blue hover:text-accent-blue/80 text-xs px-3 py-1 border border-accent-blue rounded-lg hover:bg-accent-blue/10 transition-all duration-200"
+                    className="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
                     title="Edit Subject"
                   >
                     Edit
@@ -194,7 +195,7 @@ export default function Subjects() {
                       e.stopPropagation();
                       handleDelete(subject.id);
                     }}
-                    className="text-danger hover:text-danger/80 text-xs px-3 py-1 border border-danger rounded-lg hover:bg-danger/10 transition-all duration-200"
+                    className="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
                     title="Delete Subject"
                   >
                     Delete
@@ -208,57 +209,63 @@ export default function Subjects() {
         {/* Empty State */}
         {subjects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-text-muted mb-4">No subjects found. Add your first subject!</p>
+            <p className="text-[#00000080] mb-4">No subjects found. Add your first subject!</p>
           </div>
         )}
-      </main>
+      </div>
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
-          <div className="card w-96 max-w-[90vw] shadow-card">
-            <h3 className="text-lg font-semibold mb-4 text-text">Edit Subject</h3>
+        <div 
+          className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
+          onClick={() => setShowEditModal(false)}
+        >
+          <div 
+            className="w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Subject</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-2 text-text-muted">Subject Name:</label>
+                <label className="block text-sm mb-2 text-[#00000080]">Subject Name:</label>
                 <input
                   type="text"
                   value={editingData.name}
                   onChange={(e) => setEditingData({...editingData, name: e.target.value})}
-                  className="w-full bg-surface text-text border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-2 text-text-muted">Reason for Studying:</label>
+                <label className="block text-sm mb-2 text-[#00000080]">Reason for Studying:</label>
                 <input
                   type="text"
                   value={editingData.reason}
                   onChange={(e) => setEditingData({...editingData, reason: e.target.value})}
-                  className="w-full bg-surface text-text border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
+                onClick={() => {
+                  handleDelete(editingItem.subject.id);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ name: '', reason: '' });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.subject.id);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ name: '', reason: '' });
-                  }}
-                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
