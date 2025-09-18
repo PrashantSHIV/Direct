@@ -77,11 +77,11 @@ export default function Body() {
   return (
     <div className="text-text flex flex-col h-full">
       <header className="bg-surface border-b border-subtle flex justify-between items-center p-4 py-1 pr-20">
-        <h1 className="text-[#000000d9] font-semibold">Body</h1>
-        <nav className="flex gap-2">
+        <h1 className="text-sm md:text-base text-[#000000d9] font-semibold">Body</h1>
+        <nav className="flex gap-1 md:gap-2">
           <button 
             onClick={() => setActiveTab('Exercise')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border border-transparent transition-colors duration-200 ${
+            className={`px-2 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium border border-transparent transition-colors duration-200 ${
               activeTab === 'Exercise' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
             }`}
           >
@@ -89,7 +89,7 @@ export default function Body() {
           </button>
           <button 
             onClick={() => setActiveTab('Day Table')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border border-transparent transition-colors duration-200 ${
+            className={`px-2 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium border border-transparent transition-colors duration-200 ${
               activeTab === 'Day Table' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
             }`}
           >
@@ -97,7 +97,7 @@ export default function Body() {
           </button>
           <button 
             onClick={() => setActiveTab('Diet Table')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border border-transparent transition-colors duration-200 ${
+            className={`px-2 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium border border-transparent transition-colors duration-200 ${
               activeTab === 'Diet Table' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
             }`}
           >
@@ -301,9 +301,9 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
   }
 
   return (
-    <div className="text-text h-full grid grid-cols-[240px_1fr]">
+    <div className="text-text h-full grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-3 md:gap-6">
       {/* Left Sidebar - Categories */}
-      <aside className="bg-elev-2 border-r border-subtle p-4">
+      <aside className="bg-elev-2 lg:border-r border-b lg:border-b-0 border-subtle p-3 md:p-4">
         <nav className="space-y-2 mb-4">
           {categories.map((category, index) => (
             <button
@@ -314,7 +314,7 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
               onDragOver={handleCategoryDragOver}
               onDrop={(e) => handleCategoryDrop(e, index)}
               onClick={() => setActiveCategory(category.id)}
-              className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent cursor-move transition-colors duration-200 ${
+              className={`block w-full text-left text-xs md:text-sm font-medium px-2 md:px-3 py-2 rounded-lg border border-transparent cursor-move transition-colors duration-200 ${
                 activeCategory === category.id ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
               }`}
             >
@@ -334,23 +334,24 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
                 addCategory();
               }
             }}
-            className="w-full border border-subtle bg-surface text-[#000000d9] py-2 px-2 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+            className="w-full border border-subtle bg-surface text-[#000000d9] py-2 px-2 text-xs md:text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
           />
         </div>
       </aside>
 
       {/* Right Content Area */}
-      <section className="p-4">
+      <section className="p-3 md:p-4">
         <div className="flex justify-between items-center mb-4">
-          <h4 className="text-base font-normal">{activeCategory}</h4>
+          <h4 className="text-sm md:text-base font-normal">{activeCategory}</h4>
         </div>
         
         {/* Exercise Table */}
-        <div className="border border-subtle rounded-lg">
-          <div className="grid grid-cols-2 border-b border-subtle">
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Name</div>
-            <div className="p-3 text-sm font-semibold text-[#00000080]">Technique</div>
-          </div>
+        <div className="border border-subtle rounded-lg overflow-x-auto">
+          <div className="min-w-[400px]">
+            <div className="grid grid-cols-2 border-b border-subtle">
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Name</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Technique</div>
+            </div>
           
           {/* Exercise Rows */}
           {(exercises[activeCategory] || []).map((exercise, index) => (
@@ -364,8 +365,8 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
               onDrop={(e) => handleExerciseDrop(e, index)}
               onDoubleClick={() => handleEdit(exercise, index)}
             >
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{exercise.name}</div>
-              <div className="p-3 text-sm text-[#000000d9]">
+                <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{exercise.name}</div>
+                <div className="p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">
                 <ol className="list-decimal list-inside space-y-1">
                   {exercise.technique.map((step, stepIndex) => (
                     <li key={stepIndex}>{step}</li>
@@ -375,18 +376,18 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
             </div>
           ))}
           
-          {/* Add New Exercise Row */}
-          <div className="grid grid-cols-2">
-            <div className="border-r border-subtle p-3">
-              <input 
-                type="text" 
-                value={newExercise.name}
-                onChange={(e) => setNewExercise({...newExercise, name: e.target.value})}
-                placeholder="Exercise name"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
-              />
-            </div>
-            <div className="p-3 flex flex-col">
+            {/* Add New Exercise Row */}
+            <div className="grid grid-cols-2">
+              <div className="border-r border-subtle p-2 md:p-3">
+                <input 
+                  type="text" 
+                  value={newExercise.name}
+                  onChange={(e) => setNewExercise({...newExercise, name: e.target.value})}
+                  placeholder="Exercise name"
+                  className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                />
+              </div>
+              <div className="p-2 md:p-3 flex flex-col">
               <div className="flex-1 space-y-1">
                 {newExercise.technique.map((step, index) => (
                   <input 
@@ -404,8 +405,8 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
                         setNewExercise({...newExercise, technique: [...newExercise.technique, '']});
                       }
                     }}
-                    placeholder={`Step ${index + 1} (Press Enter to add step)`}
-                    className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                      placeholder={`Step ${index + 1} (Press Enter to add step)`}
+                      className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 ))}
               </div>
@@ -419,6 +420,7 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
                 </button>
               </div>
             </div>
+            </div>
           </div>
         </div>
       </section>
@@ -430,10 +432,10 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6 max-h-96 overflow-y-auto"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6 max-h-96 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Exercise</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Edit Exercise</h3>
             
             <div className="space-y-4">
               <div>
@@ -660,15 +662,15 @@ function DayTable({ exercises, categories }){
   }
 
   return (
-    <div className="text-text h-full grid grid-cols-[240px_1fr]">
+    <div className="text-text h-full grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-3 md:gap-6">
       {/* Left Sidebar - Days */}
-      <aside className="bg-elev-2 border-r border-subtle p-4">
+      <aside className="bg-elev-2 lg:border-r border-b lg:border-b-0 border-subtle p-3 md:p-4">
         <div className="space-y-1">
           {days.map((day) => (
             <button
               key={day}
               onClick={() => setActiveDay(day)}
-              className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent transition-colors duration-200 ${
+              className={`block w-full text-left text-xs md:text-sm font-medium px-2 md:px-3 py-2 rounded-lg border border-transparent transition-colors duration-200 ${
                 activeDay === day ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
               }`}
             >
@@ -679,13 +681,14 @@ function DayTable({ exercises, categories }){
       </aside>
 
       {/* Right Content Area */}
-      <section className="p-4">
-        <div className="border border-subtle rounded-lg">
-          <div className="grid grid-cols-3 border-b border-subtle">
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Name</div>
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Reps</div>
-            <div className="p-3 text-sm font-semibold text-[#00000080]">Sets/Duration</div>
-          </div>
+      <section className="p-3 md:p-4">
+        <div className="border border-subtle rounded-lg overflow-x-auto">
+          <div className="min-w-[500px]">
+            <div className="grid grid-cols-3 border-b border-subtle">
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Name</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Reps</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Sets/Duration</div>
+            </div>
           
           {/* Exercise Rows */}
           {(dayExercises[activeDay] || []).map((exercise, index) => (
@@ -699,19 +702,19 @@ function DayTable({ exercises, categories }){
               onDrop={(e) => handleExerciseDrop(e, index)}
               onDoubleClick={() => handleEdit(exercise, index)}
             >
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{exercise.name}</div>
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{exercise.reps}</div>
-              <div className="p-3 text-sm text-[#000000d9]">{exercise.setsDuration}</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{exercise.name}</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{exercise.reps}</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{exercise.setsDuration}</div>
             </div>
           ))}
           
           {/* Add New Exercise Row */}
           <div className="grid grid-cols-3">
-            <div className="border-r border-subtle p-3">
+            <div className="border-r border-subtle p-2 md:p-3">
               <select 
                 value={newExercise.name}
                 onChange={(e) => setNewExercise({...newExercise, name: e.target.value})}
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               >
                 <option value="">Select Exercise</option>
                 {getAllExercises().map((exercise, index) => (
@@ -721,16 +724,16 @@ function DayTable({ exercises, categories }){
                 ))}
               </select>
             </div>
-            <div className="border-r border-subtle p-3">
+            <div className="border-r border-subtle p-2 md:p-3">
               <input 
                 type="text" 
                 value={newExercise.reps}
                 onChange={(e) => setNewExercise({...newExercise, reps: e.target.value})}
                 placeholder="Reps (e.g., 18, 15, 12)"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-3">
+            <div className="p-2 md:p-3">
               <input 
                 type="text" 
                 value={newExercise.setsDuration}
@@ -741,9 +744,10 @@ function DayTable({ exercises, categories }){
                   }
                 }}
                 placeholder="Sets/Duration (Press Enter)"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
+          </div>
           </div>
         </div>
       </section>
@@ -755,10 +759,10 @@ function DayTable({ exercises, categories }){
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Exercise</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Edit Exercise</h3>
             
             <div className="space-y-4">
               <div>
@@ -1026,11 +1030,12 @@ function DietTable(){
   const renderContent = () => {
     if (activeSelection === 'Diets') {
       return (
-        <div className="border border-subtle rounded-lg">
-          <div className="grid grid-cols-2 border-b border-subtle">
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Item</div>
-            <div className="p-3 text-sm font-semibold text-[#00000080]">Benefits</div>
-          </div>
+        <div className="border border-subtle rounded-lg overflow-x-auto">
+          <div className="min-w-[400px]">
+            <div className="grid grid-cols-2 border-b border-subtle">
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Item</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Benefits</div>
+            </div>
           
           {/* Diet Items Rows */}
           {(dietItems || []).map((item, index) => (
@@ -1044,23 +1049,23 @@ function DietTable(){
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(item, index, 'diet')}
             >
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{item.item}</div>
-              <div className="p-3 text-sm text-[#000000d9]">{item.benefits}</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{item.item}</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{item.benefits}</div>
             </div>
           ))}
           
           {/* Add New Diet Item Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-subtle p-3">
+            <div className="border-r border-subtle p-2 md:p-3">
               <input 
                 type="text" 
                 value={newDietItem.item}
                 onChange={(e) => setNewDietItem({...newDietItem, item: e.target.value})}
                 placeholder="Item name"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-3">
+            <div className="p-2 md:p-3">
               <input 
                 type="text" 
                 value={newDietItem.benefits}
@@ -1071,20 +1076,22 @@ function DietTable(){
                   }
                 }}
                 placeholder="Benefits (Press Enter)"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
+          </div>
           </div>
         </div>
       );
     } else {
       // Day-specific content
       return (
-        <div className="border border-subtle rounded-lg">
-          <div className="grid grid-cols-2 border-b border-subtle">
-            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Item</div>
-            <div className="p-3 text-sm font-semibold text-[#00000080]">Quantity</div>
-          </div>
+        <div className="border border-subtle rounded-lg overflow-x-auto">
+          <div className="min-w-[400px]">
+            <div className="grid grid-cols-2 border-b border-subtle">
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Item</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm font-semibold text-[#00000080]">Quantity</div>
+            </div>
           
           {/* Day Items Rows */}
           {(dayItems[activeDay] || []).map((item, index) => (
@@ -1098,18 +1105,18 @@ function DietTable(){
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(item, index, 'day')}
             >
-              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{item.item}</div>
-              <div className="p-3 text-sm text-[#000000d9]">{item.quantity}</div>
+              <div className="border-r border-subtle p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{item.item}</div>
+              <div className="p-2 md:p-3 text-xs md:text-sm text-[#000000d9]">{item.quantity}</div>
             </div>
           ))}
           
           {/* Add New Day Item Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-subtle p-3">
+            <div className="border-r border-subtle p-2 md:p-3">
               <select 
                 value={newDayItem.item}
                 onChange={(e) => setNewDayItem({...newDayItem, item: e.target.value})}
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               >
                 <option value="">Select Diet Item</option>
                 {(dietItems || []).map((dietItem, index) => (
@@ -1119,7 +1126,7 @@ function DietTable(){
                 ))}
               </select>
             </div>
-            <div className="p-3">
+            <div className="p-2 md:p-3">
               <input 
                 type="text" 
                 value={newDayItem.quantity}
@@ -1130,9 +1137,10 @@ function DietTable(){
                   }
                 }}
                 placeholder="Quantity (Press Enter)"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
+          </div>
           </div>
         </div>
       );
@@ -1148,12 +1156,12 @@ function DietTable(){
   }
 
   return (
-    <div className="text-text h-full grid grid-cols-[240px_1fr]">
+    <div className="text-text h-full grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-3 md:gap-6">
       {/* Left Sidebar - Diets and Days */}
-      <aside className="bg-elev-2 border-r border-subtle p-4">
+      <aside className="bg-elev-2 lg:border-r border-b lg:border-b-0 border-subtle p-3 md:p-4">
         <button
           onClick={handleDietsClick}
-          className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg mb-4 border border-transparent transition-colors duration-200 ${
+          className={`block w-full text-left text-xs md:text-sm font-medium px-2 md:px-3 py-2 rounded-lg mb-4 border border-transparent transition-colors duration-200 ${
             activeSelection === 'Diets' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
           }`}
         >
@@ -1166,7 +1174,7 @@ function DietTable(){
             <button
               key={day}
               onClick={() => handleDayClick(day)}
-              className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent transition-colors duration-200 ${
+              className={`block w-full text-left text-xs md:text-sm font-medium px-2 md:px-3 py-2 rounded-lg border border-transparent transition-colors duration-200 ${
                 activeSelection === day ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
               }`}
             >
@@ -1177,7 +1185,7 @@ function DietTable(){
       </aside>
 
       {/* Right Content Area */}
-      <section className="p-4">
+      <section className="p-3 md:p-4">
         {renderContent()}
       </section>
 
@@ -1188,10 +1196,10 @@ function DietTable(){
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">
               Edit {editingItem?.type === 'diet' ? 'Diet Item' : 'Day Item'}
             </h3>
             

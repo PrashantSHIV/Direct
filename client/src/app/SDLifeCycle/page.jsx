@@ -126,10 +126,10 @@ export default function SDLifeCycle() {
           onClick={() => setShowPhasesModal(false)}
         >
           <div 
-            className="bg-white rounded-lg p-6 w-80 max-w-[90vw] max-h-[80vh] overflow-y-auto"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6 max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Select Phase</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Select Phase</h3>
             <div className="space-y-2">
               {phases.map((phase) => (
                 <button

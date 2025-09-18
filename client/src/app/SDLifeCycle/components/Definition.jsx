@@ -132,14 +132,14 @@ export default function Definition() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Definitions</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Definitions</h3>
       
-      <div className="p-6 flex-1 overflow-y-auto">
-        <div className="space-y-4 mb-6">
+      <div className="p-3 md:p-6 flex-1 overflow-y-auto">
+        <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
         {qaItems.map((item, index) => (
           <div 
             key={index}
-            className="rounded-lg p-4 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+            className="rounded-lg p-3 md:p-4 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
             draggable
             onDragStart={(e) => handleDragStart(e, index)}
             onDragEnd={handleDragEnd}
@@ -149,8 +149,8 @@ export default function Definition() {
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h4 className="text-base font-semibold mb-2 text-[#000000d9]">{item.title}</h4>
-                <p className="text-sm text-[#00000080]">{item.explanation}</p>
+                <h4 className="text-sm md:text-base font-semibold mb-1 md:mb-2 text-[#000000d9]">{item.title}</h4>
+                <p className="text-xs md:text-sm text-[#00000080]">{item.explanation}</p>
               </div>
             </div>
           </div>
@@ -159,14 +159,14 @@ export default function Definition() {
       
       {/* Add New Q&A Section - Show only on hover */}
       {isHovered && (
-        <div className="border border-subtle rounded p-4 group">
-          <div className="mb-2">
+        <div className="border border-subtle rounded p-3 md:p-4 group">
+          <div className="mb-1 md:mb-2">
               <input 
                 type="text" 
                 value={newItem.title}
                 onChange={(e) => setNewItem({...newItem, title: e.target.value})}
                 placeholder="Title"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 mb-1 md:mb-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
               <input 
                 type="text" 
@@ -178,7 +178,7 @@ export default function Definition() {
                   }
                 }}
                 placeholder="Explanation (Press Enter)"
-                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-xs md:text-sm border border-subtle rounded-lg px-2 md:px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
           </div>
         </div>
@@ -191,34 +191,34 @@ export default function Definition() {
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Definition</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Edit Definition</h3>
             
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Title:</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Title:</label>
                 <input
                   type="text"
                   value={editingData.title}
                   onChange={(e) => setEditingData({...editingData, title: e.target.value})}
-                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-2 md:px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Explanation:</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Explanation:</label>
                 <textarea
                   value={editingData.explanation}
                   onChange={(e) => setEditingData({...editingData, explanation: e.target.value})}
                   rows={3}
-                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-2 md:px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
-            <div className="flex justify-between mt-6">
+            <div className="flex justify-between mt-4 md:mt-6">
               <button
                 onClick={() => {
                   handleDelete(editingItem.item.id);
@@ -226,20 +226,20 @@ export default function Definition() {
                   setEditingItem(null);
                   setEditingData({ title: '', explanation: '' });
                 }}
-                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
                 Delete
               </button>
-              <div className="flex gap-2">
+              <div className="flex gap-1 md:gap-2">
                 <button
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>

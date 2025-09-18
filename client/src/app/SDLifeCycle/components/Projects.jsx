@@ -393,7 +393,7 @@ export default function Projects() {
   if (loading) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Projects</h3>
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Projects</h3>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-[#00000080]">Loading projects data...</p>
         </div>
@@ -403,30 +403,30 @@ export default function Projects() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Projects</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Projects</h3>
       
-      <div className="p-6 flex-1 overflow-y-auto">
+      <div className="p-3 md:p-6 flex-1 overflow-y-auto">
       {/* Header with Search and New Button */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 md:mb-6">
+        <div className="flex-1 w-full sm:max-w-md">
           <input
             type="text"
             placeholder="Search projects..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-subtle rounded-lg bg-surface text-[#000000d9] placeholder-[#00000080] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+            className="w-full px-3 md:px-4 py-2 md:py-3 border border-subtle rounded-lg bg-surface text-[#000000d9] placeholder-[#00000080] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
           />
         </div>
           <button 
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-3 bg-accent-blue text-text-inverse rounded-lg text-sm font-medium hover:opacity-90 transition-all duration-200"
+            className="px-3 md:px-4 py-2 md:py-3 bg-accent-blue text-text-inverse rounded-lg text-xs md:text-sm font-medium hover:opacity-90 transition-all duration-200"
           >
             New
           </button>
         </div>
 
       {/* Project Cards Columns */}
-      <div className="columns-1 md:columns-3 gap-4">
+      <div className="columns-1 sm:columns-2 md:columns-3 gap-3 md:gap-4">
         {filteredProjects.map((project) => {
           const progress = calculateProgress(project);
           const opacity = getColorOpacity(progress);
@@ -436,7 +436,7 @@ export default function Projects() {
           return (
             <div 
               key={project.id}
-              className={`bg-white border border-subtle rounded-xl p-5 cursor-pointer transition-all duration-300 break-inside-avoid mb-6 ${
+              className={`bg-white border border-subtle rounded-xl p-3 md:p-5 cursor-pointer transition-all duration-300 break-inside-avoid mb-4 md:mb-6 ${
                 isCompleted ? 'opacity-50 bg-gray-50' : ''
               }`}
               draggable
@@ -456,7 +456,7 @@ export default function Projects() {
               {/* Card Header */}
               <div className="flex justify-between items-start">
               <div className="flex-1">
-                  <h3 className={`text-base font-bold mb-2 ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
+                  <h3 className={`text-sm md:text-base font-bold mb-1 md:mb-2 ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
                     {project.projectLink ? (
                       <a 
                         href="#" 
@@ -477,11 +477,11 @@ export default function Projects() {
               </div>
 
               {/* Status Badge */}
-              <div className="mb-3 flex justify-between items-baseline">
-                  <p className={`text-xs text-[#00000080] mb-2`}>
+              <div className="mb-2 md:mb-3 flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                  <p className={`text-xs text-[#00000080]`}>
                     Created: {formatDate(project.date)}
                   </p>
-                 <span className={`text-xs px-3 py-1 rounded-lg font-medium ${
+                 <span className={`text-xs px-2 md:px-3 py-1 rounded-lg font-medium ${
                    isCompleted 
                      ? 'bg-gray-200 text-gray-500' 
                      : project.endDate 
@@ -495,15 +495,15 @@ export default function Projects() {
 
             {/* Expanded Content */}
             {isExpanded && (
-              <div className="space-y-3 border-t border-subtle pt-3">
+              <div className="space-y-2 md:space-y-3 border-t border-subtle pt-2 md:pt-3">
                 {/* Action Buttons - Only show when expanded */}
-                <div className="flex gap-2 mb-3">
+                <div className="flex gap-1 md:gap-2 mb-2 md:mb-3">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleUpdateProject(project);
                     }}
-                    className="px-3 py-1 text-xs border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
+                    className="px-2 md:px-3 py-1 text-xs border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
                   >
                     Edit
                   </button>
@@ -512,7 +512,7 @@ export default function Projects() {
                       e.stopPropagation();
                       handleDeleteProject(project.id);
                     }}
-                    className="px-3 py-1 text-xs border border-danger text-danger rounded-lg hover:bg-danger hover:text-text-inverse transition-all duration-200"
+                    className="px-2 md:px-3 py-1 text-xs border border-danger text-danger rounded-lg hover:bg-danger hover:text-text-inverse transition-all duration-200"
                   >
                     Delete
                   </button>
@@ -527,7 +527,7 @@ export default function Projects() {
             </div>
 
             {/* Owner and Owner Work */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-xs mb-1 text-[#00000080]">Owner</label>
                     <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
@@ -624,7 +624,7 @@ export default function Projects() {
                 )}
 
                 {/* Date Range */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-xs mb-1 text-[#00000080]">Start Date</label>
                     <div className={`text-xs ${isCompleted ? 'text-[#00000080]' : 'text-[#000000d9]'}`}>
@@ -659,66 +659,66 @@ export default function Projects() {
           onClick={() => setShowCreateModal(false)}
         >
           <div 
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-88 md:w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Create New Project</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Create New Project</h3>
             
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {/* Name and Date */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Name</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Name</label>
                   <input
                     type="text"
                     value={newProject.name}
                     onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project name"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Date</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Date</label>
                   <input
                     type="date"
                     value={newProject.date.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, date: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Insight */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Insight</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Insight</label>
                 <input
                   type="text"
                   value={newProject.insight}
                   onChange={(e) => setNewProject({ ...newProject, insight: e.target.value })}
-                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   placeholder="Project insight"
                 />
               </div>
 
               {/* Owner and Owner Work */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Owner</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Owner</label>
                   <input
                     type="text"
                     value={newProject.owner}
                     onChange={(e) => setNewProject({ ...newProject, owner: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project owner"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Owner Work</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Owner Work</label>
                   <input
                     type="text"
                     value={newProject.ownerWork}
                     onChange={(e) => setNewProject({ ...newProject, ownerWork: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Owner's work"
                   />
                 </div>
@@ -726,20 +726,20 @@ export default function Projects() {
 
               {/* Creator */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Creator</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Creator</label>
                 <div className="space-y-2">
                   {newProject.creator.map((creator, index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className="flex gap-1 md:gap-2">
                       <input
                         type="text"
                         value={creator}
                         onChange={(e) => updateCreator(index, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Creator name"
                       />
                       <button
                         onClick={() => removeCreator(index)}
-                        className="px-2 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                        className="px-2 py-1 border border-subtle rounded-lg text-xs md:text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -747,7 +747,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addCreator}
-                    className="px-3 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                    className="px-2 md:px-3 py-1 border border-subtle rounded-lg text-xs md:text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Creator
                   </button>
@@ -755,24 +755,24 @@ export default function Projects() {
               </div>
 
               {/* Links */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Github Link</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Github Link</label>
                   <input
                     type="url"
                     value={newProject.githubLink}
                     onChange={(e) => setNewProject({ ...newProject, githubLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="GitHub repository URL"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Project Link (if live)</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Project Link (if live)</label>
                   <input
                     type="url"
                     value={newProject.projectLink}
                     onChange={(e) => setNewProject({ ...newProject, projectLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Live project URL"
                   />
                 </div>
@@ -780,27 +780,27 @@ export default function Projects() {
 
               {/* Project Documents Link */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Project Documents Link</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Project Documents Link</label>
                 <div className="space-y-2">
                   {newProject.documentsLink.map((doc, index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className="flex flex-col sm:flex-row gap-1 md:gap-2">
                       <input
                         type="text"
                         value={doc.name}
                         onChange={(e) => updateDocument(index, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document name"
                       />
                       <input
                         type="url"
                         value={doc.src}
                         onChange={(e) => updateDocument(index, 'src', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document URL"
                       />
                       <button
                         onClick={() => removeDocument(index)}
-                        className="px-2 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                        className="px-2 py-1 border border-subtle rounded-lg text-xs md:text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -808,7 +808,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addDocument}
-                    className="px-3 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                    className="px-2 md:px-3 py-1 border border-subtle rounded-lg text-xs md:text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Document
                   </button>
@@ -816,34 +816,34 @@ export default function Projects() {
               </div>
 
               {/* Date Range */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Start Date</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Start Date</label>
                   <input
                     type="date"
                     value={newProject.startDate.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, startDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">End Date</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">End Date</label>
                   <input
                     type="date"
                     value={newProject.endDate.toISOString().split('T')[0]}
                     onChange={(e) => setNewProject({ ...newProject, endDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Status</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Status</label>
                 <select
                   value={newProject.status}
                   onChange={(e) => setNewProject({ ...newProject, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 >
                   <option value="active">Active</option>
                   <option value="completed">Completed</option>
@@ -851,16 +851,16 @@ export default function Projects() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-2 mt-4 md:mt-6">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateProject}
-                className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
                 Create
               </button>
@@ -876,90 +876,90 @@ export default function Projects() {
           onClick={() => setShowUpdateModal(false)}
         >
           <div 
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-88 md:w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Update Project</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Update Project</h3>
             
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {/* Name and Date */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Name</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Name</label>
                   <input
                     type="text"
                     value={projectToUpdate.name}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project name"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Date</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Date</label>
                   <input
                     type="date"
                     value={projectToUpdate.date.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, date: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Insight */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Insight</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Insight</label>
                 <input
                   type="text"
                   value={projectToUpdate.insight}
                   onChange={(e) => setProjectToUpdate({ ...projectToUpdate, insight: e.target.value })}
-                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   placeholder="Project insight"
                 />
               </div>
 
               {/* Owner and Owner Work */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Owner</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Owner</label>
                   <input
                     type="text"
                     value={projectToUpdate.owner}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, owner: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Project owner"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Owner Work</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Owner Work</label>
                   <input
                     type="text"
                     value={projectToUpdate.ownerWork}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, ownerWork: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Owner's work"
                   />
                 </div>
               </div>
 
               {/* Links */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Github Link</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Github Link</label>
                   <input
                     type="url"
                     value={projectToUpdate.githubLink}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, githubLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="GitHub repository URL"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Project Link (if live)</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Project Link (if live)</label>
                   <input
                     type="url"
                     value={projectToUpdate.projectLink}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, projectLink: e.target.value })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     placeholder="Live project URL"
                   />
                 </div>
@@ -967,27 +967,27 @@ export default function Projects() {
 
               {/* Project Documents Link */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Project Documents Link</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Project Documents Link</label>
                 <div className="space-y-2">
                   {(projectToUpdate.documentsLink || []).map((doc, index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className="flex flex-col sm:flex-row gap-1 md:gap-2">
                       <input
                         type="text"
                         value={doc.name}
                         onChange={(e) => updateUpdateDocument(index, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document name"
                       />
                       <input
                         type="url"
                         value={doc.src}
                         onChange={(e) => updateUpdateDocument(index, 'src', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                        className="flex-1 px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                         placeholder="Document URL"
                       />
                       <button
                         onClick={() => removeUpdateDocument(index)}
-                        className="px-2 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                        className="px-2 py-1 border border-subtle rounded-lg text-xs md:text-sm hover:bg-elev-3 transition-all duration-200"
                       >
                         ×
                       </button>
@@ -995,7 +995,7 @@ export default function Projects() {
                   ))}
                   <button
                     onClick={addUpdateDocument}
-                    className="px-3 py-1 border border-subtle rounded-lg text-sm hover:bg-elev-3 transition-all duration-200"
+                    className="px-2 md:px-3 py-1 border border-subtle rounded-lg text-xs md:text-sm hover:bg-elev-3 transition-all duration-200"
                   >
                     + Add Document
                   </button>
@@ -1003,34 +1003,34 @@ export default function Projects() {
               </div>
 
               {/* Date Range */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">Start Date</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Start Date</label>
                   <input
                     type="date"
                     value={projectToUpdate.startDate.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, startDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1 text-[#00000080]">End Date</label>
+                  <label className="block text-xs md:text-sm mb-1 text-[#00000080]">End Date</label>
                   <input
                     type="date"
                     value={projectToUpdate.endDate.toISOString().split('T')[0]}
                     onChange={(e) => setProjectToUpdate({ ...projectToUpdate, endDate: new Date(e.target.value) })}
-                    className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                    className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm mb-1 text-[#00000080]">Status</label>
+                <label className="block text-xs md:text-sm mb-1 text-[#00000080]">Status</label>
                 <select
                   value={projectToUpdate.status}
                   onChange={(e) => setProjectToUpdate({ ...projectToUpdate, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full px-2 md:px-3 py-2 border border-subtle rounded-lg bg-surface text-[#000000d9] text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 >
                   <option value="active">Active</option>
                   <option value="completed">Completed</option>
@@ -1038,16 +1038,16 @@ export default function Projects() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-2 mt-4 md:mt-6">
               <button
                 onClick={() => setShowUpdateModal(false)}
-                className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateProjectSubmit}
-                className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
                 Update
               </button>

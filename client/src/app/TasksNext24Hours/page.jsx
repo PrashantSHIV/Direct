@@ -164,7 +164,7 @@ export default function TasksNext24Hours() {
   if (loading) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Tasks Next 24 Hours</h3>
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Tasks Next 24 Hours</h3>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-[#00000080]">Loading tasks data...</p>
         </div>
@@ -174,23 +174,23 @@ export default function TasksNext24Hours() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Tasks Next 24 Hours</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Tasks Next 24 Hours</h3>
       
-      <div className="p-6 flex-1 overflow-y-auto">
+      <div className="p-3 md:p-6 flex-1 overflow-y-auto">
         {/* Two Panel Layout */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
           {/* Left Panel - Current Tasks */}
-          <div>
-            <h4 className="text-base font-semibold mb-4 text-[#000000d9]">Current Tasks</h4>
+          <div className='flex-1'>
+            <h4 className="text-sm md:text-base font-semibold mb-3 md:mb-4 text-[#000000d9]">Current Tasks</h4>
             {/* Task Input Area */}
-            <div className="mb-6">
-              <div className="flex gap-3">
+            <div className="mb-4 md:mb-6">
+              <div className="flex gap-2 md:gap-3">
                 <input 
                   type="text" 
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="Enter new task (Presss Enter)"
-                  className="flex-1 border border-subtle bg-surface text-[#000000d9] px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  placeholder="Enter new task (Press Enter)"
+                  className="flex-1 border border-subtle bg-surface text-[#000000d9] px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   onKeyPress={(e) => e.key === 'Enter' && addTask()}
                 />
               </div>
@@ -199,7 +199,7 @@ export default function TasksNext24Hours() {
               {activeTasks.map((task, index) => (
                 <div 
                   key={index} 
-                  className="bg-white border border-subtle rounded-lg p-3 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                  className="bg-white border border-subtle rounded-lg p-2 md:p-3 group hover:bg-elev-3 cursor-pointer transition-all duration-200"
                   draggable
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragEnd={handleDragEnd}
@@ -208,14 +208,14 @@ export default function TasksNext24Hours() {
                   onDoubleClick={() => handleEdit(task, index)}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-[#000000d9]">{task.task}</span>
-                    <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity duration-200">
+                    <span className="text-xs md:text-sm font-medium text-[#000000d9]">{task.task}</span>
+                    <div className="opacity-0 group-hover:opacity-100 flex gap-1 md:gap-2 transition-opacity duration-200">
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           markAsCompleted(task.id);
                         }}
-                        className="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
+                        className="text-gray-600 hover:text-gray-800 text-xs px-2 md:px-3 py-1 border border-subtle rounded-lg hover:bg-elev-3 transition-all duration-200"
                         title="Mark as Completed"
                       >
                         ✓
@@ -228,18 +228,18 @@ export default function TasksNext24Hours() {
           </div>
 
           {/* Right Panel - Task History */}
-          <div>
-            <h4 className="text-base font-semibold mb-4 text-[#000000d9]">Task History</h4>
-            <div className="flex gap-2 mb-4">
+          <div className='flex-1'>
+            <h4 className="text-sm md:text-base font-semibold mb-3 md:mb-4 text-[#000000d9]">Task History</h4>
+            <div className="flex gap-1 md:gap-2 mb-3 md:mb-4">
               <button 
                 onClick={() => setStatusFilter('completed')}
-                className={`nav-button ${statusFilter === 'completed' ? 'active' : ''}`}
+                className={`nav-button text-xs md:text-sm px-2 md:px-3 py-1 md:py-2 ${statusFilter === 'completed' ? 'active' : ''}`}
               >
                 Completed
               </button>
               <button 
                 onClick={() => setStatusFilter('failed')}
-                className={`nav-button ${statusFilter === 'failed' ? 'active' : ''}`}
+                className={`nav-button text-xs md:text-sm px-2 md:px-3 py-1 md:py-2 ${statusFilter === 'failed' ? 'active' : ''}`}
               >
                 Failed
               </button>
@@ -249,12 +249,12 @@ export default function TasksNext24Hours() {
               {getFilteredTasks().map((task, index) => (
                 <div 
                   key={index} 
-                  className="bg-white border border-subtle rounded-lg p-3"
+                  className="bg-white border border-subtle rounded-lg p-2 md:p-3"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-[#000000d9]">{task.task}</span>
+                    <span className="text-xs md:text-sm font-medium text-[#000000d9]">{task.task}</span>
                   </div>
-                  <div className="text-xs text-[#00000080] mt-2">
+                  <div className="text-xs text-[#00000080] mt-1 md:mt-2">
                     {(() => {
                       const utcDate = new Date(task.createdAt);
                       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
@@ -282,24 +282,24 @@ export default function TasksNext24Hours() {
           onClick={() => setShowEditModal(false)}
         >
           <div 
-            className="w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-6"
+            className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Task</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Edit Task</h3>
             
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <div>
-                <label className="block text-sm mb-2 text-[#00000080]">Task:</label>
+                <label className="block text-xs md:text-sm mb-1 md:mb-2 text-[#00000080]">Task:</label>
                 <input
                   type="text"
                   value={editingData}
                   onChange={(e) => setEditingData(e.target.value)}
-                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-2 md:px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
-            <div className="flex justify-between mt-6">
+            <div className="flex justify-between mt-4 md:mt-6">
               <button
                 onClick={() => {
                   handleDelete(editingTask.task.id);
@@ -307,20 +307,20 @@ export default function TasksNext24Hours() {
                   setEditingTask(null);
                   setEditingData('');
                 }}
-                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
                 Delete
               </button>
-              <div className="flex gap-2">
+              <div className="flex gap-1 md:gap-2">
                 <button
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>

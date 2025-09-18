@@ -179,7 +179,7 @@ export default function TimeTable() {
             className="w-80 md:w-96 max-w-[90vw] shadow-card border border-subtle bg-white rounded-lg p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Item</h3>
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-[#000000d9]">Edit Item</h3>
             
             <div className="space-y-4">
               <div>

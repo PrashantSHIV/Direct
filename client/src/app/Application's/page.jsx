@@ -39,7 +39,7 @@ export default function Applications() {
   if (loading) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Applications</h3>
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Applications</h3>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-[#00000080]">Loading applications...</p>
         </div>
@@ -50,11 +50,11 @@ export default function Applications() {
   if (projects.length === 0) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Applications</h3>
+        <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Applications</h3>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-[#00000080] text-lg mb-2">No applications available</p>
-            <p className="text-[#00000080] text-sm">Projects with website links will appear here</p>
+            <p className="text-[#00000080] text-base md:text-lg mb-2">No applications available</p>
+            <p className="text-[#00000080] text-xs md:text-sm">Projects with website links will appear here</p>
           </div>
         </div>
       </div>
@@ -63,22 +63,22 @@ export default function Applications() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Applications</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 text-sm md:text-base text-[#000000d9] font-semibold">Applications</h3>
       
-      <div className="p-6 flex-1 overflow-y-auto">
+      <div className="p-3 md:p-6 flex-1 overflow-y-auto">
       
       {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
         {projects.map((project) => (
           <div
             key={project.id}
-            className="bg-white border border-subtle rounded-xl p-4 hover:bg-elev-3 cursor-pointer transition-all duration-300 hover:shadow-lg group"
+            className="bg-white border border-subtle rounded-xl p-3 md:p-4 hover:bg-elev-3 cursor-pointer transition-all duration-300 hover:shadow-lg group"
             onClick={() => handleCardClick(project.projectLink)}
           >
             
             {/* Website Preview */}
             <div className="relative rounded-lg overflow-hidden bg-gray-100">
-              <div className="w-full h-32 border border-subtle rounded-lg overflow-hidden relative">
+              <div className="w-full h-24 md:h-32 border border-subtle rounded-lg overflow-hidden relative">
                 <iframe
                   src={project.projectLink}
                   title={`${project.name} preview`}
@@ -93,13 +93,13 @@ export default function Applications() {
                   }}
                 />
               </div>
-              <h3 className="text-sm font-semibold text-[#000000d9] absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded border border-subtle">
+              <h3 className="text-xs md:text-sm font-semibold text-[#000000d9] absolute bottom-1 md:bottom-2 left-1 md:left-2 bg-white/90 backdrop-blur-sm px-1 md:px-2 py-0.5 md:py-1 rounded border border-subtle">
                 {project.name}
               </h3>
             </div>
             
             {/* Click Indicator */}
-            <div className="mt-2">
+            <div className="mt-1 md:mt-2">
               <div className="text-xs text-[#00000080] opacity-0 group-hover:opacity-100 transition-opacity text-center">
                 Click to open website →
               </div>
