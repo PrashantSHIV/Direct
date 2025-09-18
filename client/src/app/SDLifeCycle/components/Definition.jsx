@@ -160,7 +160,7 @@ export default function Definition() {
       </div>
       
       {/* Add New Q&A Section */}
-      <div className="border border-white rounded p-4 group">
+      <div className="border border-subtle rounded p-4 group">
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
             <input 
@@ -168,14 +168,14 @@ export default function Definition() {
               value={newItem.title}
               onChange={(e) => setNewItem({...newItem, title: e.target.value})}
               placeholder="Title"
-              className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1 mb-2"
+              className="w-full bg-surface text-text text-sm border border-subtle rounded px-2 py-1 mb-2"
             />
             <input 
               type="text" 
               value={newItem.explanation}
               onChange={(e) => setNewItem({...newItem, explanation: e.target.value})}
               placeholder="Explanation"
-              className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+              className="w-full bg-surface text-text text-sm border border-subtle rounded px-2 py-1"
             />
           </div>
           <button 
@@ -201,7 +201,7 @@ export default function Definition() {
                   type="text"
                   value={editingData.title}
                   onChange={(e) => setEditingData({...editingData, title: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-text border border-subtle rounded px-3 py-2"
                 />
               </div>
               
@@ -211,7 +211,7 @@ export default function Definition() {
                   value={editingData.explanation}
                   onChange={(e) => setEditingData({...editingData, explanation: e.target.value})}
                   rows={3}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-text border border-subtle rounded px-3 py-2"
                 />
               </div>
             </div>

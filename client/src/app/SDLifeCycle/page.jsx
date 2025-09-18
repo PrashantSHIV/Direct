@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { IoBookOutline } from 'react-icons/io5';
+import { TbProgress } from 'react-icons/tb';
+import { MdOutlineWork } from 'react-icons/md';
 import Definition from './components/Definition';
 import Phase from './components/Phase';
 import Projects from './components/Projects';
@@ -45,19 +48,18 @@ export default function SDLifeCycle() {
 
   return (
     <div className="text-text h-full flex flex-col">
-      <h3 className="bg-surface border-b border-border p-4 py-3 flex-shrink-0 text-lg font-semibold">SD Life Cycle</h3>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 flex-shrink-0 text-[#000000d9] font-semibold">SD Life Cycle</h3>
       
       <div className="flex-1 overflow-hidden">
         <div className="grid grid-cols-[240px_1fr] gap-6 h-full">
           {/* Left Panel - Navigation */}
-          <aside className="bg-elev-2 border-r border-border p-4 h-full overflow-y-auto">
+          <aside className="bg-elev-2 border-r border-subtle p-4 h-full overflow-y-auto">
             <nav className="space-y-2">
                <button
                  onClick={() => handleSectionClick('Definition')}
-                 className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
-                   activeSection === 'Definition' ? 'bg-accent-blue text-text-inverse shadow-card' : ''
-                 }`}
+                 className={`nav-button ${activeSection === 'Definition' ? 'active' : ''}`}
                >
+                <IoBookOutline className="w-5 h-5 mr-3 flex-shrink-0" />
                  Definition
                </button>
               
@@ -65,10 +67,9 @@ export default function SDLifeCycle() {
               <div>
                 <button
                   onClick={handlePhasesClick}
-                  className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
-                    activePhase ? 'bg-accent-blue text-text-inverse shadow-card' : ''
-                  }`}
+                  className={`nav-button ${activePhase ? 'active' : ''}`}
                 >
+                  <TbProgress className="w-5 h-5 mr-3 flex-shrink-0" />
                   Phases {showPhasesDropdown ? '▲' : '▼'}
                 </button>
                 {showPhasesDropdown && (
@@ -90,10 +91,9 @@ export default function SDLifeCycle() {
               
                <button
                  onClick={() => handleSectionClick('Projects')}
-                 className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
-                   activeSection === 'Projects' ? 'bg-accent-blue text-text-inverse shadow-card' : ''
-                 }`}
+                 className={`nav-button ${activeSection === 'Projects' ? 'active' : ''}`}
                >
+                <MdOutlineWork className="w-5 h-5 mr-3 flex-shrink-0" />
                  Projects
                </button>
             </nav>

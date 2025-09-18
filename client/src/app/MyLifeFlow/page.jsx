@@ -1,6 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { CiViewTable } from 'react-icons/ci';
+import { GoGoal } from 'react-icons/go';
+import { IoBody } from 'react-icons/io5';
+import { RiBrainFill } from 'react-icons/ri';
+import { MdOutlineRememberMe } from 'react-icons/md';
 import TimeTable from './components/TimeTable';
 import Goals from './components/Goals';
 import Body from './components/Body';
@@ -11,11 +16,11 @@ export default function MyLifeFlow() {
   const [activeComponent, setActiveComponent] = useState('TimeTable');
 
   const components = [
-    { id: 'TimeTable', name: 'Time Table' },
-    { id: 'Goals', name: 'Goals' },
-    { id: 'Body', name: 'Body' },
-    { id: 'Mind', name: 'Mind' },
-    { id: 'Remember', name: 'Remember' }
+    { id: 'TimeTable', name: 'Time Table', icon: CiViewTable },
+    { id: 'Goals', name: 'Goals', icon: GoGoal },
+    { id: 'Body', name: 'Body', icon: IoBody },
+    { id: 'Mind', name: 'Mind', icon: RiBrainFill },
+    { id: 'Remember', name: 'Remember', icon: MdOutlineRememberMe }
   ];
 
   const renderContent = () => {
@@ -37,25 +42,25 @@ export default function MyLifeFlow() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <header className="h-12 bg-surface border-b border-border flex items-center px-6 flex-shrink-0">
-        <h2 className="text-lg font-semibold">My Life Flow</h2>
-      </header>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 flex-shrink-0 text-[#000000d9] font-semibold">My Life Flow</h3>
       
       <main className="grid grid-cols-[240px_1fr] flex-1 min-h-0">
         {/* Sidebar */}
-        <aside className="bg-elev-2 border-r border-border p-4 overflow-y-auto">
+        <aside className="bg-elev-2 border-r border-subtle p-4 overflow-y-auto">
           <nav className="space-y-2">
-            {components.map((component) => (
-              <button
-                key={component.id}
-                onClick={() => setActiveComponent(component.id)}
-                className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
-                  activeComponent === component.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
-                }`}
-              >
-                {component.name}
-              </button>
-            ))}
+            {components.map((component) => {
+              const IconComponent = component.icon;
+              return (
+                <button
+                  key={component.id}
+                  onClick={() => setActiveComponent(component.id)}
+                  className={`nav-button ${activeComponent === component.id ? 'active' : ''}`}
+                >
+                  <IconComponent className="w-5 h-5 mr-3 flex-shrink-0" />
+                  {component.name}
+                </button>
+              );
+            })}
           </nav>
         </aside>
 

@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { SiPhpmyadmin, SiTask } from 'react-icons/si';
+import { GrCycle } from 'react-icons/gr';
+import { MdApps, MdOutlineSubject } from 'react-icons/md';
 import MyLifeFlow from '@/app/MyLifeFlow/page';
 import SDLifeCycle from '@/app/SDLifeCycle/page';
 import Applications from '@/app/Application\'s/page';
@@ -28,11 +31,11 @@ export default function Home() {
   }, [searchParams, router]);
 
   const pages = [
-    { id: 'MyLifeFlow', name: 'My Life Flow' },
-    { id: 'SDLifeCycle', name: 'SD Life Cycle' },
-    { id: 'Applications', name: 'Applications' },
-    { id: 'Subjects', name: 'Subjects' },
-    { id: 'TasksNext24Hours', name: 'Tasks Next 24 Hours' }
+    { id: 'MyLifeFlow', name: 'My Life Flow', icon: SiPhpmyadmin },
+    { id: 'SDLifeCycle', name: 'SD Life Cycle', icon: GrCycle },
+    { id: 'Applications', name: 'Applications', icon: MdApps },
+    { id: 'Subjects', name: 'Subjects', icon: MdOutlineSubject },
+    { id: 'TasksNext24Hours', name: 'Tasks Next 24 Hours', icon: SiTask }
   ];
 
   const renderContent = () => {
@@ -53,42 +56,44 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="h-10 border-b border-border flex items-center px-6 bg-surface flex-shrink-0">
-        <h1 className="text-text font-semibold">
+      <header className="pt-3 pb-2 border-b border-subtle flex items-center px-6 bg-surface flex-shrink-0">
+        <h1 className="font-semibold">
           DIRECT
         </h1>
       </header>
 
       <main className="grid grid-cols-[260px_1fr] flex-1 min-h-0">
         {/* Sidebar */}
-        <aside className="bg-elev-2 border-r border-border p-6 overflow-y-auto">
+        <aside className="border-r border-subtle p-6 overflow-y-auto">
           <div className="space-y-6">
             {/* Logo placeholder */}
-            <div className="w-8 h-8 border border-border rounded-lg bg-accent-blue/20 flex items-center justify-center">
-              <div className="w-4 h-4 bg-accent-blue rounded"></div>
+            <div className="w-8 h-8 border border-border rounded-lg -blue/20 flex items-center justify-center">
+              <div className="w-4 h-4 -blue rounded"></div>
             </div>
             
             {/* Navigation Buttons */}
             <nav className="space-y-3">
-              {pages.map((page) => (
-                <button
-                  key={page.id}
-                  onClick={() => router.push(`/?page=${page.id}`)}
-                  className={`block w-full text-left text-text text-base font-medium px-4 py-3 rounded-lg transition-all duration-200 hover:bg-elev-3 hover:text-accent-blue ${
-                    activePage === page.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
-                  }`}
-                >
-                  {page.name}
-                </button>
-              ))}
+              {pages.map((page) => {
+                const IconComponent = page.icon;
+                return (
+                  <button
+                    key={page.id}
+                    onClick={() => router.push(`/?page=${page.id}`)}
+                    className={`nav-button ${activePage === page.id ? 'active' : ''}`}
+                  >
+                    <IconComponent className="w-5 h-5 mr-3 flex-shrink-0" />
+                    {page.name}
+                  </button>
+                );
+              })}
             </nav>
           </div>
         </aside>
 
         {/* Main Content Area - Renders active component */}
-        <section className="bg-background overflow-y-auto">
+        <section className=" overflow-y-auto">
           {renderContent()}
         </section>
       </main>

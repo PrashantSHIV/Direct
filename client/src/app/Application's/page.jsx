@@ -70,7 +70,7 @@ export default function Applications() {
             
             {/* Website Preview iframe */}
             <div className="relative rounded-lg overflow-hidden">
-              <div className="w-full h-48 border border-elev-2 ">
+              <div className="w-full h-48 border border-subtle ">
                 <iframe
                   src={project.projectLink}
                   className="w-full h-full"

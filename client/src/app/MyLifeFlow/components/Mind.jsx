@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { IoMdAdd } from 'react-icons/io';
+import { MdOutlineDelete } from 'react-icons/md';
 
 export default function Mind() {
   const [activeSection, setActiveSection] = useState('');
@@ -207,9 +209,9 @@ export default function Mind() {
   if (loading) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Mind</h3>
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Mind</h3>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-text-muted">Loading mind data...</p>
+          <p className="text-[#00000080]">Loading mind data...</p>
         </div>
       </div>
     );
@@ -219,24 +221,23 @@ export default function Mind() {
   if (sections.length === 0) {
     return (
       <div className="text-text flex flex-col h-full">
-        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Mind</h3>
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Mind</h3>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-text-muted mb-4">No mind sections found. Create your first section!</p>
+            <p className="text-[#00000080] mb-4">No mind sections found. Create your first section!</p>
             <div className="flex gap-2 justify-center">
               <input 
                 type="text" 
-                placeholder="Section name (e.g., Breathing, Meditation)" 
+                placeholder="Section name (e.g., Breathing, Meditation) - Press Enter" 
                 value={newSectionName}
                 onChange={(e) => setNewSectionName(e.target.value)}
-                className="border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    addSection();
+                  }
+                }}
+                className="border border-subtle bg-surface text-[#000000d9] px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
-              <button 
-                onClick={addSection}
-                className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
-              >
-                Create Section
-              </button>
             </div>
           </div>
         </div>
@@ -246,11 +247,11 @@ export default function Mind() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Mind</h3>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Mind</h3>
       
       <div className="grid grid-cols-[240px_1fr] gap-6 flex-1">
         {/* Left Panel - Sections */}
-        <aside className="bg-elev-2 border-r border-border p-4">
+        <aside className="bg-elev-2 border-r border-subtle p-4">
           <nav className="space-y-2 mb-4">
             {sections.map((section, index) => (
               <button
@@ -261,29 +262,26 @@ export default function Mind() {
                 onDragOver={handleSectionDragOver}
                 onDrop={(e) => handleSectionDrop(e, index)}
                 onClick={() => setActiveSection(section.id)}
-                className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg hover:bg-elev-3 cursor-move transition-all duration-200 ${
-                  activeSection === section.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
+                className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent cursor-move transition-colors duration-200 ${
+                  activeSection === section.id ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
                 }`}
               >
                 {section.name}
               </button>
             ))}
           </nav>
-          <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="Add new section" 
-              value={newSectionName}
-              onChange={(e) => setNewSectionName(e.target.value)}
-              className="flex-1 border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
-            />
-            <button 
-              onClick={addSection}
-              className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
-            >
-              +
-            </button>
-          </div>
+          <input 
+            type="text" 
+            placeholder="Add new section" 
+            value={newSectionName}
+            onChange={(e) => setNewSectionName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                addSection();
+              }
+            }}
+            className="w-full border border-subtle bg-surface text-[#000000d9] px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
+          />
         </aside>
 
         {/* Right Panel - Content */}
@@ -292,17 +290,17 @@ export default function Mind() {
             <h4 className="text-base font-normal">{activeSection}</h4>
           </div>
           
-          <div className="border border-border rounded-lg">
-            <div className="grid grid-cols-2 border-b border-border">
-              <div className="border-r border-border p-3 text-sm font-semibold text-text-muted">Name</div>
-              <div className="p-3 text-sm font-semibold text-text-muted">Technique</div>
+          <div className="border border-subtle rounded-lg">
+            <div className="grid grid-cols-2 border-b border-subtle">
+              <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Name</div>
+              <div className="p-3 text-sm font-semibold text-[#00000080]">Technique</div>
             </div>
             
             {/* Mind Items Rows */}
             {(mindItems[activeSection] || []).map((item, index) => (
               <div 
                 key={index} 
-                className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                className="grid grid-cols-2 border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
                 draggable
                 onDragStart={(e) => handleItemDragStart(e, index)}
                 onDragEnd={handleItemDragEnd}
@@ -310,8 +308,8 @@ export default function Mind() {
                 onDrop={(e) => handleItemDrop(e, index)}
                 onDoubleClick={() => handleEdit(item, index)}
               >
-                <div className="border-r border-border-soft p-3 text-sm text-text">{item.name}</div>
-                <div className="p-3 text-sm text-text">
+                <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{item.name}</div>
+                <div className="p-3 text-sm text-[#000000d9]">
                   <ol className="list-decimal list-inside space-y-1">
                     {item.technique.map((step, stepIndex) => (
                       <li key={stepIndex}>{step}</li>
@@ -323,16 +321,16 @@ export default function Mind() {
             
             {/* Add New Item Row */}
             <div className="grid grid-cols-2">
-              <div className="border-r border-border p-3">
+              <div className="border-r border-subtle p-3">
                 <input 
                   type="text" 
                   value={newItem.name}
                   onChange={(e) => setNewItem({...newItem, name: e.target.value})}
                   placeholder="Item name"
-                  className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
-              <div className="p-2 flex items-center justify-between">
+              <div className="p-3 flex flex-col">
                 <div className="flex-1 space-y-1">
                   {newItem.technique.map((step, index) => (
                     <input 
@@ -344,24 +342,25 @@ export default function Mind() {
                         newTechnique[index] = e.target.value;
                         setNewItem({...newItem, technique: newTechnique});
                       }}
-                      placeholder={`Step ${index + 1}`}
-                      className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          setNewItem({...newItem, technique: [...newItem.technique, '']});
+                        }
+                      }}
+                      placeholder={`Step ${index + 1} (Press Enter to add step)`}
+                      className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                     />
                   ))}
+                </div>
+                <div className="flex justify-end mt-2">
                   <button 
-                    onClick={() => setNewItem({...newItem, technique: [...newItem.technique, '']})}
-                    className="text-green-400 hover:text-green-300 text-sm"
+                    onClick={addItem}
+                    className="text-success hover:text-success/80 transition-colors duration-200"
+                    title="Add Item"
                   >
-                    + Add Step
+                    <IoMdAdd className="w-4 h-4" />
                   </button>
                 </div>
-                <button 
-                  onClick={addItem}
-                  className="text-green-400 hover:text-green-300 ml-2"
-                  title="Add Item"
-                >
-                  ➕
-                </button>
               </div>
             </div>
           </div>
@@ -370,23 +369,23 @@ export default function Mind() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
-          <div className="card w-96 max-h-96 overflow-y-auto shadow-card">
-            <h3 className="text-lg font-semibold mb-4">Edit Mind Item</h3>
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6 max-h-96 overflow-y-auto">
+            <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Mind Item</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Name:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Name:</label>
                 <input
                   type="text"
                   value={editingData.name}
                   onChange={(e) => setEditingData({...editingData, name: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Technique Steps:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Technique Steps:</label>
                 <div className="space-y-2">
                   {editingData.technique.map((step, index) => (
                     <div key={index} className="flex gap-2">
@@ -395,21 +394,26 @@ export default function Mind() {
                         value={step}
                         onChange={(e) => updateTechniqueStep(index, e.target.value)}
                         placeholder={`Step ${index + 1}`}
-                        className="flex-1 bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            addTechniqueStep();
+                          }
+                        }}
+                        className="flex-1 bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                       />
                       <button
                         onClick={() => removeTechniqueStep(index)}
-                        className="text-red-400 hover:text-red-300 px-2"
+                        className="text-danger hover:text-danger/80 transition-colors duration-200 px-2"
                       >
-                        🗑️
+                        <MdOutlineDelete className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
                   <button
                     onClick={addTechniqueStep}
-                    className="text-green-400 hover:text-green-300 text-sm"
+                    className="text-success hover:text-success/80 transition-colors duration-200"
                   >
-                    + Add Step
+                    <IoMdAdd className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -417,22 +421,22 @@ export default function Mind() {
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
+                onClick={() => {
+                  handleDelete(editingItem.item.id);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ name: '', technique: [''] });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.item.id);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ name: '', technique: [''] });
-                  }}
-                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}

@@ -178,7 +178,7 @@ export default function TasksNext24Hours() {
 
   return (
     <div className="text-text">
-      <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Tasks Next 24 Hours</h3>
+      <h3 className="bg-surface border-b border-subtle p-4 py-3 text-lg font-semibold">Tasks Next 24 Hours</h3>
       
       <div className="p-6">
         {/* Two Panel Layout */}
@@ -193,7 +193,7 @@ export default function TasksNext24Hours() {
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
                   placeholder="Enter new task"
-                  className="flex-1 border border-border bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="flex-1 border border-subtle bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                   onKeyPress={(e) => e.key === 'Enter' && addTask()}
                 />
                 <button 
@@ -255,7 +255,7 @@ export default function TasksNext24Hours() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   statusFilter === 'completed' 
                     ? 'bg-success text-text-inverse shadow-card' 
-                    : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-green'
+                    : 'border border-subtle text-text-muted hover:bg-elev-3 hover:text-accent-green'
                 }`}
               >
                 Completed
@@ -265,7 +265,7 @@ export default function TasksNext24Hours() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   statusFilter === 'failed' 
                     ? 'bg-danger text-text-inverse shadow-card' 
-                    : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-pink'
+                    : 'border border-subtle text-text-muted hover:bg-elev-3 hover:text-accent-pink'
                 }`}
               >
                 Failed
@@ -311,7 +311,7 @@ export default function TasksNext24Hours() {
                   type="text"
                   value={editingData}
                   onChange={(e) => setEditingData(e.target.value)}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-text border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>

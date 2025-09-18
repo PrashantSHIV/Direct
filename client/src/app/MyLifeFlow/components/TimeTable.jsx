@@ -87,65 +87,49 @@ export default function TimeTable() {
   const renderTable = (data, section, newItem, setNewItem) => {
     return (
       <div>
-        <div className="border-b border-border pb-2 mb-4 text-sm font-semibold text-text">
+        <div className="border-b border-subtle pb-2 mb-4 font-semibold text-[#000000d9]">
           {section === 'working' ? 'Working Day' : 'Holiday'}
         </div>
         <table className="w-full">
           <thead>
-            <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-muted font-medium">Time</td>
-              <td className="px-3 text-text-muted font-medium">Discipline</td>
+            <tr className="border-b border-subtle">
+              <td className="py-2 px-3 text-[#00000080] font-medium text-sm">Time</td>
+              <td className="px-3 text-[#00000080] font-medium text-sm">Discipline</td>
             </tr>
           </thead>
           <tbody>
             {data.sort((a,b) => a.time.localeCompare(b.time)).map((row, index) => (
-              <tr key={index} className="border-b border-border-soft hover:bg-elev-3 group relative transition-all duration-200">
-                <td className="py-2 px-3 text-text font-medium">{row.time}</td>
-                <td className="px-3 text-text">{row.discipline}</td>
-                <td className="px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <button 
-                    onClick={() => handleEdit(row, index, section)}
-                    className="text-accent-blue hover:text-accent-blue/80 mr-2 transition-colors duration-200"
-                    title="Edit"
-                  >
-                    ✏️
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(index, section)}
-                    className="text-danger hover:text-danger/80 transition-colors duration-200"
-                    title="Delete"
-                  >
-                    🗑️
-                  </button>
-                </td>
+              <tr 
+                key={index} 
+                className="border-b border-subtle hover:bg-elev-3 cursor-pointer transition-all duration-200"
+                onDoubleClick={() => handleEdit(row, index, section)}
+              >
+                <td className="py-2 px-3 text-[#000000d9] font-medium text-sm">{row.time}</td>
+                <td className="px-3 text-[#000000d9] text-sm">{row.discipline}</td>
               </tr>
             ))}
-            <tr className="border border-border rounded-lg hover:bg-elev-3 transition-all duration-200">
+            <tr className="rounded-lg hover:bg-elev-3 transition-all duration-200 opacity-0 hover:opacity-100">
               <td className="py-2 px-3">
                 <input 
                   type="time" 
                   value={newItem.time}
                   onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-                  className="bg-surface text-text text-sm border border-border rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </td>
-              <td className="px-3">
-                <input 
-                  type="text" 
+              <td className="px-3" colSpan="2">
+                <input
+                  type="text"
                   value={newItem.discipline}
                   onChange={(e) => setNewItem({...newItem, discipline: e.target.value})}
-                  placeholder="Discipline"
-                  className="bg-surface text-text text-sm border border-border rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddNew(section);
+                    }
+                  }}
+                  placeholder="Discipline (Press Enter)"
+                  className="bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
-              </td>
-              <td className="px-3">
-                <button 
-                  onClick={() => handleAddNew(section)}
-                  className="text-success hover:text-success/80 transition-colors duration-200"
-                  title="Add"
-                >
-                  ➕
-                </button>
               </td>
             </tr>
           </tbody>
@@ -156,23 +140,23 @@ export default function TimeTable() {
 
   if (loading) {
     return (
-      <div className="text-white">
-        <h3 className="bg-gray-500 p-3 py-2">Time Table</h3>
+      <div>
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Time Table</h3>
         <div className="p-6 text-center">
-          <p>Loading timetable data...</p>
+          <p className="text-text-muted">Loading timetable data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="text-white">
-      <h3 className="bg-gray-500 p-3 py-2">Time Table</h3>
+    <div>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Time Table</h3>
 
       <div className="p-6">
         <div className="grid grid-cols-2 gap-6">
           {/* Working Day Section */}
-          <div className="border-r border-white pr-6">
+          <div className="border-r border-subtle pr-6">
             {renderTable(workingDayData, 'working', newWorkingItem, setNewWorkingItem)}
           </div>
           
@@ -185,45 +169,58 @@ export default function TimeTable() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold mb-4">Edit Item</h3>
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+            <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Item</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Time:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Time:</label>
                 <input
                   type="time"
                   value={editingData.time}
                   onChange={(e) => setEditingData({...editingData, time: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Discipline:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Discipline:</label>
                 <input
                   type="text"
                   value={editingData.discipline}
                   onChange={(e) => setEditingData({...editingData, discipline: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                onClick={() => {
+                  handleDelete(editingItem.index, editingItem.section);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ time: '', discipline: '' });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
-              <button
-                onClick={handleSaveEdit}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-              >
-                Save
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded hover:bg-elev-2 transition-all duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveEdit}
+                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded hover:opacity-90 transition-all duration-200"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>

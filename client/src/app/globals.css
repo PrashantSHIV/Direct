@@ -13,72 +13,12 @@
 :root, html, body {
   font-family: var(--font-ui, Inter), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
-code, kbd, pre, samp {
-  font-family: var(--font-mono, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-/* One-time: force dark UI everywhere (black mode only) */
-html { color-scheme: dark; }
-html:not(.dark) { /* ensure black mode even if .dark missing */
-  --force-dark: 1;
-}
-
 /* ---------------------------------------------------------
    Tailwind v4 theme tokens
    Note: We still provide light() for safety but equal to dark()
    so the UI stays black-mode regardless.
-----------------------------------------------------------*/
-@theme {
-
-  /* Fonts (for reference inside CSS or components) */
-  --font-ui: Inter;
-  --font-mono: "JetBrains Mono";
-
-  /* Backgrounds / Surfaces */
-  --color-background: light(#0b0b0b) dark(#0b0b0b);   /* near-black canvas */
-  --color-surface:    light(#121212) dark(#121212);   /* cards, sheets */
-  --color-elev-2:     light(#161616) dark(#161616);   /* higher elevation */
-  --color-elev-3:     light(#1b1b1b) dark(#1b1b1b);
-
-  /* Text */
-  --color-text:         light(#e6e6e6) dark(#e6e6e6); /* primary text */
-  --color-text-muted:   light(#a3a3a3) dark(#a3a3a3); /* secondary text */
-  --color-text-inverse: light(#0b0b0b) dark(#0b0b0b); /* on pills/badges */
-
-  /* Accents (brand + support) */
-  --color-accent-blue:  light(#60a5fa) dark(#60a5fa); /* primary brand */
-  --color-accent-pink:  light(#f472b6) dark(#f472b6);
-  --color-accent-green: light(#34d399) dark(#34d399);
-  --color-accent-amber: light(#f59e0b) dark(#f59e0b);
-
-  /* Borders / Dividers */
-  --color-border:       light(#2a2a2a) dark(#2a2a2a);
-  --color-border-soft:  light(#1f1f1f) dark(#1f1f1f);
-
-  /* Stateful (semantic) */
-  --color-success: light(#22c55e) dark(#22c55e);
-  --color-warning: light(#f59e0b) dark(#f59e0b);
-  --color-danger:  light(#ef4444) dark(#ef4444);
-
-  /* Focus & selection */
-  --color-focus:     light(#60a5fa) dark(#60a5fa);
-  --color-selection: light(#1e40af) dark(#1e40af);
-
-  /* Overlays */
-  --color-overlay:   light(#000000cc) dark(#000000cc); /* 80% */
-
-  /* Charts (optional) */
-  --color-chart-1: light(#60a5fa) dark(#60a5fa);
-  --color-chart-2: light(#f472b6) dark(#f472b6);
-  --color-chart-3: light(#34d399) dark(#34d399);
-  --color-chart-4: light(#f59e0b) dark(#f59e0b);
-}
-
 /* ---------------------------------------------------------
    Nice defaults so it looks great immediately
-----------------------------------------------------------*/
-* { border-color: rgb(var(--color-border)); }
-::selection { background: var(--color-selection); color: #fff; }
 
 body {
   background: var(--color-background);
@@ -93,24 +33,46 @@ body {
   padding: 1rem;
 }
 
-.btn {
-  --btn-bg: var(--color-accent-blue);
-  --btn-fg: var(--color-text-inverse);
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  border-radius: 0.75rem;
-  padding: .625rem 1rem;
-  font-weight: 600;
-}
-.btn:hover { opacity: .92; }
-.btn:focus { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-
-/* Subtle separators */
-.hr {
-  height: 1px;
-  background: var(--color-border-soft);
-  border: 0;
+/* Consistent color scheme for borders and text */
+:root {
+  --border-subtle: #00000023;
+  --text-muted: #00000080;
+  --text-active: #000000;
+  --bg-active: #00000013;
 }
 
-/* Optional: shadows that read well on black */
-.shadow-card { box-shadow: 0 12px 24px -8px rgba(0,0,0,.6); }
+/* Utility classes for consistent styling */
+.border-subtle {
+  border-color: var(--border-subtle);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-active {
+  color: var(--text-active);
+}
+
+.bg-active {
+  background-color: var(--bg-active);
+}
+
+/* Navigation button styles */
+.nav-button {
+  @apply flex items-center w-full text-left text-sm font-medium px-4 py-3 rounded-lg;
+  @apply border border-transparent; /* Always have a border to prevent layout shift */
+  @apply transition-colors duration-200; /* Only transition colors, not borders */
+}
+
+.nav-button:hover {
+  @apply text-black;
+}
+
+.nav-button.active {
+  @apply border-[#00000013] bg-[#00000013] text-black;
+}
+
+.nav-button:not(.active) {
+  @apply text-[#00000080];
+}

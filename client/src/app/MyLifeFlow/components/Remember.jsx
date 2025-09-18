@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { IoMdAdd } from 'react-icons/io';
+import { MdOutlineDelete } from 'react-icons/md';
 
 export default function Remember() {
   const [rememberItems, setRememberItems] = useState([]);
@@ -120,9 +122,9 @@ export default function Remember() {
   if (loading) {
     return (
       <div className="text-text">
-        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Remember</h3>
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Remember</h3>
         <div className="flex-1 flex items-center justify-center p-6">
-          <p className="text-text-muted">Loading remember data...</p>
+          <p className="text-[#00000080]">Loading remember data...</p>
         </div>
       </div>
     );
@@ -130,20 +132,20 @@ export default function Remember() {
 
   return (
     <div className="text-text">
-      <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Remember</h3>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Remember</h3>
       
       <div className="p-6">
-        <div className="border border-border rounded-lg">
-          <div className="grid grid-cols-2 border-b border-border">
-            <div className="border-r border-border p-3 text-sm font-semibold text-text-muted">What</div>
-            <div className="p-3 text-sm font-semibold text-text-muted">Why</div>
+        <div className="border border-subtle rounded-lg">
+          <div className="grid grid-cols-2 border-b border-subtle">
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">What</div>
+            <div className="p-3 text-sm font-semibold text-[#00000080]">Why</div>
           </div>
           
           {/* Remember Items Rows */}
           {(rememberItems || []).map((item, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-2 border-b border-border-soft group hover:bg-elev-3 cursor-pointer transition-all duration-200"
+              className="grid grid-cols-2 border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragEnd={handleDragEnd}
@@ -151,37 +153,35 @@ export default function Remember() {
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(item, index)}
             >
-              <div className="border-r border-border-soft p-3 text-sm text-text">{item.what}</div>
-              <div className="p-3 text-sm text-text">{item.why}</div>
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{item.what}</div>
+              <div className="p-3 text-sm text-[#000000d9]">{item.why}</div>
             </div>
           ))}
           
           {/* Add New Item Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-border p-3">
+            <div className="border-r border-subtle p-3">
               <input 
                 type="text" 
                 value={newItem.what}
                 onChange={(e) => setNewItem({...newItem, what: e.target.value})}
                 placeholder="What to remember"
-                className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-2 flex items-center justify-between">
+            <div className="p-3">
               <input 
                 type="text" 
                 value={newItem.why}
                 onChange={(e) => setNewItem({...newItem, why: e.target.value})}
-                placeholder="Why to remember"
-                className="flex-1 bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    addItem();
+                  }
+                }}
+                placeholder="Why to remember (Press Enter)"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
-              <button 
-                onClick={addItem}
-                className="text-green-400 hover:text-green-300 ml-2"
-                title="Add Item"
-              >
-                ➕
-              </button>
             </div>
           </div>
         </div>
@@ -189,50 +189,50 @@ export default function Remember() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
-          <div className="card w-96 shadow-card">
-            <h3 className="text-lg font-semibold mb-4">Edit Remember Item</h3>
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+            <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Remember Item</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">What:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">What:</label>
                 <input
                   type="text"
                   value={editingData.what}
                   onChange={(e) => setEditingData({...editingData, what: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Why:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Why:</label>
                 <input
                   type="text"
                   value={editingData.why}
                   onChange={(e) => setEditingData({...editingData, why: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
+                onClick={() => {
+                  handleDelete(editingItem.item.id);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ what: '', why: '' });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.item.id);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ what: '', why: '' });
-                  }}
-                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { IoMdAdd } from "react-icons/io";
 
 export default function Goals() {
   const [goals, setGoals] = useState([]);
@@ -122,7 +123,7 @@ export default function Goals() {
   if (loading) {
     return (
       <div className="text-text">
-        <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Goals</h3>
+        <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Goals</h3>
         <div className="flex-1 flex items-center justify-center p-6">
           <p className="text-text-muted">Loading goals data...</p>
         </div>
@@ -132,22 +133,22 @@ export default function Goals() {
 
   return (
     <div className="text-text">
-      <h3 className="bg-surface border-b border-border p-4 py-3 text-lg font-semibold">Goals</h3>
+      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 text-[#000000d9] font-semibold">Goals</h3>
       
       <div className="p-6">
-        <div className="border border-border rounded-lg">
+        <div className="border border-subtle rounded-lg">
           {/* Header */}
-          <div className="grid grid-cols-3 border-b border-border">
-            <div className="border-r border-border p-3 text-sm font-semibold text-text-muted">Goal</div>
-            <div className="border-r border-border p-3 text-sm font-semibold text-text-muted">Reason</div>
-            <div className="p-3 text-sm font-semibold text-text-muted">Duration</div>
+          <div className="grid grid-cols-3 border-b border-subtle">
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Goal</div>
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Reason</div>
+            <div className="p-3 text-sm font-semibold text-[#00000080]">Duration</div>
           </div>
           
           {/* Data Rows */}
           {(goals || []).map((goal, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-3 border-b border-border-soft group hover:bg-elev-3 relative cursor-move transition-all duration-200"
+              className="grid grid-cols-3 border-b border-subtle group hover:bg-elev-3 relative cursor-move transition-all duration-200 hover:bg-[#00000009]"
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragEnd={handleDragEnd}
@@ -155,9 +156,9 @@ export default function Goals() {
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(goal, index)}
             >
-              <div className="border-r border-border-soft p-3 text-sm text-text">{goal.goal}</div>
-              <div className="border-r border-border-soft p-3 text-sm text-text">{goal.reason}</div>
-              <div className="p-3 text-sm text-text">
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{goal.goal}</div>
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{goal.reason}</div>
+              <div className="p-3 text-sm text-[#000000d9]">
                 {goal.duration}
               </div>
             </div>
@@ -165,39 +166,37 @@ export default function Goals() {
           
           {/* Add New Row */}
           <div className="grid grid-cols-3">
-            <div className="border-r border-border p-3">
+            <div className="border-r border-subtle p-3">
               <input 
                 type="text" 
                 value={newGoal.goal}
                 onChange={(e) => setNewGoal({...newGoal, goal: e.target.value})}
                 placeholder="Enter goal"
-                className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="border-r border-border p-3">
+            <div className="border-r border-subtle p-3">
               <input 
                 type="text" 
                 value={newGoal.reason}
                 onChange={(e) => setNewGoal({...newGoal, reason: e.target.value})}
                 placeholder="Enter reason"
-                className="w-full bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-2 flex items-center justify-between">
+            <div className="p-3">
               <input 
                 type="text" 
                 value={newGoal.duration}
                 onChange={(e) => setNewGoal({...newGoal, duration: e.target.value})}
-                placeholder="Enter duration"
-                className="flex-1 bg-surface text-text text-sm border border-border rounded-lg px-3 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddNew();
+                  }
+                }}
+                placeholder="Enter duration (Press Enter)"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
-              <button 
-                onClick={handleAddNew}
-                className="text-green-400 hover:text-green-300"
-                title="Add Goal"
-              >
-                ➕
-              </button>
             </div>
           </div>
         </div>
@@ -205,60 +204,60 @@ export default function Goals() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
-          <div className="card w-96 shadow-card">
-            <h3 className="text-lg font-semibold mb-4">Edit Goal</h3>
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50 ">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+            <h3 className="font-semibold mb-4 text-[#000000d9]">Edit Goal</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Goal:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Goal:</label>
                 <input
                   type="text"
                   value={editingData.goal}
                   onChange={(e) => setEditingData({...editingData, goal: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Reason:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Reason:</label>
                 <input
                   type="text"
                   value={editingData.reason}
                   onChange={(e) => setEditingData({...editingData, reason: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Duration:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Duration:</label>
                 <input
                   type="text"
                   value={editingData.duration}
                   onChange={(e) => setEditingData({...editingData, duration: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-elev-3 text-text rounded-lg hover:bg-elev-2 transition-all duration-200"
+                onClick={() => {
+                  handleDelete(editingItem.item.id);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ goal: '', reason: '', duration: '' });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.item.id);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ goal: '', reason: '', duration: '' });
-                  }}
-                  className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}

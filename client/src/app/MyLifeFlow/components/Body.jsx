@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { IoMdAdd } from 'react-icons/io';
+import { MdOutlineDelete } from 'react-icons/md';
 
 export default function Body() {
   const [activeTab, setActiveTab] = useState('Exercise');
@@ -74,29 +76,29 @@ export default function Body() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <header className="bg-surface border-b border-border flex justify-between items-center p-4 pr-20">
-        <h1 className="text-lg font-semibold">Body</h1>
+      <header className="bg-surface border-b border-subtle flex justify-between items-center p-4 pt-3 pb-2 pr-20">
+        <h1 className="text-[#000000d9] font-semibold">Body</h1>
         <nav className="flex gap-2">
           <button 
             onClick={() => setActiveTab('Exercise')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === 'Exercise' ? 'bg-accent-blue text-text-inverse shadow-card' : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-blue'
+            className={`px-4 py-2 rounded-lg text-sm font-medium border border-transparent transition-colors duration-200 ${
+              activeTab === 'Exercise' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
             }`}
           >
             Exercise
           </button>
           <button 
             onClick={() => setActiveTab('Day Table')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === 'Day Table' ? 'bg-accent-blue text-text-inverse shadow-card' : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-blue'
+            className={`px-4 py-2 rounded-lg text-sm font-medium border border-transparent transition-colors duration-200 ${
+              activeTab === 'Day Table' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
             }`}
           >
             Day Table
           </button>
           <button 
             onClick={() => setActiveTab('Diet Table')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === 'Diet Table' ? 'bg-accent-blue text-text-inverse shadow-card' : 'border border-border text-text-muted hover:bg-elev-3 hover:text-accent-blue'
+            className={`px-4 py-2 rounded-lg text-sm font-medium border border-transparent transition-colors duration-200 ${
+              activeTab === 'Diet Table' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
             }`}
           >
             Diet Table
@@ -301,8 +303,7 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
   return (
     <div className="text-text h-full grid grid-cols-[240px_1fr]">
       {/* Left Sidebar - Categories */}
-      <aside className="bg-elev-2 border-r border-border p-4">
-        <h4 className="text-base font-semibold mb-4 text-text">Body</h4>
+      <aside className="bg-elev-2 border-r border-subtle p-4">
         <nav className="space-y-2 mb-4">
           {categories.map((category, index) => (
             <button
@@ -313,8 +314,8 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
               onDragOver={handleCategoryDragOver}
               onDrop={(e) => handleCategoryDrop(e, index)}
               onClick={() => setActiveCategory(category.id)}
-              className={`block w-full text-left text-text text-sm font-medium px-3 py-2 rounded-lg hover:bg-elev-3 cursor-move transition-all duration-200 ${
-                activeCategory === category.id ? 'bg-accent-blue text-text-inverse shadow-card' : ''
+              className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent cursor-move transition-colors duration-200 ${
+                activeCategory === category.id ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
               }`}
             >
               {category.name}
@@ -322,20 +323,19 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
           ))}
         </nav>
         
-        <div className="flex gap-2">
+        <div>
           <input 
             type="text" 
             placeholder="Add new category" 
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
-            className="flex-1 border border-border bg-surface text-text px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                addCategory();
+              }
+            }}
+            className="w-full border border-subtle bg-surface text-[#000000d9] py-2 px-2 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
           />
-          <button 
-            onClick={addCategory}
-            className="btn px-3 py-2 rounded-lg text-sm hover:opacity-90 transition-all duration-200"
-          >
-            +
-          </button>
         </div>
       </aside>
 
@@ -346,17 +346,17 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
         </div>
         
         {/* Exercise Table */}
-        <div className="border border-white rounded">
-          <div className="grid grid-cols-2 border-b border-white">
-            <div className="border-r border-white p-2 text-sm font-normal">Name</div>
-            <div className="p-2 text-sm font-normal">Technique</div>
+        <div className="border border-subtle rounded-lg">
+          <div className="grid grid-cols-2 border-b border-subtle">
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Name</div>
+            <div className="p-3 text-sm font-semibold text-[#00000080]">Technique</div>
           </div>
           
           {/* Exercise Rows */}
           {(exercises[activeCategory] || []).map((exercise, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
+              className="grid grid-cols-2 border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200 hover:bg-[#00000009]"
               draggable
               onDragStart={(e) => handleExerciseDragStart(e, index)}
               onDragEnd={handleExerciseDragEnd}
@@ -364,8 +364,8 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
               onDrop={(e) => handleExerciseDrop(e, index)}
               onDoubleClick={() => handleEdit(exercise, index)}
             >
-              <div className="border-r border-white p-2 text-sm">{exercise.name}</div>
-              <div className="p-2 text-sm">
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{exercise.name}</div>
+              <div className="p-3 text-sm text-[#000000d9]">
                 <ol className="list-decimal list-inside space-y-1">
                   {exercise.technique.map((step, stepIndex) => (
                     <li key={stepIndex}>{step}</li>
@@ -377,16 +377,16 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
           
           {/* Add New Exercise Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-white p-2">
+            <div className="border-r border-subtle p-3">
               <input 
                 type="text" 
                 value={newExercise.name}
                 onChange={(e) => setNewExercise({...newExercise, name: e.target.value})}
                 placeholder="Exercise name"
-                className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-2 flex items-center justify-between">
+            <div className="p-3 flex flex-col">
               <div className="flex-1 space-y-1">
                 {newExercise.technique.map((step, index) => (
                   <input 
@@ -398,24 +398,26 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
                       newTechnique[index] = e.target.value;
                       setNewExercise({...newExercise, technique: newTechnique});
                     }}
-                    placeholder={`Step ${index + 1}`}
-                    className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        // Always add a new step when Enter is pressed
+                        setNewExercise({...newExercise, technique: [...newExercise.technique, '']});
+                      }
+                    }}
+                    placeholder={`Step ${index + 1} (Press Enter to add step)`}
+                    className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 ))}
+              </div>
+              <div className="flex justify-end mt-2">
                 <button 
-                  onClick={() => setNewExercise({...newExercise, technique: [...newExercise.technique, '']})}
-                  className="text-green-400 hover:text-green-300 text-sm"
+                  onClick={addExercise}
+                  className="text-success hover:text-success/80 transition-colors duration-200"
+                  title="Add Exercise"
                 >
-                  + Add Step
+                  <IoMdAdd className="w-4 h-4" />
                 </button>
               </div>
-              <button 
-                onClick={addExercise}
-                className="text-green-400 hover:text-green-300 ml-2"
-                title="Add Exercise"
-              >
-                ➕
-              </button>
             </div>
           </div>
         </div>
@@ -423,23 +425,23 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded-lg p-6 w-96 max-h-96 overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-4">Edit Exercise</h3>
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6 max-h-96 overflow-y-auto">
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Exercise</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Name:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Name:</label>
                 <input
                   type="text"
                   value={editingData.name}
                   onChange={(e) => setEditingData({...editingData, name: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Technique Steps:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Technique Steps:</label>
                 <div className="space-y-2">
                   {editingData.technique.map((step, index) => (
                     <div key={index} className="flex gap-2">
@@ -448,19 +450,19 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
                         value={step}
                         onChange={(e) => updateTechniqueStep(index, e.target.value)}
                         placeholder={`Step ${index + 1}`}
-                        className="flex-1 bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                        className="flex-1 bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                       />
                       <button
                         onClick={() => removeTechniqueStep(index)}
-                        className="text-red-400 hover:text-red-300 px-2"
+                        className="text-danger hover:text-danger/80 px-2 transition-colors duration-200"
                       >
-                        🗑️
+                        <MdOutlineDelete className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
                   <button
                     onClick={addTechniqueStep}
-                    className="text-green-400 hover:text-green-300 text-sm"
+                    className="text-success hover:text-success/80 text-sm transition-colors duration-200"
                   >
                     + Add Step
                   </button>
@@ -470,26 +472,26 @@ function Exercise({ categories, setCategories, exercises, setExercises, loadExer
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                onClick={() => {
+                  handleDelete(editingItem.exercise.id);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ name: '', technique: [''] });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.exercise.id);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ name: '', technique: [''] });
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>
@@ -645,23 +647,23 @@ function DayTable({ exercises, categories }){
 
   if (loading) {
     return (
-      <div className="text-white h-full flex items-center justify-center">
-        <p className="text-gray-400">Loading day table data...</p>
+      <div className="text-text h-full flex items-center justify-center">
+        <p className="text-text-muted">Loading day table data...</p>
       </div>
     );
   }
 
   return (
-    <div className="text-white h-full grid grid-cols-[240px_1fr]">
+    <div className="text-text h-full grid grid-cols-[240px_1fr]">
       {/* Left Sidebar - Days */}
-      <aside className="bg-gray-500 p-4">
+      <aside className="bg-elev-2 border-r border-subtle p-4">
         <div className="space-y-1">
           {days.map((day) => (
             <button
               key={day}
               onClick={() => setActiveDay(day)}
-              className={`block w-full text-left text-white text-sm font-normal px-2 py-1 rounded hover:bg-gray-600 ${
-                activeDay === day ? 'border border-white bg-gray-600' : ''
+              className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent transition-colors duration-200 ${
+                activeDay === day ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
               }`}
             >
               {day}
@@ -672,18 +674,18 @@ function DayTable({ exercises, categories }){
 
       {/* Right Content Area */}
       <section className="p-4">
-        <div className="border border-white rounded">
-          <div className="grid grid-cols-3 border-b border-white">
-            <div className="border-r border-white p-2 text-sm font-normal">Name</div>
-            <div className="border-r border-white p-2 text-sm font-normal">Reps</div>
-            <div className="p-2 text-sm font-normal">Sets/Duration</div>
+        <div className="border border-subtle rounded-lg">
+          <div className="grid grid-cols-3 border-b border-subtle">
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Name</div>
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Reps</div>
+            <div className="p-3 text-sm font-semibold text-[#00000080]">Sets/Duration</div>
           </div>
           
           {/* Exercise Rows */}
           {(dayExercises[activeDay] || []).map((exercise, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-3 border-b border-white group hover:bg-gray-400 cursor-pointer"
+              className="grid grid-cols-3 border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleExerciseDragStart(e, index)}
               onDragEnd={handleExerciseDragEnd}
@@ -691,52 +693,50 @@ function DayTable({ exercises, categories }){
               onDrop={(e) => handleExerciseDrop(e, index)}
               onDoubleClick={() => handleEdit(exercise, index)}
             >
-              <div className="border-r border-white p-2 text-sm">{exercise.name}</div>
-              <div className="border-r border-white p-2 text-sm">{exercise.reps}</div>
-              <div className="p-2 text-sm">{exercise.setsDuration}</div>
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{exercise.name}</div>
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{exercise.reps}</div>
+              <div className="p-3 text-sm text-[#000000d9]">{exercise.setsDuration}</div>
             </div>
           ))}
           
           {/* Add New Exercise Row */}
           <div className="grid grid-cols-3">
-            <div className="border-r border-white p-2">
+            <div className="border-r border-subtle p-3">
               <select 
                 value={newExercise.name}
                 onChange={(e) => setNewExercise({...newExercise, name: e.target.value})}
-                className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               >
                 <option value="">Select Exercise</option>
                 {getAllExercises().map((exercise, index) => (
-                  <option key={index} value={exercise.name} className="bg-gray-800">
+                  <option key={index} value={exercise.name} className="bg-surface">
                     {exercise.name} ({exercise.category})
                   </option>
                 ))}
               </select>
             </div>
-            <div className="border-r border-white p-2">
+            <div className="border-r border-subtle p-3">
               <input 
                 type="text" 
                 value={newExercise.reps}
                 onChange={(e) => setNewExercise({...newExercise, reps: e.target.value})}
                 placeholder="Reps (e.g., 18, 15, 12)"
-                className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-2 flex items-center justify-between">
+            <div className="p-3">
               <input 
                 type="text" 
                 value={newExercise.setsDuration}
                 onChange={(e) => setNewExercise({...newExercise, setsDuration: e.target.value})}
-                placeholder="Sets/Duration"
-                className="flex-1 bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1 mr-2"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    addExercise();
+                  }
+                }}
+                placeholder="Sets/Duration (Press Enter)"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
-              <button 
-                onClick={addExercise}
-                className="text-green-400 hover:text-green-300"
-                title="Add Exercise"
-              >
-                ➕
-              </button>
             </div>
           </div>
         </div>
@@ -744,21 +744,21 @@ function DayTable({ exercises, categories }){
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold mb-4">Edit Exercise</h3>
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Edit Exercise</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Name:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Name:</label>
                 <select
                   value={editingData.name}
                   onChange={(e) => setEditingData({...editingData, name: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 >
                   <option value="">Select Exercise</option>
                   {getAllExercises().map((exercise, index) => (
-                    <option key={index} value={exercise.name} className="bg-gray-800">
+                    <option key={index} value={exercise.name} className="bg-surface">
                       {exercise.name} ({exercise.category})
                     </option>
                   ))}
@@ -766,48 +766,48 @@ function DayTable({ exercises, categories }){
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Reps:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Reps:</label>
                 <input
                   type="text"
                   value={editingData.reps}
                   onChange={(e) => setEditingData({...editingData, reps: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Sets/Duration:</label>
+                <label className="block text-sm mb-1 text-[#00000080]">Sets/Duration:</label>
                 <input
                   type="text"
                   value={editingData.setsDuration}
                   onChange={(e) => setEditingData({...editingData, setsDuration: e.target.value})}
-                  className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                  className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                onClick={() => {
+                  handleDelete(editingItem.exercise.id);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ name: '', reps: '', setsDuration: '' });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.exercise.id);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ name: '', reps: '', setsDuration: '' });
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>
@@ -1014,17 +1014,17 @@ function DietTable(){
   const renderContent = () => {
     if (activeSelection === 'Diets') {
       return (
-        <div className="border border-white rounded">
-          <div className="grid grid-cols-2 border-b border-white">
-            <div className="border-r border-white p-2 text-sm font-normal">Item</div>
-            <div className="p-2 text-sm font-normal">Benefits</div>
+        <div className="border border-subtle rounded-lg">
+          <div className="grid grid-cols-2 border-b border-subtle">
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Item</div>
+            <div className="p-3 text-sm font-semibold text-[#00000080]">Benefits</div>
           </div>
           
           {/* Diet Items Rows */}
           {(dietItems || []).map((item, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
+              className="grid grid-cols-2 border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragEnd={handleDragEnd}
@@ -1032,37 +1032,35 @@ function DietTable(){
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(item, index, 'diet')}
             >
-              <div className="border-r border-white p-2 text-sm">{item.item}</div>
-              <div className="p-2 text-sm">{item.benefits}</div>
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{item.item}</div>
+              <div className="p-3 text-sm text-[#000000d9]">{item.benefits}</div>
             </div>
           ))}
           
           {/* Add New Diet Item Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-white p-2">
+            <div className="border-r border-subtle p-3">
               <input 
                 type="text" 
                 value={newDietItem.item}
                 onChange={(e) => setNewDietItem({...newDietItem, item: e.target.value})}
                 placeholder="Item name"
-                className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
             </div>
-            <div className="p-2 flex items-center justify-between">
+            <div className="p-3">
               <input 
                 type="text" 
                 value={newDietItem.benefits}
                 onChange={(e) => setNewDietItem({...newDietItem, benefits: e.target.value})}
-                placeholder="Benefits"
-                className="flex-1 bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1 mr-2"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    addDietItem();
+                  }
+                }}
+                placeholder="Benefits (Press Enter)"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
-              <button 
-                onClick={addDietItem}
-                className="text-green-400 hover:text-green-300"
-                title="Add Diet Item"
-              >
-                ➕
-              </button>
             </div>
           </div>
         </div>
@@ -1070,17 +1068,17 @@ function DietTable(){
     } else {
       // Day-specific content
       return (
-        <div className="border border-white rounded">
-          <div className="grid grid-cols-2 border-b border-white">
-            <div className="border-r border-white p-2 text-sm font-normal">Item</div>
-            <div className="p-2 text-sm font-normal">Quantity</div>
+        <div className="border border-subtle rounded-lg">
+          <div className="grid grid-cols-2 border-b border-subtle">
+            <div className="border-r border-subtle p-3 text-sm font-semibold text-[#00000080]">Item</div>
+            <div className="p-3 text-sm font-semibold text-[#00000080]">Quantity</div>
           </div>
           
           {/* Day Items Rows */}
           {(dayItems[activeDay] || []).map((item, index) => (
             <div 
               key={index} 
-              className="grid grid-cols-2 border-b border-white group hover:bg-gray-400 cursor-pointer"
+              className="grid grid-cols-2 border-b border-subtle group hover:bg-elev-3 cursor-pointer transition-all duration-200"
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragEnd={handleDragEnd}
@@ -1088,42 +1086,40 @@ function DietTable(){
               onDrop={(e) => handleDrop(e, index)}
               onDoubleClick={() => handleEdit(item, index, 'day')}
             >
-              <div className="border-r border-white p-2 text-sm">{item.item}</div>
-              <div className="p-2 text-sm">{item.quantity}</div>
+              <div className="border-r border-subtle p-3 text-sm text-[#000000d9]">{item.item}</div>
+              <div className="p-3 text-sm text-[#000000d9]">{item.quantity}</div>
             </div>
           ))}
           
           {/* Add New Day Item Row */}
           <div className="grid grid-cols-2">
-            <div className="border-r border-white p-2">
+            <div className="border-r border-subtle p-3">
               <select 
                 value={newDayItem.item}
                 onChange={(e) => setNewDayItem({...newDayItem, item: e.target.value})}
-                className="w-full bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               >
                 <option value="">Select Diet Item</option>
                 {(dietItems || []).map((dietItem, index) => (
-                  <option key={index} value={dietItem.item} className="bg-gray-800">
+                  <option key={index} value={dietItem.item} className="bg-surface">
                     {dietItem.item}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="p-2 flex items-center justify-between">
+            <div className="p-3">
               <input 
                 type="text" 
                 value={newDayItem.quantity}
                 onChange={(e) => setNewDayItem({...newDayItem, quantity: e.target.value})}
-                placeholder="Quantity"
-                className="flex-1 bg-transparent text-white text-sm border border-white/50 rounded px-2 py-1 mr-2"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    addDayItem();
+                  }
+                }}
+                placeholder="Quantity (Press Enter)"
+                className="w-full bg-surface text-[#000000d9] text-sm border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
               />
-              <button 
-                onClick={addDayItem}
-                className="text-green-400 hover:text-green-300"
-                title="Add Day Item"
-              >
-                ➕
-              </button>
             </div>
           </div>
         </div>
@@ -1133,20 +1129,20 @@ function DietTable(){
 
   if (loading) {
     return (
-      <div className="text-white h-full flex items-center justify-center">
-        <p className="text-gray-400">Loading diet data...</p>
+      <div className="text-text h-full flex items-center justify-center">
+        <p className="text-text-muted">Loading diet data...</p>
       </div>
     );
   }
 
   return (
-    <div className="text-white h-full grid grid-cols-[240px_1fr]">
+    <div className="text-text h-full grid grid-cols-[240px_1fr]">
       {/* Left Sidebar - Diets and Days */}
-      <aside className="bg-gray-500 p-4">
+      <aside className="bg-elev-2 border-r border-subtle p-4">
         <button
           onClick={handleDietsClick}
-          className={`block w-full text-left text-white text-sm font-normal px-3 py-2 rounded mb-4 ${
-            activeSelection === 'Diets' ? 'border border-white bg-gray-600' : 'hover:bg-gray-600'
+          className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg mb-4 border border-transparent transition-colors duration-200 ${
+            activeSelection === 'Diets' ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
           }`}
         >
           Diets
@@ -1158,8 +1154,8 @@ function DietTable(){
             <button
               key={day}
               onClick={() => handleDayClick(day)}
-              className={`block w-full text-left text-white text-sm font-normal px-2 py-1 rounded hover:bg-gray-600 ${
-                activeSelection === day ? 'border border-white bg-gray-600' : ''
+              className={`block w-full text-left text-sm font-medium px-3 py-2 rounded-lg border border-transparent transition-colors duration-200 ${
+                activeSelection === day ? 'border-[#00000013] bg-[#00000013] text-black' : 'text-[#00000080] hover:text-black'
               }`}
             >
               {day}
@@ -1175,34 +1171,34 @@ function DietTable(){
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 border border-white rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="w-96 shadow-card border border-subtle bg-white rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">
               Edit {editingItem?.type === 'diet' ? 'Diet Item' : 'Day Item'}
             </h3>
             
             <div className="space-y-4">
               {editingItem?.type === 'diet' ? (
                 <div>
-                  <label className="block text-sm mb-1">Item:</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Item:</label>
                   <input
                     type="text"
                     value={editingData.item}
                     onChange={(e) => setEditingData({...editingData, item: e.target.value})}
-                    className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                    className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm mb-1">Item:</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Item:</label>
                   <select
                     value={editingData.item}
                     onChange={(e) => setEditingData({...editingData, item: e.target.value})}
-                    className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                    className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   >
                     <option value="">Select Diet Item</option>
                     {(dietItems || []).map((dietItem, index) => (
-                      <option key={index} value={dietItem.item} className="bg-gray-800">
+                      <option key={index} value={dietItem.item} className="bg-surface">
                         {dietItem.item} - {dietItem.benefits}
                       </option>
                     ))}
@@ -1212,22 +1208,22 @@ function DietTable(){
               
               {editingItem?.type === 'diet' ? (
                 <div>
-                  <label className="block text-sm mb-1">Benefits:</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Benefits:</label>
                   <input
                     type="text"
                     value={editingData.benefits}
                     onChange={(e) => setEditingData({...editingData, benefits: e.target.value})}
-                    className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                    className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm mb-1">Quantity:</label>
+                  <label className="block text-sm mb-1 text-[#00000080]">Quantity:</label>
                   <input
                     type="text"
                     value={editingData.quantity}
                     onChange={(e) => setEditingData({...editingData, quantity: e.target.value})}
-                    className="w-full bg-transparent text-white border border-white/50 rounded px-3 py-2"
+                    className="w-full bg-surface text-[#000000d9] border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-accent-blue focus:border-transparent"
                   />
                 </div>
               )}
@@ -1235,26 +1231,26 @@ function DietTable(){
             
             <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                onClick={() => {
+                  handleDelete(editingItem.item.id, editingItem.type);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  setEditingData({ item: '', benefits: '', quantity: '' });
+                }}
+                className="px-4 py-2 bg-danger text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
               >
-                Cancel
+                Delete
               </button>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDelete(editingItem.item.id, editingItem.type);
-                    setShowEditModal(false);
-                    setEditingItem(null);
-                    setEditingData({ item: '', benefits: '', quantity: '' });
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 bg-elev-3 text-[#000000d9] rounded-lg hover:bg-elev-2 transition-all duration-200"
                 >
-                  Delete
+                  Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-accent-blue text-text-inverse rounded-lg hover:opacity-90 transition-all duration-200"
                 >
                   Save
                 </button>

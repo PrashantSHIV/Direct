@@ -129,7 +129,7 @@ export default function Subjects() {
 
   return (
     <div className="text-text flex flex-col h-full">
-      <header className="bg-surface border-b border-border flex justify-between items-center p-4 pr-20">
+      <header className="bg-surface border-b border-subtle flex justify-between items-center p-4 pr-20">
         <h1 className="text-lg font-semibold">Subjects</h1>
       </header>
       
@@ -142,14 +142,14 @@ export default function Subjects() {
               value={newSubject.name}
               onChange={(e) => setNewSubject({...newSubject, name: e.target.value})}
               placeholder="Subject name"
-              className="flex-1 border border-border bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+              className="flex-1 border border-subtle bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
             />
             <input 
               type="text" 
               value={newSubject.reason}
               onChange={(e) => setNewSubject({...newSubject, reason: e.target.value})}
               placeholder="Reason for studying"
-              className="flex-1 border border-border bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+              className="flex-1 border border-subtle bg-surface text-text px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
             />
             <button 
               onClick={addSubject}
@@ -226,7 +226,7 @@ export default function Subjects() {
                   type="text"
                   value={editingData.name}
                   onChange={(e) => setEditingData({...editingData, name: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-text border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
               
@@ -236,7 +236,7 @@ export default function Subjects() {
                   type="text"
                   value={editingData.reason}
                   onChange={(e) => setEditingData({...editingData, reason: e.target.value})}
-                  className="w-full bg-surface text-text border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
+                  className="w-full bg-surface text-text border border-subtle rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
                 />
               </div>
             </div>
