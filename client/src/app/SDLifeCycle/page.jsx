@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IoBookOutline } from 'react-icons/io5';
 import { TbProgress } from 'react-icons/tb';
 import { MdOutlineWork } from 'react-icons/md';
@@ -14,17 +14,23 @@ export default function SDLifeCycle() {
   const [activeSection, setActiveSection] = useState('Definition');
   const [activePhase, setActivePhase] = useState(null);
   const [showPhasesDropdown, setShowPhasesDropdown] = useState(false);
+  const [showPhasesModal, setShowPhasesModal] = useState(false);
 
   const phases = ['Planning', 'Design', 'Development', 'Testing', 'Deployment', 'Maintenance'];
 
   const handlePhasesClick = () => {
-    setShowPhasesDropdown(!showPhasesDropdown);
-    // Don't change activeSection, keep showing current content
+    // On mobile (when screen is small), show modal instead of dropdown
+    if (window.innerWidth < 768) {
+      setShowPhasesModal(true);
+    } else {
+      setShowPhasesDropdown(!showPhasesDropdown);
+    }
   };
 
   const handlePhaseSelect = (phase) => {
     setActivePhase(phase);
     setActiveSection('Phases'); // Only set section when a phase is actually selected
+    setShowPhasesModal(false); // Close modal after selection
   };
 
   const handleSectionClick = (section) => {
@@ -50,32 +56,36 @@ export default function SDLifeCycle() {
 
   return (
     <div className="text-text h-full flex flex-col">
-      <h3 className="bg-surface border-b border-subtle p-4 pt-3 pb-2 flex-shrink-0 text-[#000000d9] font-semibold">SD Life Cycle</h3>
+      <h3 className="bg-surface border-b border-subtle p-3 md:p-4 pt-3 pb-2 flex-shrink-0 text-[#000000d9] font-semibold text-sm md:text-base">SD Life Cycle</h3>
       
       <div className="flex-1 overflow-hidden">
-        <div className="grid grid-cols-[240px_1fr] h-full">
+        <div className="grid h-full transition-all duration-300 grid-cols-[80px_1fr] md:grid-cols-[260px_1fr]">
           {/* Left Panel - Navigation */}
-          <aside className="bg-elev-2 border-r border-subtle p-4 h-full overflow-y-auto">
+          <aside className="bg-elev-2 border-r border-subtle h-full overflow-y-auto transition-all duration-300 p-3">
             <nav className="space-y-2">
                <button
                  onClick={() => handleSectionClick('Definition')}
-                 className={`nav-button ${activeSection === 'Definition' ? 'active' : ''}`}
+                 className={`nav-button ${activeSection === 'Definition' ? 'active' : ''} justify-start px-2 md:px-4 whitespace-nowrap`}
+                 title="Definition"
                >
-                <IoBookOutline className="w-4 h-4 mr-3 flex-shrink-0" />
-                 Definition
+                <IoBookOutline className="w-5 h-5 flex-shrink-0 md:mr-3" />
+                <span className="hidden md:inline">Definition</span>
                </button>
               
               {/* Phases Dropdown */}
               <div>
                 <button
                   onClick={handlePhasesClick}
-                  className={` nav-button ${activePhase ? 'active' : ''}`}
+                  className={`nav-button ${activePhase ? 'active' : ''} justify-start px-2 md:px-4 whitespace-nowrap`}
+                  title="Phases"
                 >
-                  <TbProgress className="w-4 h-4 mr-3 flex-shrink-0" />
-                  Phases {showPhasesDropdown ? <IoChevronUp className="w-4 h-4 ml-2" /> : <IoChevronDown className="w-4 h-4 ml-2" />}
+                  <TbProgress className="w-5 h-5 flex-shrink-0 md:mr-3" />
+                  <span className="hidden md:flex items-center">
+                    Phases {showPhasesDropdown ? <IoChevronUp className="w-4 h-4 ml-2" /> : <IoChevronDown className="w-4 h-4 ml-2" />}
+                  </span>
                 </button>
                 {showPhasesDropdown && (
-                  <div className="ml-4 mt-2 space-y-1">
+                  <div className="ml-4 mt-2 space-y-1 hidden md:block">
                     {phases.map((phase) => (
                       <button
                         key={phase}
@@ -93,10 +103,11 @@ export default function SDLifeCycle() {
               
                <button
                  onClick={() => handleSectionClick('Projects')}
-                 className={`nav-button ${activeSection === 'Projects' ? 'active' : ''}`}
+                 className={`nav-button ${activeSection === 'Projects' ? 'active' : ''} justify-start px-2 md:px-4 whitespace-nowrap`}
+                 title="Projects"
                >
-                <MdOutlineWork className="w-4 h-4 mr-3 flex-shrink-0" />
-                 Projects
+                <MdOutlineWork className="w-5 h-5 flex-shrink-0 md:mr-3" />
+                <span className="hidden md:inline">Projects</span>
                </button>
             </nav>
           </aside>
@@ -107,6 +118,44 @@ export default function SDLifeCycle() {
           </section>
         </div>
       </div>
+
+      {/* Phases Modal for Mobile */}
+      {showPhasesModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 md:hidden"
+          onClick={() => setShowPhasesModal(false)}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 w-80 max-w-[90vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-[#000000d9]">Select Phase</h3>
+            <div className="space-y-2">
+              {phases.map((phase) => (
+                <button
+                  key={phase}
+                  onClick={() => handlePhaseSelect(phase)}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
+                    activePhase === phase 
+                      ? 'bg-accent-blue text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {phase}
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShowPhasesModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

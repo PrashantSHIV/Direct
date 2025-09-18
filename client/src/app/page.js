@@ -79,8 +79,8 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="pt-3 pb-2 border-b border-subtle flex items-center px-6 bg-surface flex-shrink-0">
-        <h1 className="font-semibold">
+      <header className="pt-3 pb-2 border-b border-subtle flex items-center px-4 md:px-6 bg-surface flex-shrink-0">
+        <h1 className="font-semibold text-sm md:text-base">
           DIRECT
         </h1>
       </header>
@@ -110,7 +110,7 @@ export default function Home() {
                         setSidebarCollapsed(true);
                       }
                     }}
-                    className={`nav-button ${activePage === page.id ? 'active' : ''} ${sidebarCollapsed ? 'justify-center px-2' : ''} whitespace-nowrap`}
+                    className={`nav-button ${activePage === page.id ? 'active' : ''} ${sidebarCollapsed ? 'justify-start px-2' : ''} whitespace-nowrap`}
                     title={sidebarCollapsed ? page.name : ''}
                   >
                     <IconComponent className={`w-5 h-5 flex-shrink-0 ${sidebarCollapsed ? '' : 'mr-3'}`} />
