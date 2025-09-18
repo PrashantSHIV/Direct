@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SiPhpmyadmin, SiTask } from 'react-icons/si';
 import { GrCycle } from 'react-icons/gr';
@@ -12,7 +12,7 @@ import Applications from '@/app/Application\'s/page';
 import TasksNext24Hours from '@/app/TasksNext24Hours/page';
 import Subjects from '@/app/Subjects/page';
 
-export default function HomePage() {
+function HomePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activePage, setActivePage] = useState('MyLifeFlow');
@@ -128,5 +128,20 @@ export default function HomePage() {
         </section>
       </main>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-accent-blue mx-auto"></div>
+          <p className="mt-4 text-[#00000080]">Loading...</p>
+        </div>
+      </div>
+    }>
+      <HomePageContent />
+    </Suspense>
   );
 }
