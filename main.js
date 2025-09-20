@@ -6,23 +6,43 @@ const SDLifeCycle = require('./models/SDLifeCycle');
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, "assets","app.png"), // app icon for production
     webPreferences: {
-        nodeIntegration: false,        // Security: Renderer can't access Node.js
-        contextIsolation: true,        // Security: Isolates renderer from main
-        preload: path.join(__dirname, 'preload.js')  // Loads our bridge script
-      }
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
+    }
   });
 
-  // Load your Next.js app
-  mainWindow.loadURL('http://localhost:3000');
+  if (app.isPackaged) {
+    // ✅ Load Next.js production build (after `next build && next export`)
+    mainWindow.loadFile(path.join(__dirname, 'out', 'index.html'));
+    console.log(app.isPackaged);
+    
+  } else {
+    // ✅ Dev mode: load local server
+    mainWindow.loadURL('http://localhost:3000');
+    mainWindow.webContents.openDevTools();
+  }
 
-  // Open DevTools (optional)
-  mainWindow.webContents.openDevTools();
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 }
+
+app.whenReady().then(createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) createWindow();
+});
+
 
 // IPC Handlers for database operations
 ipcMain.handle('get-timetable', async () => {
